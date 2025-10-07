@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+<link as="style" href="https://fonts.googleapis.com/css2?display=swap&amp;family=Inter%3Awght%40400%3B500%3B700%3B900&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900" onload="this.rel='stylesheet'" rel="stylesheet"/>
+<title>Problem Solver Foundation</title>
+<link href="data:image/x-icon;base64," rel="icon" type="image/x-icon"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#117dd4",
+              "background-light": "#f6f7f8",
+              "background-dark": "#101a22",
+            },
+            fontFamily: {
+              display: ["Inter"],
+            },
+            borderRadius: { DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px" },
+          },
+        },
+      };
+    </script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display">
+<div class="flex min-h-screen flex-col">
+<header class="sticky top-0 z-10 w-full border-b border-white/10 bg-background-light/80 backdrop-blur-sm dark:bg-background-dark/80">
+<nav class="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
+<div class="flex items-center gap-4">
+<svg class="h-8 w-8 text-primary" fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M12.0799 24L4 19.2479L9.95537 8.75216L18.04 13.4961L18.0446 4H29.9554L29.96 13.4961L38.0446 8.75216L44 19.2479L35.92 24L44 28.7521L38.0446 39.2479L29.96 34.5039L29.9554 44H18.0446L18.04 34.5039L9.95537 39.2479L4 28.7521L12.0799 24Z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+<h2 class="text-lg font-bold text-gray-900 dark:text-white">Problem Solver Foundation</h2>
+</div>
+<div class="hidden items-center gap-6 md:flex">
+<a class="text-sm font-medium text-gray-700 hover:text-primary dark:text-gray-300 dark:hover:text-primary" href="#">Home</a>
+<a class="text-sm font-medium text-primary dark:text-primary" href="#">Solutions</a>
+<a class="text-sm font-medium text-gray-700 hover:text-primary dark:text-gray-300 dark:hover:text-primary" href="#">Progress</a>
+<a class="text-sm font-medium text-gray-700 hover:text-primary dark:text-gray-300 dark:hover:text-primary" href="#">Impact</a>
+<a class="text-sm font-medium text-gray-700 hover:text-primary dark:text-gray-300 dark:hover:text-primary" href="#">Blog</a>
+<a class="text-sm font-medium text-gray-700 hover:text-primary dark:text-gray-300 dark:hover:text-primary" href="#">About</a>
+<a class="text-sm font-medium text-gray-700 hover:text-primary dark:text-gray-300 dark:hover:text-primary" href="#">Contact</a>
+</div>
+<div class="flex items-center gap-2">
+<button class="rounded-lg bg-primary px-4 py-2 text-sm font-bold text-white transition-colors hover:bg-primary/80 md:hidden">Menu</button>
+</div>
+</nav>
+</header>
+<main class="flex-grow">
+<div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+<div class="text-center">
+<h1 class="text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white sm:text-5xl md:text-6xl">Explore Our Solutions</h1>
+<p class="mt-4 max-w-2xl mx-auto text-xl text-gray-500 dark:text-gray-400">Discover innovative approaches to tackle challenges across various domains.</p>
+</div>
+<div class="mt-20 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+<div class="group transform rounded-lg bg-white/5 p-6 transition-all duration-300 hover:scale-105 hover:bg-white/10 dark:bg-black/5 dark:hover:bg-black/10">
+<div class="flex h-16 w-16 items-center justify-center rounded-lg bg-primary/10 text-primary">
+<span class="material-symbols-outlined text-4xl">devices</span>
+</div>
+<h3 class="mt-6 text-xl font-bold text-gray-900 dark:text-white">Technology</h3>
+<p class="mt-2 text-base text-gray-500 dark:text-gray-400">Innovative tech solutions for modern challenges.</p>
+<a class="mt-6 inline-block text-sm font-semibold text-primary" href="#">Related Posts <span class="transition-transform group-hover:translate-x-1">→</span></a>
+</div>
+<div class="group transform rounded-lg bg-white/5 p-6 transition-all duration-300 hover:scale-105 hover:bg-white/10 dark:bg-black/5 dark:hover:bg-black/10">
+<div class="flex h-16 w-16 items-center justify-center rounded-lg bg-primary/10 text-primary">
+<span class="material-symbols-outlined text-4xl">rocket_launch</span>
+</div>
+<h3 class="mt-6 text-xl font-bold text-gray-900 dark:text-white">Productivity</h3>
+<p class="mt-2 text-base text-gray-500 dark:text-gray-400">Boost your efficiency and achieve more.</p>
+<a class="mt-6 inline-block text-sm font-semibold text-primary" href="#">Related Posts <span class="transition-transform group-hover:translate-x-1">→</span></a>
+</div>
+<div class="group transform rounded-lg bg-white/5 p-6 transition-all duration-300 hover:scale-105 hover:bg-white/10 dark:bg-black/5 dark:hover:bg-black/10">
+<div class="flex h-16 w-16 items-center justify-center rounded-lg bg-primary/10 text-primary">
+<span class="material-symbols-outlined text-4xl">self_improvement</span>
+</div>
+<h3 class="mt-6 text-xl font-bold text-gray-900 dark:text-white">Personal Development</h3>
+<p class="mt-2 text-base text-gray-500 dark:text-gray-400">Unlock your potential and grow personally.</p>
+<a class="mt-6 inline-block text-sm font-semibold text-primary" href="#">Related Posts <span class="transition-transform group-hover:translate-x-1">→</span></a>
+</div>
+</div>
+</div>
+<div class="bg-white/5 py-16 dark:bg-black/5">
+<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+<div class="text-center">
+<h2 class="text-3xl font-extrabold tracking-tight text-gray-900 dark:text-white sm:text-4xl">Stay Informed</h2>
+<p class="mt-4 max-w-2xl mx-auto text-xl text-gray-500 dark:text-gray-400">Subscribe to our newsletter for the latest insights and solutions.</p>
+</div>
+<div class="mt-12 max-w-lg mx-auto">
+<form class="sm:flex">
+<label class="sr-only" for="email-address">Email address</label>
+<input autocomplete="email" class="w-full rounded-md border-gray-300 bg-white px-5 py-3 placeholder-gray-500 focus:border-primary focus:ring-primary dark:border-gray-700 dark:bg-background-dark dark:text-white dark:placeholder-gray-400" id="email-address" name="email" placeholder="Enter your email" required="" type="email"/>
+<button class="mt-3 w-full flex-shrink-0 rounded-md bg-primary px-5 py-3 text-base font-medium text-white hover:bg-primary/80 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background-light dark:focus:ring-offset-background-dark sm:mt-0 sm:ml-3 sm:w-auto" type="submit">
+                  Subscribe
+                </button>
+</form>
+</div>
+</div>
+</div>
+</main>
+<footer class="bg-white/5 dark:bg-black/5">
+<div class="mx-auto max-w-7xl overflow-hidden px-6 py-12 lg:px-8">
+<nav aria-label="Footer" class="-mb-6 columns-2 sm:flex sm:justify-center sm:space-x-12">
+<div class="pb-6">
+<a class="text-sm leading-6 text-gray-600 hover:text-primary dark:text-gray-400 dark:hover:text-primary" href="#">Privacy Policy</a>
+</div>
+<div class="pb-6">
+<a class="text-sm leading-6 text-gray-600 hover:text-primary dark:text-gray-400 dark:hover:text-primary" href="#">Terms of Service</a>
+</div>
+</nav>
+<div class="mt-10 flex justify-center space-x-6">
+<a class="text-gray-400 hover:text-primary dark:text-gray-500 dark:hover:text-primary" href="#">
+<span class="sr-only">Twitter</span>
+<svg aria-hidden="true" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+<path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.71v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84"></path>
+</svg>
+</a>
+<a class="text-gray-400 hover:text-primary dark:text-gray-500 dark:hover:text-primary" href="#">
+<span class="sr-only">Facebook</span>
+<svg aria-hidden="true" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+<path clip-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" fill-rule="evenodd"></path>
+</svg>
+</a>
+<a class="text-gray-400 hover:text-primary dark:text-gray-500 dark:hover:text-primary" href="#">
+<span class="sr-only">Instagram</span>
+<svg aria-hidden="true" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+<path clip-rule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.024.06 1.378.06 3.808s-.012 2.784-.06 3.808c-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.024.048-1.378.06-3.808.06s-2.784-.013-3.808-.06c-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.048-1.024-.06-1.378-.06-3.808s.012-2.784.06-3.808c.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 016.345 2.525c.636-.247 1.363-.416 2.427-.465C9.795 2.013 10.148 2 12.315 2zm-1.163 1.943c-1.049.045-1.634.21-2.186.42a2.916 2.916 0 00-1.084.772 2.916 2.916 0 00-.772 1.084c-.21.552-.375 1.137-.42 2.186-.045 1.024-.057 1.347-.057 3.593s.012 2.569.057 3.593c.045 1.049.21 1.634.42 2.186.21.552.479 1.002.772 1.398s.846.562 1.398.772c.552.21 1.137.375 2.186.42 1.024.045 1.347.057 3.593.057s2.569-.012 3.593-.057c1.049-.045 1.634-.21 2.186-.42.552-.21 1.002-.479 1.398-.772s.562-.846.772-1.398c.21-.552.375-1.137.42-2.186.045-1.024.057-1.347.057-3.593s-.012-2.569-.057-3.593c-.045-1.049-.21-1.634-.42-2.186a2.916 2.916 0 00-.772-1.084 2.916 2.916 0 00-1.084-.772c-.552-.21-1.137-.375-2.186-.42-1.024-.045-1.347-.057-3.593-.057zM12 6.865a5.135 5.135 0 100 10.27 5.135 5.135 0 000-10.27zm0 1.943a3.192 3.192 0 110 6.384 3.192 3.192 0 010-6.384zM16.92 8.283a1.148 1.148 0 10-2.296 0 1.148 1.148 0 002.296 0z" fill-rule="evenodd"></path>
+</svg>
+</a>
+</div>
+<p class="mt-10 text-center text-xs leading-5 text-gray-500 dark:text-gray-400">© 2024 Problem Solver Foundation. All rights reserved.</p>
+</div>
+</footer>
+</div>
+</body></html>

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+<link as="style" href="https://fonts.googleapis.com/css2?display=swap&amp;family=Newsreader%3Awght%40400%3B500%3B700%3B800&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900" onload="this.rel='stylesheet'" rel="stylesheet"/>
+<title>Stitch Design</title>
+<link href="data:image/x-icon;base64," rel="icon" type="image/x-icon"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#117dd4",
+              "background-light": "#f6f7f8",
+              "background-dark": "#101a22",
+            },
+            fontFamily: {
+              display: ["Newsreader"],
+            },
+            borderRadius: { DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px" },
+          },
+        },
+      };
+    </script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark text-black dark:text-white">
+<div class="flex min-h-screen flex-col">
+<header class="sticky top-0 z-10 flex items-center justify-between whitespace-nowrap border-b border-primary/20 bg-background-light bg-opacity-80 px-4 py-3 backdrop-blur-sm dark:bg-background-dark dark:bg-opacity-80 md:px-10">
+<div class="flex items-center gap-4">
+<svg class="h-6 w-6 text-primary" fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M12.0799 24L4 19.2479L9.95537 8.75216L18.04 13.4961L18.0446 4H29.9554L29.96 13.4961L38.0446 8.75216L44 19.2479L35.92 24L44 28.7521L38.0446 39.2479L29.96 34.5039L29.9554 44H18.0446L18.04 34.5039L9.95537 39.2479L4 28.7521L12.0799 24Z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+<h2 class="text-lg font-bold">Problem Solver Foundation</h2>
+</div>
+<div class="hidden items-center gap-6 md:flex">
+<a class="text-sm font-medium text-black/70 hover:text-primary dark:text-white/70 dark:hover:text-primary" href="#">Home</a>
+<a class="text-sm font-medium text-black/70 hover:text-primary dark:text-white/70 dark:hover:text-primary" href="#">Solutions</a>
+<a class="text-sm font-medium text-black/70 hover:text-primary dark:text-white/70 dark:hover:text-primary" href="#">Progress</a>
+<a class="text-sm font-medium text-black/70 hover:text-primary dark:text-white/70 dark:hover:text-primary" href="#">Impact</a>
+<a class="text-sm font-medium text-primary" href="#">Blog</a>
+<a class="text-sm font-medium text-black/70 hover:text-primary dark:text-white/70 dark:hover:text-primary" href="#">About</a>
+<a class="text-sm font-medium text-black/70 hover:text-primary dark:text-white/70 dark:hover:text-primary" href="#">Contact</a>
+</div>
+<div class="flex items-center gap-2">
+<button class="hidden h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary hover:bg-primary/20 dark:bg-primary/20 dark:hover:bg-primary/30 md:flex">
+<span class="material-symbols-outlined"> search </span>
+</button>
+<button class="h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary hover:bg-primary/20 dark:bg-primary/20 dark:hover:bg-primary/30 md:hidden flex">
+<span class="material-symbols-outlined"> menu </span>
+</button>
+<div class="h-10 w-10 rounded-full bg-cover bg-center" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuACgGxTKD77ObSBEVBFbBGAJ5ZP3KWZKrpL1qva7WgWM-Bj9MmdkwI4ely4coEnATbhHKtKf4hISBktGAX7AI0PFv_NUGeTbP17eoZHqwAZ8YhSuSC6Mucsww__j-tSmZ0lVgYFWw6wJjxvzWLoBntJwc9sQfmPbht9RqJR3mOw4BleHpvoGntrzAKNna1FDj9L-GVhU6EbxkwZ-7E0RdVmprB_AC8IUoyVgfeidVcLfZ9l6Uhtgk9Gbd-pWgWRFs0Li8_5Sj9vNM_1");'></div>
+</div>
+</header>
+<main class="container mx-auto flex-1 px-4 py-8 md:px-10 md:py-16">
+<div class="mx-auto max-w-4xl">
+<div class="mb-12 text-center">
+<h1 class="text-5xl font-bold tracking-tighter"> Blog</h1>
+<p class="mt-4 text-lg text-black/60 dark:text-white/60">Stay updated with the latest insights and stories from the Problem Solver Foundation.</p>
+</div>
+<div class="mb-8 flex flex-col gap-4 md:flex-row md:items-center">
+<div class="relative flex-1">
+<span class="material-symbols-outlined pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-black/50 dark:text-white/50"> search </span>
+<input class="form-input w-full rounded-lg border-primary/20 bg-background-light py-2 pl-10 pr-4 text-base focus:border-primary focus:ring-primary dark:bg-background-dark dark:border-primary/30" placeholder="Search posts..." type="text"/>
+</div>
+<div class="flex flex-wrap items-center gap-2">
+<button class="rounded bg-primary/20 px-3 py-1 text-sm font-medium text-primary hover:bg-primary/30 dark:bg-primary/30 dark:hover:bg-primary/40">All</button>
+<button class="rounded px-3 py-1 text-sm font-medium text-black/60 hover:text-primary dark:text-white/60 dark:hover:text-primary">Technology</button>
+<button class="rounded px-3 py-1 text-sm font-medium text-black/60 hover:text-primary dark:text-white/60 dark:hover:text-primary">Sustainability</button>
+<button class="rounded px-3 py-1 text-sm font-medium text-black/60 hover:text-primary dark:text-white/60 dark:hover:text-primary">Education</button>
+</div>
+</div>
+<div class="grid gap-12">
+<article class="group grid grid-cols-1 items-center gap-6 md:grid-cols-3">
+<div class="col-span-1 h-48 rounded-lg bg-cover bg-center transition-transform duration-300 group-hover:scale-105" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuC5rZW8zN7A3O5FeBFhCdvgp4aaB5durnIYHrtmsiEsxJdkUsIS96EQT64Ks4Tmj7he_h2pFX3gf75_kW_5ZRcrcuj0TLX1MJj5R1KF8iz6TnFrkpUbMHZb4hBTRcI9OMRYhcwI1sjHRqqxFwRcTCUziHGUOPJYxzz-YEb8mf5cG1L4OocXeEafhEZ77JtZtUNrHD7SURIzuOFlIjylRhNeIHGXv3MlTKLpYHiRA2WgZck5pS4lrQRjawr7jQ7vcbxWCi1aMorBeFDO");'></div>
+<div class="col-span-1 md:col-span-2">
+<p class="mb-2 text-sm text-primary">Technology</p>
+<h3 class="mb-2 text-xl font-bold leading-tight group-hover:text-primary">The Future of Work: Adapting to Technological Change</h3>
+<div class="mb-3 flex items-center gap-4 text-sm text-black/60 dark:text-white/60">
+<span>Oct 26, 2023</span>
+<span>·</span>
+<span>5 min read</span>
+</div>
+<p class="mb-4 text-black/70 dark:text-white/70">
+                  Explore how technological advancements are reshaping the job market and what skills will be essential for future success.
+                </p>
+<a class="text-sm font-bold text-primary hover:underline" href="#">Read More →</a>
+</div>
+</article>
+<article class="group grid grid-cols-1 items-center gap-6 md:grid-cols-3">
+<div class="col-span-1 h-48 rounded-lg bg-cover bg-center transition-transform duration-300 group-hover:scale-105" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD2kYbogbg0DRdfpa2az2rAefprCfMaDlL22k148HgwUZbpSXT8MUL3WDCP5W3ZNc74kNZf5LuFzSCu_FKiq2UMAid5AtPAGfGABscKA9VyyZXaU5_Rxxfm555nH1tByc1b__Pvv0YeSF2kiRQNiQnrbJndDefl9sqLSb8jzGkoxMnycUCPi46wqKOYJTz0f9IOX7hRlRlWmcI2AxhZxfo7Vt8E5JuIfQ7fCmgnRUgLkHI5WvKyvFQovWz403BNk06bN4smtUvuJDfH");'></div>
+<div class="col-span-1 md:col-span-2">
+<p class="mb-2 text-sm text-primary">Sustainability</p>
+<h3 class="mb-2 text-xl font-bold leading-tight group-hover:text-primary">Sustainable Living: Practical Tips for Everyday Life</h3>
+<div class="mb-3 flex items-center gap-4 text-sm text-black/60 dark:text-white/60">
+<span>Oct 19, 2023</span>
+<span>·</span>
+<span>7 min read</span>
+</div>
+<p class="mb-4 text-black/70 dark:text-white/70">
+                  Discover simple yet effective ways to incorporate sustainable practices into your daily routine, from reducing waste to conserving energy.
+                </p>
+<a class="text-sm font-bold text-primary hover:underline" href="#">Read More →</a>
+</div>
+</article>
+<article class="group grid grid-cols-1 items-center gap-6 md:grid-cols-3">
+<div class="col-span-1 h-48 rounded-lg bg-cover bg-center transition-transform duration-300 group-hover:scale-105" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDcZutQrqF8ES264YYOwsl6XO24VhPQKKfFyF5S0IJA6pF7b7b68JxC4Di90zs8S-gWqg22nvqEs350y6Y3G_ACCk28CDanSUCwa7Jple304RKwp1FpfEfzwvAKyfl-NrEXzMLXGQYh_uzyyFdJgxFOARbvqyqygHObkawYiYSQgN8Vhtzjpv2zbNa_hqE5oEhIumt_-Fat5yaY9CioXx5xkC6GDwZHnyv-dCn6UCD9euwevOg0Jut40UTl6bvZWL_9Wa-59cRVtDaj");'></div>
+<div class="col-span-1 md:col-span-2">
+<p class="mb-2 text-sm text-primary">Education</p>
+<h3 class="mb-2 text-xl font-bold leading-tight group-hover:text-primary">The Importance of Lifelong Learning</h3>
+<div class="mb-3 flex items-center gap-4 text-sm text-black/60 dark:text-white/60">
+<span>Oct 12, 2023</span>
+<span>·</span>
+<span>6 min read</span>
+</div>
+<p class="mb-4 text-black/70 dark:text-white/70">
+                  Understand why continuous learning is crucial in today's rapidly evolving world and how to cultivate a mindset of lifelong growth.
+                </p>
+<a class="text-sm font-bold text-primary hover:underline" href="#">Read More →</a>
+</div>
+</article>
+<article class="group grid grid-cols-1 items-center gap-6 md:grid-cols-3">
+<div class="col-span-1 h-48 rounded-lg bg-cover bg-center transition-transform duration-300 group-hover:scale-105" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAIcTngGw9hLqMy0J8j_HJjRpyl4kRy7dRtMZgoDq6il097scAo3suK4jbzDDOajU25AOMY8Ok0xRrwHcWdNPY47nFQk9tJAc9veG9E5guEBoO_jeqxeWuc8Sv8TxByZ2KdXuZObNLZyiq65OE61RrHVvXgbb2E8XIIHRO9-9ytmpdr02LMld62t6fToRkKUshnMg7F529D1tdPDOfbOSP4AHMIPAtqTXxZQS0FHjI3JzE-QUmj8ier18-KY8UVgX3qFQPJGwRa5tY2");'></div>
+<div class="col-span-1 md:col-span-2">
+<p class="mb-2 text-sm text-primary">Technology</p>
+<h3 class="mb-2 text-xl font-bold leading-tight group-hover:text-primary">Cybersecurity in the Digital Age: Protecting Your Data</h3>
+<div class="mb-3 flex items-center gap-4 text-sm text-black/60 dark:text-white/60">
+<span>Oct 5, 2023</span>
+<span>·</span>
+<span>8 min read</span>
+</div>
+<p class="mb-4 text-black/70 dark:text-white/70">
+                  Learn about the latest cybersecurity threats and how to safeguard your personal and professional information online.
+                </p>
+<a class="text-sm font-bold text-primary hover:underline" href="#">Read More →</a>
+</div>
+</article>
+</div>
+<div class="mt-16 flex items-center justify-center gap-2">
+<a class="flex h-10 w-10 items-center justify-center rounded text-black/60 hover:text-primary dark:text-white/60 dark:hover:text-primary" href="#">
+<span class="material-symbols-outlined"> chevron_left </span>
+</a>
+<a class="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-sm font-bold text-white" href="#">1</a>
+<a class="flex h-10 w-10 items-center justify-center rounded text-sm font-medium text-black/60 hover:bg-primary/10 dark:text-white/60 dark:hover:bg-primary/20" href="#">2</a>
+<a class="flex h-10 w-10 items-center justify-center rounded text-sm font-medium text-black/60 hover:bg-primary/10 dark:text-white/60 dark:hover:bg-primary/20" href="#">3</a>
+<span class="flex h-10 w-10 items-center justify-center text-sm text-black/60 dark:text-white/60">...</span>
+<a class="flex h-10 w-10 items-center justify-center rounded text-sm font-medium text-black/60 hover:bg-primary/10 dark:text-white/60 dark:hover:bg-primary/20" href="#">10</a>
+<a class="flex h-10 w-10 items-center justify-center rounded text-black/60 hover:text-primary dark:text-white/60 dark:hover:text-primary" href="#">
+<span class="material-symbols-outlined"> chevron_right </span>
+</a>
+</div>
+</div>
+</main>
+</div>
+</body></html>
