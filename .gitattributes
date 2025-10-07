@@ -1,0 +1,4 @@
+*.html linguist-detectable=false
+*.css linguist-detectable=false
+*.md linguist-detectable=false
+docs/* linguist-documentation
