@@ -1,0 +1,44 @@
+# Dependências
+node_modules/
+package-lock.json
+yarn.lock
+
+# Variáveis de ambiente
+.env
+.env.local
+.env.production
+
+# Credenciais Firebase
+serviceAccountKey.json
+firebase-config.json
+
+# Logs
+*.log
+npm-debug.log*
+logs/
+
+# Build
+dist/
+build/
+.next/
+out/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testes
+coverage/
+.nyc_output/
+
+# Temporários
+temp/
+tmp/
+*.tmp
