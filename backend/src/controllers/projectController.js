@@ -1,6 +1,7 @@
 /**
  * CONTROLLER DE PROJETOS
- * Lógica de negócio para Solutions, Progress e Impact
+ * Lógica de negócio para projetos da Problem Solver Foundation
+ * ATUALIZADO: Categorias por área de atuação + Status do projeto
  */
 
 const { db } = require('../config/firebase');
@@ -9,19 +10,60 @@ const { db } = require('../config/firebase');
 const projectsCollection = db.collection('projects');
 
 // ===============================
-// FUNÇÕES AUXILIARES
+// CONSTANTES E VALIDAÇÕES
 // ===============================
 
 /**
+ * Categorias válidas (Áreas de Atuação)
+ */
+const VALID_CATEGORIES = [
+  'environment',           // Meio Ambiente
+  'health',               // Saúde
+  'education',            // Educação
+  'cybersecurity',        // Segurança Cibernética
+  'poverty',              // Combate à Pobreza
+  'technology',           // Tecnologia
+  'water',                // Água e Saneamento
+  'energy',               // Energia Limpa
+  'food',                 // Segurança Alimentar
+  'housing',              // Moradia
+  'community',            // Desenvolvimento Comunitário
+  'women-empowerment',    // Empoderamento Feminino
+  'youth-development'     // Desenvolvimento Juvenil
+];
+
+/**
+ * Status válidos do projeto
+ */
+const VALID_STATUSES = [
+  'planned',    // Planejado (ainda não iniciado)
+  'active',     // Ativo (em andamento)
+  'completed',  // Concluído
+  'paused'      // Pausado
+];
+
+/**
  * Valida se a categoria é válida
+ * @param {string} category - Categoria para validar
+ * @returns {boolean}
  */
 const isValidCategory = (category) => {
-  const validCategories = ['solutions', 'progress', 'impact'];
-  return validCategories.includes(category);
+  return VALID_CATEGORIES.includes(category);
+};
+
+/**
+ * Valida se o status é válido
+ * @param {string} status - Status para validar
+ * @returns {boolean}
+ */
+const isValidStatus = (status) => {
+  return VALID_STATUSES.includes(status);
 };
 
 /**
  * Formata um documento do Firestore para objeto JavaScript
+ * @param {object} doc - Documento do Firestore
+ * @returns {object}
  */
 const formatProject = (doc) => {
   return {
@@ -42,17 +84,27 @@ const formatProject = (doc) => {
  */
 exports.getAllProjects = async (req, res) => {
   try {
-    const { category, limit = 50, orderBy = 'createdAt' } = req.query;
+    const { 
+      category,           // Filtrar por área
+      status,             // Filtrar por status
+      limit = 50, 
+      orderBy = 'createdAt' 
+    } = req.query;
     
     let query = projectsCollection;
     
-    // Filtrar por categoria se fornecida
+    // Filtrar por categoria (área) se fornecida
     if (category && isValidCategory(category)) {
       query = query.where('category', '==', category);
     }
     
-    // Ordenar e limitar
-    query = query.orderBy(orderBy, 'desc').limit(parseInt(limit));
+    // Filtrar por status se fornecido
+    if (status && isValidStatus(status)) {
+      query = query.where('status', '==', status);
+    }
+    
+    // Limitar resultados
+    query = query.limit(parseInt(limit));
     
     // Executar query
     const snapshot = await query.get();
@@ -65,8 +117,15 @@ exports.getAllProjects = async (req, res) => {
       });
     }
     
-    // Formatar resultados
-    const projects = snapshot.docs.map(doc => formatProject(doc));
+    // Formatar e ordenar resultados em JavaScript
+    let projects = snapshot.docs.map(doc => formatProject(doc));
+    
+    // Ordenar manualmente
+    projects = projects.sort((a, b) => {
+      const dateA = new Date(a[orderBy] || 0);
+      const dateB = new Date(b[orderBy] || 0);
+      return dateB - dateA; // Mais recente primeiro
+    });
     
     res.json({
       success: true,
@@ -118,7 +177,7 @@ exports.getProjectById = async (req, res) => {
 
 /**
  * GET /api/projects/category/:category
- * Retorna projetos por categoria
+ * Retorna projetos por categoria (área de atuação)
  */
 exports.getProjectsByCategory = async (req, res) => {
   try {
@@ -127,16 +186,25 @@ exports.getProjectsByCategory = async (req, res) => {
     if (!isValidCategory(category)) {
       return res.status(400).json({
         success: false,
-        error: 'Categoria inválida. Use: solutions, progress ou impact'
+        error: 'Categoria inválida',
+        validCategories: VALID_CATEGORIES
       });
     }
     
+    // Query sem orderBy para evitar necessidade de índice composto
     const snapshot = await projectsCollection
       .where('category', '==', category)
-      .orderBy('createdAt', 'desc')
       .get();
     
-    const projects = snapshot.docs.map(doc => formatProject(doc));
+    // Ordenar manualmente em JavaScript
+    const projects = snapshot.docs
+      .map(doc => formatProject(doc))
+      .sort((a, b) => {
+        // Ordenar por data de criação (mais recente primeiro)
+        const dateA = new Date(a.createdAt || 0);
+        const dateB = new Date(b.createdAt || 0);
+        return dateB - dateA;
+      });
     
     res.json({
       success: true,
@@ -156,6 +224,52 @@ exports.getProjectsByCategory = async (req, res) => {
 };
 
 /**
+ * GET /api/projects/status/:status
+ * Retorna projetos por status (planned/active/completed/paused)
+ */
+exports.getProjectsByStatus = async (req, res) => {
+  try {
+    const { status } = req.params;
+    
+    if (!isValidStatus(status)) {
+      return res.status(400).json({
+        success: false,
+        error: 'Status inválido',
+        validStatuses: VALID_STATUSES
+      });
+    }
+    
+    const snapshot = await projectsCollection
+      .where('status', '==', status)
+      .get();
+    
+    // Ordenar manualmente
+    const projects = snapshot.docs
+      .map(doc => formatProject(doc))
+      .sort((a, b) => {
+        const dateA = new Date(a.createdAt || 0);
+        const dateB = new Date(b.createdAt || 0);
+        return dateB - dateA;
+      });
+    
+    res.json({
+      success: true,
+      status,
+      count: projects.length,
+      data: projects
+    });
+    
+  } catch (error) {
+    console.error('Erro ao buscar projetos por status:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Erro ao buscar projetos',
+      message: error.message
+    });
+  }
+};
+
+/**
  * POST /api/projects
  * Cria um novo projeto
  */
@@ -165,13 +279,14 @@ exports.createProject = async (req, res) => {
       title,
       description,
       category,
+      status = 'active',
       imageUrl,
       progress = 0,
       completionDate,
       metrics = {}
     } = req.body;
     
-    // Validações
+    // Validações obrigatórias
     if (!title || !description || !category) {
       return res.status(400).json({
         success: false,
@@ -179,10 +294,21 @@ exports.createProject = async (req, res) => {
       });
     }
     
+    // Validar categoria
     if (!isValidCategory(category)) {
       return res.status(400).json({
         success: false,
-        error: 'Categoria inválida. Use: solutions, progress ou impact'
+        error: 'Categoria inválida',
+        validCategories: VALID_CATEGORIES
+      });
+    }
+    
+    // Validar status
+    if (!isValidStatus(status)) {
+      return res.status(400).json({
+        success: false,
+        error: 'Status inválido',
+        validStatuses: VALID_STATUSES
       });
     }
     
@@ -190,11 +316,15 @@ exports.createProject = async (req, res) => {
     const projectData = {
       title,
       description,
-      category,
+      category,              // Área de atuação
+      status,                // Status do projeto
       imageUrl: imageUrl || '',
       progress: parseInt(progress),
       completionDate: completionDate || null,
-      metrics,
+      metrics: {
+        livesImpacted: parseInt(metrics.livesImpacted) || 0,
+        volunteersInvolved: parseInt(metrics.volunteersInvolved) || 0
+      },
       isPublished: true,
       createdAt: new Date(),
       updatedAt: new Date()
@@ -243,7 +373,17 @@ exports.updateProject = async (req, res) => {
     if (updateData.category && !isValidCategory(updateData.category)) {
       return res.status(400).json({
         success: false,
-        error: 'Categoria inválida'
+        error: 'Categoria inválida',
+        validCategories: VALID_CATEGORIES
+      });
+    }
+    
+    // Validar status se estiver sendo atualizado
+    if (updateData.status && !isValidStatus(updateData.status)) {
+      return res.status(400).json({
+        success: false,
+        error: 'Status inválido',
+        validStatuses: VALID_STATUSES
       });
     }
     
@@ -322,15 +462,21 @@ exports.updateProgress = async (req, res) => {
       });
     }
     
+    // Atualizar status automaticamente baseado no progresso
+    let status = 'active';
+    if (progress === 0) status = 'planned';
+    if (progress >= 90) status = 'completed';
+    
     await projectsCollection.doc(id).update({
       progress,
+      status,
       updatedAt: new Date()
     });
     
     res.json({
       success: true,
       message: 'Progresso atualizado!',
-      data: { id, progress }
+      data: { id, progress, status }
     });
     
   } catch (error) {
@@ -341,4 +487,34 @@ exports.updateProgress = async (req, res) => {
       message: error.message
     });
   }
+};
+
+/**
+ * GET /api/projects/categories
+ * Retorna lista de categorias válidas
+ */
+exports.getCategories = async (req, res) => {
+  res.json({
+    success: true,
+    data: VALID_CATEGORIES.map(cat => ({
+      id: cat,
+      name: cat.split('-').map(word => 
+        word.charAt(0).toUpperCase() + word.slice(1)
+      ).join(' ')
+    }))
+  });
+};
+
+/**
+ * GET /api/projects/statuses
+ * Retorna lista de status válidos
+ */
+exports.getStatuses = async (req, res) => {
+  res.json({
+    success: true,
+    data: VALID_STATUSES.map(st => ({
+      id: st,
+      name: st.charAt(0).toUpperCase() + st.slice(1)
+    }))
+  });
 };

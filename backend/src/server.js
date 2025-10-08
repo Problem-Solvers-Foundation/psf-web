@@ -11,6 +11,7 @@ require('dotenv').config();
 const projectRoutes = require('./routes/projects');
 const blogRoutes = require('./routes/blog');
 const authRoutes = require('./routes/auth');
+const statsRoutes = require('./routes/stats');
 
 // Criar aplicação Express
 const app = express();
@@ -27,7 +28,7 @@ app.use(cors());
 app.use(express.json());
 
 // Middleware para log de requisições (útil para debug)
-app.use((req, res, next) => {
+app.use((req, _res, next) => {
   console.log(`📥 ${req.method} ${req.path}`);
   next();
 });
@@ -37,14 +38,15 @@ app.use((req, res, next) => {
 // ===============================
 
 // Rota de teste
-app.get('/', (req, res) => {
+app.get('/', (_req, res) => {
   res.json({
     message: '🚀 API Problem Solver Foundation',
     version: '1.0.0',
     endpoints: {
       projects: '/api/projects',
       blog: '/api/blog',
-      auth: '/api/auth'
+      auth: '/api/auth',
+      stats: '/api/stats'
     }
   });
 });
@@ -53,6 +55,7 @@ app.get('/', (req, res) => {
 app.use('/api/projects', projectRoutes);
 app.use('/api/blog', blogRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/stats', statsRoutes);
 
 // ===============================
 // TRATAMENTO DE ERROS
@@ -67,7 +70,7 @@ app.use((req, res) => {
 });
 
 // Erro geral do servidor
-app.use((err, req, res, next) => {
+app.use((err, _req, res, _next) => {
   console.error('❌ Erro:', err);
   res.status(500).json({
     error: 'Erro interno do servidor',
