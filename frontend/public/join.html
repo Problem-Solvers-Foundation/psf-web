@@ -15,9 +15,7 @@
                         "background-light": "#f6f7f8",
                         "background-dark": "#101a22",
                     },
-                    fontFamily: {
-                        "display": ["Newsreader", "sans-serif"]
-                    },
+                    
                     borderRadius: {
                         "DEFAULT": "0.25rem",
                         "lg": "0.5rem",
@@ -39,30 +37,30 @@
 </head>
 <body class="bg-background-light dark:bg-background-dark font-display text-gray-800 dark:text-gray-300">
 <div class="min-h-screen flex flex-col">
-<header class="border-b border-gray-200 dark:border-gray-700/50">
-<div class="container mx-auto px-4 sm:px-6 lg:px-8">
-<div class="flex items-center justify-between h-16">
-<div class="flex items-center gap-4">
-<div class="w-6 h-6 text-primary">
-<svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-<path clip-rule="evenodd" d="M24 4H42V17.3333V30.6667H24V44H6V30.6667V17.3333H24V4Z" fill="currentColor" fill-rule="evenodd"></path>
+<header class="sticky top-0 z-10 flex items-center justify-between whitespace-nowrap border-b border-border-light dark:border-border-dark bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm px-4 md:px-10 py-4">
+<div class="flex items-center gap-3">
+<div class="text-primary size-7">
+<svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M12.0799 24L4 19.2479L9.95537 8.75216L18.04 13.4961L18.0446 4H29.9554L29.96 13.4961L38.0446 8.75216L44 19.2479L35.92 24L44 28.7521L38.0446 39.2479L29.96 34.5039L29.9554 44H18.0446L18.04 34.5039L9.95537 39.2479L4 28.7521L12.0799 24Z" fill="currentColor" fill-rule="evenodd"></path>
 </svg>
 </div>
-<h1 class="text-xl font-bold text-gray-900 dark:text-white">Problem Solvers Foundation</h1>
+<h2 class="text-lg font-bold">Problem Solver Foundation</h2>
 </div>
-<nav class="hidden md:flex items-center gap-8 text-sm font-medium">
-<a class="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors" href="#">About</a>
-<a class="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors" href="#">Community</a>
-<a class="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors" href="#">Events</a>
-<a class="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors" href="#">Resources</a>
+<nav class="hidden md:flex items-center gap-6">
+<a class="text-sm font-medium hover:text-primary transition-colors" href="index.html">Home</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="solutions-dynamic.html">Solutions</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="impact-dynamic.html">Impact</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="blog.html">Blog</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="about.html">About</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="contact.html">Contact</a>
 </nav>
 <div class="flex items-center gap-4">
-<button class="bg-primary text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-primary/90 transition-colors">
-                        Join
-                    </button>
-<div class="w-10 h-10 rounded-full bg-cover bg-center" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAsRm4SYuwzzJ07SjLvZcXcvJmoa6PtR4uSPbXMgcdJ_SH7Jq2PeP8_dWgNCzcRI8HtctMkSg3vlHAuVoMYkdAJCXdPAtMY2-bhqoeJ6pRv4yXMrwPNAcWtGMpTJch28VljSlUf2NnWlQhRZBUhdIjXMA2VTzx7g4Vl59LWGDKp4nQnn2z2XcY3-cqckZ2leo4QRp8oBz6ha8zYp00JUpbiJQ9fQsMH-tSpADMEd4axIiBW4LkHf_V7BCllAU6Vg9rZZxwdfAtPvPy0");'></div>
-</div>
-</div>
+<button onclick="location.href='join-options.html'" class="bg-primary text-white rounded-lg h-10 px-4 text-sm font-bold hover:bg-opacity-90 transition-all">
+<span class="truncate">Join</span>
+</button>
+<button class="md:hidden p-2 rounded-lg hover:bg-primary/10">
+<span class="material-symbols-outlined">menu</span>
+</button>
 </div>
 </header>
 <main class="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">

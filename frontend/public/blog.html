@@ -6,52 +6,79 @@
 <title>Stitch Design</title>
 <link href="data:image/x-icon;base64," rel="icon" type="image/x-icon"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<script>
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            colors: {
-              primary: "#117dd4",
-              "background-light": "#f6f7f8",
-              "background-dark": "#101a22",
-            },
-            fontFamily: {
-              display: ["Newsreader"],
-            },
-            borderRadius: { DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px" },
+<style type="text/tailwindcss">
+    @layer utilities {
+      .material-symbols-outlined {
+        font-variation-settings:
+          'FILL' 0,
+          'wght' 400,
+          'GRAD' 0,
+          'opsz' 24;
+      }
+    }
+  </style>
+<link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#117dd4",
+            "background-light": "#f6f7f8",
+            "background-dark": "#101a22",
+            "text-light": "#101a22",
+            "text-dark": "#f6f7f8",
+            "surface-light": "#ffffff",
+            "surface-dark": "#1b2733",
+            "border-light": "#e7eef3",
+            "border-dark": "#2a3b4c",
+            "muted-light": "#4c779a",
+            "muted-dark": "#a0b3c4"
+          },
+          fontFamily: {
+            "display": ["Inter", "sans-serif"]
+          },
+          borderRadius: {
+            "DEFAULT": "0.5rem",
+            "lg": "0.75rem",
+            "xl": "1rem",
+            "full": "9999px"
           },
         },
-      };
-    </script>
+      },
+    }
+  </script>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
 </head>
 <body class="font-display bg-background-light dark:bg-background-dark text-black dark:text-white">
 <div class="flex min-h-screen flex-col">
-<header class="sticky top-0 z-10 flex items-center justify-between whitespace-nowrap border-b border-primary/20 bg-background-light bg-opacity-80 px-4 py-3 backdrop-blur-sm dark:bg-background-dark dark:bg-opacity-80 md:px-10">
-<div class="flex items-center gap-4">
-<svg class="h-6 w-6 text-primary" fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<header class="sticky top-0 z-10 flex items-center justify-between whitespace-nowrap border-b border-border-light dark:border-border-dark bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm px-4 md:px-10 py-4">
+<div class="flex items-center gap-3">
+<div class="text-primary size-7">
+<svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
 <path clip-rule="evenodd" d="M12.0799 24L4 19.2479L9.95537 8.75216L18.04 13.4961L18.0446 4H29.9554L29.96 13.4961L38.0446 8.75216L44 19.2479L35.92 24L44 28.7521L38.0446 39.2479L29.96 34.5039L29.9554 44H18.0446L18.04 34.5039L9.95537 39.2479L4 28.7521L12.0799 24Z" fill="currentColor" fill-rule="evenodd"></path>
 </svg>
+</div>
 <h2 class="text-lg font-bold">Problem Solver Foundation</h2>
 </div>
-<div class="hidden items-center gap-6 md:flex">
-<a class="text-sm font-medium text-black/70 hover:text-primary dark:text-white/70 dark:hover:text-primary" href="#">Home</a>
-<a class="text-sm font-medium text-black/70 hover:text-primary dark:text-white/70 dark:hover:text-primary" href="#">Solutions</a>
-<a class="text-sm font-medium text-black/70 hover:text-primary dark:text-white/70 dark:hover:text-primary" href="#">Progress</a>
-<a class="text-sm font-medium text-black/70 hover:text-primary dark:text-white/70 dark:hover:text-primary" href="#">Impact</a>
-<a class="text-sm font-medium text-primary" href="#">Blog</a>
-<a class="text-sm font-medium text-black/70 hover:text-primary dark:text-white/70 dark:hover:text-primary" href="#">About</a>
-<a class="text-sm font-medium text-black/70 hover:text-primary dark:text-white/70 dark:hover:text-primary" href="#">Contact</a>
-</div>
-<div class="flex items-center gap-2">
-<button class="hidden h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary hover:bg-primary/20 dark:bg-primary/20 dark:hover:bg-primary/30 md:flex">
-<span class="material-symbols-outlined"> search </span>
+<nav class="hidden md:flex items-center gap-6">
+<a class="text-sm font-medium hover:text-primary transition-colors" href="index.html">Home</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="solutions.html">Solutions</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="impact-dynamic.html">Impact</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="blog.html">Blog</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="about.html">About</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="contact.html">Contact</a>
+</nav>
+<div class="flex items-center gap-4">
+<button onclick="location.href='join-options.html'" class="bg-primary text-white rounded-lg h-10 px-4 text-sm font-bold hover:bg-opacity-90 transition-all">
+<span class="truncate">Join</span>
 </button>
-<button class="h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary hover:bg-primary/20 dark:bg-primary/20 dark:hover:bg-primary/30 md:hidden flex">
-<span class="material-symbols-outlined"> menu </span>
+<button class="md:hidden p-2 rounded-lg hover:bg-primary/10">
+<span class="material-symbols-outlined">menu</span>
 </button>
-<div class="h-10 w-10 rounded-full bg-cover bg-center" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuACgGxTKD77ObSBEVBFbBGAJ5ZP3KWZKrpL1qva7WgWM-Bj9MmdkwI4ely4coEnATbhHKtKf4hISBktGAX7AI0PFv_NUGeTbP17eoZHqwAZ8YhSuSC6Mucsww__j-tSmZ0lVgYFWw6wJjxvzWLoBntJwc9sQfmPbht9RqJR3mOw4BleHpvoGntrzAKNna1FDj9L-GVhU6EbxkwZ-7E0RdVmprB_AC8IUoyVgfeidVcLfZ9l6Uhtgk9Gbd-pWgWRFs0Li8_5Sj9vNM_1");'></div>
 </div>
 </header>
 <main class="container mx-auto flex-1 px-4 py-8 md:px-10 md:py-16">

@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Dashboard - Problem Solver Foundation</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          primary: "#117dd4",
+          "background-light": "#f6f7f8",
+          "background-dark": "#101a22",
+        },
+        fontFamily: {
+          display: ["Inter", "sans-serif"],
+        },
+      },
+    },
+  };
+</script>
+<link rel="stylesheet" href="../assets/css/custom.css"/>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display">
+
+<div class="flex min-h-screen">
+  <!-- Sidebar -->
+  <aside class="w-64 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800">
+    <div class="flex flex-col h-full">
+      <!-- Logo -->
+      <div class="flex items-center gap-3 p-6 border-b border-gray-200 dark:border-gray-800">
+        <svg class="h-8 w-8 text-primary" fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+          <path clip-rule="evenodd" d="M12.0799 24L4 19.2479L9.95537 8.75216L18.04 13.4961L18.0446 4H29.9554L29.96 13.4961L38.0446 8.75216L44 19.2479L35.92 24L44 28.7521L38.0446 39.2479L29.96 34.5039L29.9554 44H18.0446L18.04 34.5039L9.95537 39.2479L4 28.7521L12.0799 24Z" fill="currentColor" fill-rule="evenodd"></path>
+        </svg>
+        <div>
+          <h1 class="text-lg font-bold text-gray-900 dark:text-white">PSF</h1>
+          <p class="text-xs text-gray-500">Dashboard</p>
+        </div>
+      </div>
+
+      <!-- Navigation -->
+      <nav class="flex-1 p-4 space-y-2">
+        <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg bg-primary/10 text-primary font-medium">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+          </svg>
+          Overview
+        </a>
+        <a href="projects.html" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          Projects
+        </a>
+        <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+          </svg>
+          Blog
+        </a>
+        <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+          Volunteers
+        </a>
+      </nav>
+
+      <!-- User -->
+      <div class="p-4 border-t border-gray-200 dark:border-gray-800">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-bold">
+            A
+          </div>
+          <div class="flex-1">
+            <p class="text-sm font-medium text-gray-900 dark:text-white">Admin</p>
+            <p class="text-xs text-gray-500">admin@psf.org</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="flex-1 overflow-auto">
+    <!-- Header -->
+    <header class="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 px-8 py-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Dashboard Overview</h2>
+          <p class="text-sm text-gray-500 mt-1">Welcome back! Here's what's happening with your projects.</p>
+        </div>
+        <button onclick="location.href='../public/index.html'" class="px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700">
+          View Site
+        </button>
+      </div>
+    </header>
+
+    <!-- Stats -->
+    <div class="p-8">
+      <!-- Cards Grid -->
+      <div id="stats-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <!-- Stats will be loaded here -->
+      </div>
+
+      <!-- Recent Projects -->
+      <div class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 p-6">
+        <div class="flex items-center justify-between mb-6">
+          <h3 class="text-lg font-bold text-gray-900 dark:text-white">Recent Projects</h3>
+          <a href="projects.html" class="text-sm font-medium text-primary hover:underline">View All →</a>
+        </div>
+        <div id="recent-projects" class="space-y-4">
+          <!-- Projects will be loaded here -->
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+        <a href="projects.html?action=new" class="block p-6 bg-primary/10 dark:bg-primary/20 rounded-lg border-2 border-dashed border-primary hover:bg-primary/20 dark:hover:bg-primary/30 transition-colors">
+          <svg class="w-8 h-8 text-primary mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+          </svg>
+          <p class="text-center font-medium text-primary">Create New Project</p>
+        </a>
+        
+        <a href="#" class="block p-6 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+          <svg class="w-8 h-8 text-gray-600 dark:text-gray-400 mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          <p class="text-center font-medium text-gray-700 dark:text-gray-300">Write Blog Post</p>
+        </a>
+        
+        <a href="#" class="block p-6 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+          <svg class="w-8 h-8 text-gray-600 dark:text-gray-400 mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 00-2-2m0 0h2a2 2 0 012 2v6a2 2 0 01-2 2h-2a2 2 0 01-2-2v-6z" />
+          </svg>
+          <p class="text-center font-medium text-gray-700 dark:text-gray-300">View Analytics</p>
+        </a>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Scripts -->
+<script src="../assets/js/config.js"></script>
+<script src="../assets/js/utils.js"></script>
+<script src="../assets/js/projects.js"></script>
+
+<script>
+  // Load dashboard data
+  document.addEventListener('DOMContentLoaded', async () => {
+    await loadStats();
+    await loadRecentProjects();
+  });
+
+  // Load statistics
+  async function loadStats() {
+    try {
+      const response = await ProjectsAPI.getAll();
+      
+      if (!response.success || !response.data) return;
+      
+      const projects = response.data;
+      
+      // Calculate stats
+      const totalProjects = projects.length;
+      const totalLives = projects.reduce((sum, p) => sum + (p.metrics?.livesImpacted || 0), 0);
+      const totalVolunteers = projects.reduce((sum, p) => sum + (p.metrics?.volunteersInvolved || 0), 0);
+      const avgProgress = Math.round(projects.reduce((sum, p) => sum + (p.progress || 0), 0) / totalProjects);
+      
+      // Display stats
+      document.getElementById('stats-grid').innerHTML = `
+        <div class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 p-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total Projects</p>
+              <p class="text-3xl font-bold text-gray-900 dark:text-white mt-2">${totalProjects}</p>
+            </div>
+            <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center">
+              <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+            </div>
+          </div>
+          <p class="text-xs text-green-600 dark:text-green-400 mt-2">↑ Active projects</p>
+        </div>
+        
+        <div class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 p-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Lives Impacted</p>
+              <p class="text-3xl font-bold text-gray-900 dark:text-white mt-2">${Utils.formatNumber(totalLives)}</p>
+            </div>
+            <div class="w-12 h-12 bg-green-100 dark:bg-green-900/20 rounded-lg flex items-center justify-center">
+              <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+              </svg>
+            </div>
+          </div>
+          <p class="text-xs text-green-600 dark:text-green-400 mt-2">↑ Growing impact</p>
+        </div>
+        
+        <div class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 p-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Volunteers</p>
+              <p class="text-3xl font-bold text-gray-900 dark:text-white mt-2">${Utils.formatNumber(totalVolunteers)}</p>
+            </div>
+            <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/20 rounded-lg flex items-center justify-center">
+              <svg class="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </div>
+          </div>
+          <p class="text-xs text-green-600 dark:text-green-400 mt-2">↑ Active contributors</p>
+        </div>
+        
+        <div class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 p-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Avg Progress</p>
+              <p class="text-3xl font-bold text-gray-900 dark:text-white mt-2">${avgProgress}%</p>
+            </div>
+            <div class="w-12 h-12 bg-orange-100 dark:bg-orange-900/20 rounded-lg flex items-center justify-center">
+              <svg class="w-6 h-6 text-orange-600 dark:text-orange-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+              </svg>
+            </div>
+          </div>
+          <p class="text-xs text-orange-600 dark:text-orange-400 mt-2">Overall completion</p>
+        </div>
+      `;
+      
+    } catch (error) {
+      console.error('Error loading stats:', error);
+    }
+  }
+
+  // Load recent projects
+  async function loadRecentProjects() {
+    try {
+      const response = await ProjectsAPI.getAll();
+      
+      if (!response.success || !response.data) return;
+      
+      // Get 5 most recent
+      const recent = response.data.slice(0, 5);
+      
+      const html = recent.map(project => `
+        <div class="flex items-center justify-between p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+          <div class="flex items-center gap-4 flex-1">
+            <img src="${project.imageUrl || 'https://via.placeholder.com/60'}" 
+                 alt="${project.title}" 
+                 class="w-12 h-12 rounded-lg object-cover"
+                 onerror="this.src='https://via.placeholder.com/60'"/>
+            <div class="flex-1">
+              <h4 class="font-medium text-gray-900 dark:text-white">${project.title}</h4>
+              <p class="text-sm text-gray-500 mt-1">
+                <span class="inline-block px-2 py-0.5 rounded text-xs font-medium bg-${project.category === 'solutions' ? 'blue' : project.category === 'progress' ? 'yellow' : 'green'}-100 text-${project.category === 'solutions' ? 'blue' : project.category === 'progress' ? 'yellow' : 'green'}-800">
+                  ${project.category}
+                </span>
+              </p>
+            </div>
+          </div>
+          <div class="flex items-center gap-4">
+            <div class="text-right">
+              <p class="text-sm font-medium text-gray-900 dark:text-white">${project.progress}%</p>
+              <p class="text-xs text-gray-500">Progress</p>
+            </div>
+            <a href="projects.html?edit=${project.id}" class="text-primary hover:text-primary-dark">
+              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+              </svg>
+            </a>
+          </div>
+        </div>
+      `).join('');
+      
+      document.getElementById('recent-projects').innerHTML = html;
+      
+    } catch (error) {
+      console.error('Error loading recent projects:', error);
+    }
+  }
+</script>
+
+</body>
+</html>

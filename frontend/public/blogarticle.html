@@ -1,168 +1,206 @@
 <!DOCTYPE html>
-<html lang="en"><head>
+<html lang="pt-BR">
+<head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>The Future of Problem Solving - Problem Solver Foundation</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&display=swap" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries,typography"></script>
+<style>
+  * {
+    scroll-behavior: smooth;
+  }
+  
+  
+</style>
 <script>
-    tailwind.config = {
-      darkMode: "class",
-      theme: {
-        extend: {
-          colors: {
-            "primary": "#117dd4",
-            "background-light": "#f6f7f8",
-            "background-dark": "#101a22",
-          },
-          fontFamily: {
-            "display": ["Newsreader", "serif"]
-          },
-          borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "primary": "#117dd4",
+          "background-light": "#f6f7f8",
+          "background-dark": "#101a22",
         },
+        borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
       },
-    }
-  </script>
+    },
+  }
+</script>
 </head>
-<body class="bg-background-light dark:bg-background-dark font-display text-slate-800 dark:text-slate-300">
+<body class="bg-background-light dark:bg-background-dark text-slate-800 dark:text-slate-300">
+
+<!-- Barra de progresso -->
 <div class="fixed top-0 left-0 right-0 h-1 bg-primary/20 z-50">
-<div class="h-1 bg-primary" style="width: 30%;"></div>
+  <div id="progressBar" class="h-1 bg-primary transition-all duration-150" style="width: 0%;"></div>
 </div>
+
 <div class="relative min-h-screen">
-<header class="sticky top-0 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm z-40 border-b border-slate-200 dark:border-slate-800">
-<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-<div class="flex items-center justify-between h-16">
-<div class="flex items-center gap-4">
-<div class="flex-shrink-0 text-primary">
-<svg class="h-8 w-8" fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+  <!-- Header -->
+  <header class="sticky top-0 z-10 flex items-center justify-between whitespace-nowrap border-b border-border-light dark:border-border-dark bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm px-4 md:px-10 py-4">
+<div class="flex items-center gap-3">
+<div class="text-primary size-7">
+<svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
 <path clip-rule="evenodd" d="M12.0799 24L4 19.2479L9.95537 8.75216L18.04 13.4961L18.0446 4H29.9554L29.96 13.4961L38.0446 8.75216L44 19.2479L35.92 24L44 28.7521L38.0446 39.2479L29.96 34.5039L29.9554 44H18.0446L18.04 34.5039L9.95537 39.2479L4 28.7521L12.0799 24Z" fill="currentColor" fill-rule="evenodd"></path>
 </svg>
 </div>
-<h1 class="text-xl font-bold text-slate-900 dark:text-white">Problem Solver Foundation</h1>
+<h2 class="text-lg font-bold">Problem Solver Foundation</h2>
 </div>
 <nav class="hidden md:flex items-center gap-6">
-<a class="text-base font-medium text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-primary" href="#">Home</a>
-<a class="text-base font-medium text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-primary" href="#">Solutions</a>
-<a class="text-base font-medium text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-primary" href="#">Progress</a>
-<a class="text-base font-medium text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-primary" href="#">Impact</a>
-<a class="text-base font-medium text-primary dark:text-primary" href="#">Blog</a>
-<a class="text-base font-medium text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-primary" href="#">About</a>
-<a class="text-base font-medium text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-primary" href="#">Contact</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="index.html">Home</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="solutions.html">Solutions</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="impact-dynamic.html">Impact</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="blog.html">Blog</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="about.html">About</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="contact.html">Contact</a>
 </nav>
 <div class="flex items-center gap-4">
-<div class="hidden md:block">
-<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCbt7j8znSwqSO21_QfUp440wQLIUOWzhp0wDGUaPO19rTAQVih5T6prGp_r1RpmEdaZyGg6mFOQtRO6pNag3uICUubyIbhko1r2YqgIiipXJgKkvj5lZ4q2jXv9sKr4IlmNMaqwQslvDETRS31hsikakfsprrYuoLRTlQx5H67y7U_lHVboGnwzYaeZD8tjP-xFHL_kFW-7h7ADZ-rfS0bVcxJXNl2kilIPXV_RwD_IaArDoPxRxfZbTBp9kbdERbVaeG-_2KPBYmw");'></div>
-</div>
-<button class="md:hidden flex items-center justify-center rounded-lg h-10 w-10 bg-primary/10 dark:bg-primary/20 text-slate-800 dark:text-slate-200">
-<svg fill="currentColor" height="24px" viewBox="0 0 256 256" width="24px" xmlns="http://www.w3.org/2000/svg">
-<path d="M224,128a8,8,0,0,1-8,8H40a8,8,0,0,1,0-16H216A8,8,0,0,1,224,128ZM40,72H216a8,8,0,0,0,0-16H40a8,8,0,0,0,0,16ZM216,184H40a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16Z"></path>
-</svg>
+<button onclick="location.href='join-options.html'" class="bg-primary text-white rounded-lg h-10 px-4 text-sm font-bold hover:bg-opacity-90 transition-all">
+<span class="truncate">Join</span>
 </button>
-</div>
-</div>
+<button class="md:hidden p-2 rounded-lg hover:bg-primary/10">
+<span class="material-symbols-outlined">menu</span>
+</button>
 </div>
 </header>
-<main class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
-<article class="prose prose-lg dark:prose-invert max-w-none prose-p:text-slate-800 dark:prose-p:text-slate-300 prose-headings:text-slate-900 dark:prose-headings:text-white prose-a:text-primary prose-strong:text-slate-900 dark:prose-strong:text-white">
-<div class="mb-8">
-<nav aria-label="Breadcrumb">
-<ol class="flex items-center space-x-2 text-base text-slate-500 dark:text-slate-400">
-<li><a class="hover:text-primary dark:hover:text-primary" href="#">Blog</a></li>
-<li>
-<svg aria-hidden="true" class="h-5 w-5 flex-shrink-0 text-slate-400 dark:text-slate-500" fill="currentColor" viewBox="0 0 20 20">
-<path clip-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" fill-rule="evenodd"></path>
-</svg>
-</li>
-<li><span class="text-slate-700 dark:text-slate-300">The Future of Problem Solving</span></li>
-</ol>
-</nav>
+
+  <!-- Main Content -->
+  <main class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
+    <article class="prose prose-lg dark:prose-invert max-w-none prose-p:text-slate-800 dark:prose-p:text-slate-300 prose-headings:text-slate-900 dark:prose-headings:text-white prose-a:text-primary prose-strong:text-slate-900 dark:prose-strong:text-white">
+      
+      <div class="mb-8">
+        <nav aria-label="Breadcrumb">
+          <ol class="flex items-center space-x-2 text-base text-slate-500 dark:text-slate-400">
+            <li><a class="hover:text-primary dark:hover:text-primary" href="#">Blog</a></li>
+            <li>
+              <svg aria-hidden="true" class="h-5 w-5 flex-shrink-0 text-slate-400 dark:text-slate-500" fill="currentColor" viewBox="0 0 20 20">
+                <path clip-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" fill-rule="evenodd"></path>
+              </svg>
+            </li>
+            <li><span class="text-slate-700 dark:text-slate-300">The Future of Problem Solving</span></li>
+          </ol>
+        </nav>
+      </div>
+
+      <header>
+        <h1 class="!text-4xl md:!text-5xl !font-bold !leading-tight !mb-4">The Future of Problem Solving</h1>
+        <p class="text-lg text-slate-500 dark:text-slate-400">
+          Published on January 15, 2024 · Written by Amelia Harper · 5 min read
+        </p>
+        <div class="mt-4 flex flex-wrap gap-2">
+          <span class="bg-primary/10 text-primary font-medium text-sm px-2.5 py-1 rounded-full">Innovation</span>
+          <span class="bg-primary/10 text-primary font-medium text-sm px-2.5 py-1 rounded-full">Strategy</span>
+        </div>
+      </header>
+
+      <figure class="my-12">
+        <img alt="Abstract representation of future technology" class="w-full h-auto rounded-lg shadow-lg" src="https://lh3.googleusercontent.com/aida-public/AB6AXuArRhutYwsfFOvJCxwmhdzotq899ihHFcJG4Fj2UjfA1XMnJ54qbFgKRsorYfCffN3fRczaf_t23HlwteAeczfx9EKG8QN-xvWF88JHbVZGkpqzYVqfyMiI5cQve6kA8Wf87ByonI2_3AnAH_YbjyMEa37uvA-30-qRc1W02L6hKYIxxqnZM_XSOBVRgJaowY-PmXMUjKcEnCCcuQf8ltDa8iq_FY7vaaMV_KluhA3WCqNDIukLq1f2jO-TFJgagbypLw6RIIjkyeSm"/>
+      </figure>
+
+      <p>In an era defined by rapid technological advancements and complex global challenges, the ability to solve problems effectively is more crucial than ever. This article explores the evolving landscape of problem-solving, examining emerging trends, innovative methodologies, and the skills needed to navigate the complexities of the future.</p>
+
+      <h2>The Rise of AI-Augmented Problem Solving</h2>
+      <p>Artificial intelligence (AI) is no longer a futuristic concept but a present reality that is transforming how we approach problem-solving. AI-powered tools can analyze vast datasets, identify patterns, and generate potential solutions with unprecedented speed and accuracy. However, the integration of AI also raises new challenges, such as ensuring algorithmic transparency, addressing ethical concerns, and adapting to new ways of working.</p>
+
+      <h2>Embracing Interdisciplinary Collaboration</h2>
+      <p>The problems of the future will rarely fit neatly into a single discipline. Effective problem-solving will require collaboration across diverse fields, bringing together experts from different backgrounds to leverage their unique perspectives and expertise. This interdisciplinary approach fosters creativity, innovation, and a more holistic understanding of complex issues.</p>
+
+      <h2>Cultivating Adaptability and Resilience</h2>
+      <p>In a world of constant change, adaptability and resilience are essential skills for problem-solvers. The ability to learn quickly, embrace new technologies, and bounce back from setbacks will be crucial for navigating uncertainty and finding solutions to unforeseen challenges. This requires a growth mindset, a willingness to experiment, and a commitment to continuous learning.</p>
+
+      <h2>The Human Element: Creativity and Critical Thinking</h2>
+      <p>While technology plays an increasingly important role, the human element remains central to effective problem-solving. Creativity, critical thinking, and emotional intelligence are uniquely human capabilities that cannot be easily replicated by machines. These skills enable us to identify novel solutions, evaluate complex information, and understand the human impact of our decisions.</p>
+
+      <div class="not-prose my-12 flex items-center justify-center gap-6 border-y border-slate-200 dark:border-slate-800 py-4">
+        <button class="flex items-center gap-2 text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors">
+          <svg fill="currentColor" height="24px" viewBox="0 0 256 256" width="24px" xmlns="http://www.w3.org/2000/svg"><path d="M178,32c-20.65,0-38.73,8.88-50,23.89C116.73,40.88,98.65,32,78,32A62.07,62.07,0,0,0,16,94c0,70,103.79,126.66,108.21,129a8,8,0,0,0,7.58,0C136.21,220.66,240,164,240,94A62.07,62.07,0,0,0,178,32ZM128,206.8C109.74,196.16,32,147.69,32,94A46.06,46.06,0,0,1,78,48c19.45,0,35.78,10.36,42.6,27a8,8,0,0,0,14.8,0c6.82-16.67,23.15-27,42.6-27a46.06,46.06,0,0,1,46,46C224,147.61,146.24,196.15,128,206.8Z"></path></svg>
+          <span class="font-bold">23</span>
+        </button>
+        <button class="flex items-center gap-2 text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors">
+          <svg fill="currentColor" height="24px" viewBox="0 0 256 256" width="24px" xmlns="http://www.w3.org/2000/svg"><path d="M140,128a12,12,0,1,1-12-12A12,12,0,0,1,140,128ZM84,116a12,12,0,1,0,12,12A12,12,0,0,0,84,116Zm88,0a12,12,0,1,0,12,12A12,12,0,0,0,172,116Zm60,12A104,104,0,0,1,79.12,219.82L45.07,231.17a16,16,0,0,1-20.24-20.24l11.35-34.05A104,104,0,1,1,232,128Zm-16,0A88,88,0,1,0,51.81,172.06a8,8,0,0,1,.66,6.54L40,216,77.4,203.53a7.85,7.85,0,0,1,2.53-.42,8,8,0,0,1,4,1.08A88,88,0,0,0,216,128Z"></path></svg>
+          <span class="font-bold">5</span>
+        </button>
+        <button class="flex items-center gap-2 text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors">
+          <svg fill="currentColor" height="24px" viewBox="0 0 256 256" width="24px" xmlns="http://www.w3.org/2000/svg"><path d="M184,32H72A16,16,0,0,0,56,48V224a8,8,0,0,0,12.24,6.78L128,193.43l59.77,37.35A8,8,0,0,0,200,224V48A16,16,0,0,0,184,32Zm0,177.57-51.77-32.35a8,8,0,0,0-8.48,0L72,209.57V48H184Z"></path></svg>
+          <span class="font-bold">12</span>
+        </button>
+      </div>
+    </article>
+
+    <div class="mt-20">
+      <h2 class="text-3xl font-bold mb-8 text-slate-900 dark:text-white">Next Article</h2>
+      <a class="block group p-6 rounded-lg bg-white dark:bg-slate-800/50 hover:shadow-xl border border-slate-200 dark:border-slate-700 transition-all duration-300" href="#">
+        <div class="flex flex-col md:flex-row items-start gap-6">
+          <div class="flex-grow">
+            <p class="text-primary font-semibold mb-1">Innovation</p>
+            <h3 class="text-2xl font-bold text-slate-900 dark:text-white group-hover:text-primary transition-colors">Design Thinking for Social Impact</h3>
+            <p class="mt-2 text-slate-600 dark:text-slate-400">Explore how design thinking principles can be applied to address complex social challenges and create positive change.</p>
+          </div>
+          <div class="flex-shrink-0 w-full md:w-48">
+            <img alt="" class="w-full h-auto object-cover rounded aspect-video" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCHfUw9MPc5vHEl3SHQX8bZKR9vX9v1dUhTczK5rBGDleHBtMEBt9SYw4zse5B9knaGx_wCPFjysjfUTv5oHeCyTZjvPamSulOJI1blWxVRiv4QcmjMKWlKeX7aTvhSjRPSTLdegve_l-bWj__1qOf-VHnz8ETenejdjmKFByWcOxYf--MWvcNA0VI9DvFUXEOX8Kt4NeAguyCqki9TCiqi6K4xz8Sno4cGdsEPXMuC66HVDVy83UWpfim9z-ufx4hhXpZEVRadPjC0"/>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <div class="mt-20 mb-20">
+      <h2 class="text-3xl font-bold mb-8 text-slate-900 dark:text-white">Related Articles</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+        <a class="group" href="#">
+          <div class="overflow-hidden rounded-lg">
+            <img alt="" class="w-full aspect-video object-cover group-hover:scale-105 transition-transform duration-300" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAWdkCrBJeFw79FWCxYtOMoYNg02Y186tK4xOyGXlUpAOIjDYF-yCqcGa9sLHlQIFy147Ux3KKI2990jP9Hq3T7kNJTRhgHO8sZZn5BfPx5DuqISGAr-d5tkuGCj2gCqqa4oF8v8U39muvlqJvQukft1oyTbE78XI5fxo0R5li9RZ_G9sCXZPv5DnCUEgx9qCK6QiWk6jztTI3-OiCKvK-7CQwJRgiKY3F21DP-rxblddXJNNztWZtqW1-mKrWuqoE-XBicxGzi4OET"/>
+          </div>
+          <div class="mt-4">
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white group-hover:text-primary transition-colors">The Art of Asking the Right Questions</h3>
+            <p class="mt-1 text-slate-500 dark:text-slate-400 text-base">Unlocking deeper insights through effective questioning.</p>
+          </div>
+        </a>
+        <a class="group" href="#">
+          <div class="overflow-hidden rounded-lg">
+            <img alt="" class="w-full aspect-video object-cover group-hover:scale-105 transition-transform duration-300" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCuaG1XUXkgJIh2V8v0OTG8FAahPDYimA2AIDPPWlI1kREq2LDATJtppQnwT08Zz66GjbyAP48w3DgMipCfXGBh11DizX7NFW2kwGuI1zi1btZDFTVhqPOVJtozpRwqQPnzgt7tK9Whgjb6L33mYCu3ljDwY9I0THVTTem_tn8xoSQkjT3-EcEPi4kfIT3j7M31voICTxGuMsDZxvTubpSD3i_3OGNnPUX-btdCgeXt17CiqLZu2rJoXAkJXQdMngznloWwqM9zKAP0"/>
+          </div>
+          <div class="mt-4">
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white group-hover:text-primary transition-colors">Building a Culture of Innovation</h3>
+            <p class="mt-1 text-slate-500 dark:text-slate-400 text-base">Fostering creativity and experimentation within organizations.</p>
+          </div>
+        </a>
+        <a class="group" href="#">
+          <div class="overflow-hidden rounded-lg">
+            <img alt="" class="w-full aspect-video object-cover group-hover:scale-105 transition-transform duration-300" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDIQs_QmIyN64OnZghx0bvkvjIxJnh9g1jPyTVOaB_MiMG6ceD7Tqu4sfzU-3A9oVko-1EybC9NzuxVbclEc6a47I-MdnLySOnFDHqGyYorARQwVtQ6gm25cSGeDhpAhl-67pGoP4x5Vdr_xVbaLvmW-lrnXtOFZ43SpeoWy4I4-ThzY4ZWeDG8p0ti7h-YddyXVtLwJBjKV11pjisnj7mIUSxYYZa9TF_oWFOYN_i2rEhg73PFAnzJg4zH87K11MaG3K4t6E4bezL9"/>
+          </div>
+          <div class="mt-4">
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white group-hover:text-primary transition-colors">Navigating the Digital Transformation</h3>
+            <p class="mt-1 text-slate-500 dark:text-slate-400 text-base">Adapting to the rapid pace of technological change.</p>
+          </div>
+        </a>
+      </div>
+    </div>
+  </main>
 </div>
-<header>
-<h1 class="!text-4xl md:!text-5xl !font-bold !leading-tight !mb-4">The Future of Problem Solving</h1>
-<p class="text-lg text-slate-500 dark:text-slate-400">
-            Published on January 15, 2024 · Written by Amelia Harper · 5 min read
-          </p>
-<div class="mt-4 flex flex-wrap gap-2">
-<span class="bg-primary/10 text-primary font-medium text-sm px-2.5 py-1 rounded-full">Innovation</span>
-<span class="bg-primary/10 text-primary font-medium text-sm px-2.5 py-1 rounded-full">Strategy</span>
-</div>
-</header>
-<figure class="my-12">
-<img alt="Abstract representation of future technology" class="w-full h-auto rounded-lg shadow-lg" src="https://lh3.googleusercontent.com/aida-public/AB6AXuArRhutYwsfFOvJCxwmhdzotq899ihHFcJG4Fj2UjfA1XMnJ54qbFgKRsorYfCffN3fRczaf_t23HlwteAeczfx9EKG8QN-xvWF88JHbVZGkpqzYVqfyMiI5cQve6kA8Wf87ByonI2_3AnAH_YbjyMEa37uvA-30-qRc1W02L6hKYIxxqnZM_XSOBVRgJaowY-PmXMUjKcEnCCcuQf8ltDa8iq_FY7vaaMV_KluhA3WCqNDIukLq1f2jO-TFJgagbypLw6RIIjkyeSm"/>
-</figure>
-<p>In an era defined by rapid technological advancements and complex global challenges, the ability to solve problems effectively is more crucial than ever. This article explores the evolving landscape of problem-solving, examining emerging trends, innovative methodologies, and the skills needed to navigate the complexities of the future.</p>
-<h2>The Rise of AI-Augmented Problem Solving</h2>
-<p>Artificial intelligence (AI) is no longer a futuristic concept but a present reality that is transforming how we approach problem-solving. AI-powered tools can analyze vast datasets, identify patterns, and generate potential solutions with unprecedented speed and accuracy. However, the integration of AI also raises new challenges, such as ensuring algorithmic transparency, addressing ethical concerns, and adapting to new ways of working.</p>
-<h2>Embracing Interdisciplinary Collaboration</h2>
-<p>The problems of the future will rarely fit neatly into a single discipline. Effective problem-solving will require collaboration across diverse fields, bringing together experts from different backgrounds to leverage their unique perspectives and expertise. This interdisciplinary approach fosters creativity, innovation, and a more holistic understanding of complex issues.</p>
-<h2>Cultivating Adaptability and Resilience</h2>
-<p>In a world of constant change, adaptability and resilience are essential skills for problem-solvers. The ability to learn quickly, embrace new technologies, and bounce back from setbacks will be crucial for navigating uncertainty and finding solutions to unforeseen challenges. This requires a growth mindset, a willingness to experiment, and a commitment to continuous learning.</p>
-<h2>The Human Element: Creativity and Critical Thinking</h2>
-<p>While technology plays an increasingly important role, the human element remains central to effective problem-solving. Creativity, critical thinking, and emotional intelligence are uniquely human capabilities that cannot be easily replicated by machines. These skills enable us to identify novel solutions, evaluate complex information, and understand the human impact of our decisions.</p>
-<div class="not-prose my-12 flex items-center justify-center gap-6 border-y border-slate-200 dark:border-slate-800 py-4">
-<button class="flex items-center gap-2 text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors">
-<svg fill="currentColor" height="24px" viewBox="0 0 256 256" width="24px" xmlns="http://www.w3.org/2000/svg"><path d="M178,32c-20.65,0-38.73,8.88-50,23.89C116.73,40.88,98.65,32,78,32A62.07,62.07,0,0,0,16,94c0,70,103.79,126.66,108.21,129a8,8,0,0,0,7.58,0C136.21,220.66,240,164,240,94A62.07,62.07,0,0,0,178,32ZM128,206.8C109.74,196.16,32,147.69,32,94A46.06,46.06,0,0,1,78,48c19.45,0,35.78,10.36,42.6,27a8,8,0,0,0,14.8,0c6.82-16.67,23.15-27,42.6-27a46.06,46.06,0,0,1,46,46C224,147.61,146.24,196.15,128,206.8Z"></path></svg>
-<span class="font-bold">23</span>
-</button>
-<button class="flex items-center gap-2 text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors">
-<svg fill="currentColor" height="24px" viewBox="0 0 256 256" width="24px" xmlns="http://www.w3.org/2000/svg"><path d="M140,128a12,12,0,1,1-12-12A12,12,0,0,1,140,128ZM84,116a12,12,0,1,0,12,12A12,12,0,0,0,84,116Zm88,0a12,12,0,1,0,12,12A12,12,0,0,0,172,116Zm60,12A104,104,0,0,1,79.12,219.82L45.07,231.17a16,16,0,0,1-20.24-20.24l11.35-34.05A104,104,0,1,1,232,128Zm-16,0A88,88,0,1,0,51.81,172.06a8,8,0,0,1,.66,6.54L40,216,77.4,203.53a7.85,7.85,0,0,1,2.53-.42,8,8,0,0,1,4,1.08A88,88,0,0,0,216,128Z"></path></svg>
-<span class="font-bold">5</span>
-</button>
-<button class="flex items-center gap-2 text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors">
-<svg fill="currentColor" height="24px" viewBox="0 0 256 256" width="24px" xmlns="http://www.w3.org/2000/svg"><path d="M184,32H72A16,16,0,0,0,56,48V224a8,8,0,0,0,12.24,6.78L128,193.43l59.77,37.35A8,8,0,0,0,200,224V48A16,16,0,0,0,184,32Zm0,177.57-51.77-32.35a8,8,0,0,0-8.48,0L72,209.57V48H184Z"></path></svg>
-<span class="font-bold">12</span>
-</button>
-</div>
-</article>
-<div class="mt-20">
-<h2 class="text-3xl font-bold mb-8 text-slate-900 dark:text-white">Next Article</h2>
-<a class="block group p-6 rounded-lg bg-background-light dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 hover:shadow-xl transition-all duration-300" href="#">
-<div class="flex flex-col md:flex-row items-start gap-6">
-<div class="flex-grow">
-<p class="text-primary font-semibold mb-1">Innovation</p>
-<h3 class="text-2xl font-bold text-slate-900 dark:text-white group-hover:text-primary transition-colors">Design Thinking for Social Impact</h3>
-<p class="mt-2 text-slate-600 dark:text-slate-400">Explore how design thinking principles can be applied to address complex social challenges and create positive change.</p>
-</div>
-<div class="flex-shrink-0 w-full md:w-48">
-<img alt="" class="w-full h-auto object-cover rounded aspect-video" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCHfUw9MPc5vHEl3SHQX8bZKR9vX9v1dUhTczK5rBGDleHBtMEBt9SYw4zse5B9knaGx_wCPFjysjfUTv5oHeCyTZjvPamSulOJI1blWxVRiv4QcmjMKWlKeX7aTvhSjRPSTLdegve_l-bWj__1qOf-VHnz8ETenejdjmKFByWcOxYf--MWvcNA0VI9DvFUXEOX8Kt4NeAguyCqki9TCiqi6K4xz8Sno4cGdsEPXMuC66HVDVy83UWpfim9z-ufx4hhXpZEVRadPjC0"/>
-</div>
-</div>
-</a>
-</div>
-<div class="mt-20">
-<h2 class="text-3xl font-bold mb-8 text-slate-900 dark:text-white">Related Articles</h2>
-<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-<a class="group" href="#">
-<div class="overflow-hidden rounded-lg">
-<img alt="" class="w-full aspect-video object-cover group-hover:scale-105 transition-transform duration-300" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAWdkCrBJeFw79FWCxYtOMoYNg02Y186tK4xOyGXlUpAOIjDYF-yCqcGa9sLHlQIFy147Ux3KKI2990jP9Hq3T7kNJTRhgHO8sZZn5BfPx5DuqISGAr-d5tkuGCj2gCqqa4oF8v8U39muvlqJvQukft1oyTbE78XI5fxo0R5li9RZ_G9sCXZPv5DnCUEgx9qCK6QiWk6jztTI3-OiCKvK-7CQwJRgiKY3F21DP-rxblddXJNNztWZtqW1-mKrWuqoE-XBicxGzi4OET"/>
-</div>
-<div class="mt-4">
-<h3 class="text-lg font-bold text-slate-900 dark:text-white group-hover:text-primary transition-colors">The Art of Asking the Right Questions</h3>
-<p class="mt-1 text-slate-500 dark:text-slate-400 text-base">Unlocking deeper insights through effective questioning.</p>
-</div>
-</a>
-<a class="group" href="#">
-<div class="overflow-hidden rounded-lg">
-<img alt="" class="w-full aspect-video object-cover group-hover:scale-105 transition-transform duration-300" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCuaG1XUXkgJIh2V8v0OTG8FAahPDYimA2AIDPPWlI1kREq2LDATJtppQnwT08Zz66GjbyAP48w3DgMipCfXGBh11DizX7NFW2kwGuI1zi1btZDFTVhqPOVJtozpRwqQPnzgt7tK9Whgjb6L33mYCu3ljDwY9I0THVTTem_tn8xoSQkjT3-EcEPi4kfIT3j7M31voICTxGuMsDZxvTubpSD3i_3OGNnPUX-btdCgeXt17CiqLZu2rJoXAkJXQdMngznloWwqM9zKAP0"/>
-</div>
-<div class="mt-4">
-<h3 class="text-lg font-bold text-slate-900 dark:text-white group-hover:text-primary transition-colors">Building a Culture of Innovation</h3>
-<p class="mt-1 text-slate-500 dark:text-slate-400 text-base">Fostering creativity and experimentation within organizations.</p>
-</div>
-</a>
-<a class="group" href="#">
-<div class="overflow-hidden rounded-lg">
-<img alt="" class="w-full aspect-video object-cover group-hover:scale-105 transition-transform duration-300" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDIQs_QmIyN64OnZghx0bvkvjIxJnh9g1jPyTVOaB_MiMG6ceD7Tqu4sfzU-3A9oVko-1EybC9NzuxVbclEc6a47I-MdnLySOnFDHqGyYorARQwVtQ6gm25cSGeDhpAhl-67pGoP4x5Vdr_xVbaLvmW-lrnXtOFZ43SpeoWy4I4-ThzY4ZWeDG8p0ti7h-YddyXVtLwJBjKV11pjisnj7mIUSxYYZa9TF_oWFOYN_i2rEhg73PFAnzJg4zH87K11MaG3K4t6E4bezL9"/>
-</div>
-<div class="mt-4">
-<h3 class="text-lg font-bold text-slate-900 dark:text-white group-hover:text-primary transition-colors">Navigating the Digital Transformation</h3>
-<p class="mt-1 text-slate-500 dark:text-slate-400 text-base">Adapting to the rapid pace of technological change.</p>
-</div>
-</a>
-</div>
-</div>
-</main>
-</div>
-</body></html>
+
+<script>
+  // Atualiza a barra de progresso conforme o usuário rola a página
+  function updateProgressBar() {
+    const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+    const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    const scrolled = (winScroll / height) * 100;
+    document.getElementById('progressBar').style.width = scrolled + '%';
+  }
+
+  // Adiciona o evento de scroll
+  window.addEventListener('scroll', updateProgressBar);
+
+  // Menu mobile (básico)
+  document.getElementById('menuBtn').addEventListener('click', function() {
+    alert('Menu mobile - Implemente conforme necessário');
+  });
+
+  // Inicializa a barra de progresso
+  updateProgressBar();
+</script>
+
+</body>
+</html>

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en"><head>
+<html lang="en">
+<head>
 <meta charset="utf-8"/>
 <title>Problem Solver Foundation</title>
 <link href="data:image/x-icon;base64," rel="icon" type="image/x-icon"/>
@@ -63,16 +64,15 @@
 <h2 class="text-lg font-bold">Problem Solver Foundation</h2>
 </div>
 <nav class="hidden md:flex items-center gap-6">
-<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Home</a>
-<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Solutions</a>
-<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Progress</a>
-<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Impact</a>
-<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Blog</a>
-<a class="text-sm font-medium hover:text-primary transition-colors" href="#">About</a>
-<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Contact</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="index.html">Home</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="solutions.html">Solutions</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="impact-dynamic.html">Impact</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="blog.html">Blog</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="about.html">About</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="contact.html">Contact</a>
 </nav>
 <div class="flex items-center gap-4">
-<button class="bg-primary text-white rounded-lg h-10 px-4 text-sm font-bold hover:bg-opacity-90 transition-all">
+<button onclick="location.href='join-options.html'" class="bg-primary text-white rounded-lg h-10 px-4 text-sm font-bold hover:bg-opacity-90 transition-all">
 <span class="truncate">Join</span>
 </button>
 <button class="md:hidden p-2 rounded-lg hover:bg-primary/10">
@@ -80,6 +80,7 @@
 </button>
 </div>
 </header>
+
 <main class="flex-1">
 <section class="w-full">
 <div class="container mx-auto px-4 py-16 sm:py-24 lg:py-32">
@@ -87,13 +88,14 @@
 <div class="max-w-3xl text-white">
 <h1 class="text-4xl md:text-6xl font-black tracking-tighter mb-4">Solving the World's Toughest Challenges</h1>
 <p class="text-lg md:text-xl mb-8 opacity-90">The Problem Solver Foundation is dedicated to addressing the most pressing global issues through innovative solutions and collaborative efforts.</p>
-<button class="bg-primary text-white rounded-lg h-12 px-6 text-base font-bold hover:bg-opacity-90 transition-all">
+<button onclick="location.href='about.html'" class="bg-primary text-white rounded-lg h-12 px-6 text-base font-bold hover:bg-opacity-90 transition-all">
 <span class="truncate">Learn More</span>
 </button>
 </div>
 </div>
 </div>
 </section>
+
 <section class="bg-surface-light dark:bg-surface-dark py-16 sm:py-24">
 <div class="container mx-auto px-4">
 <div class="text-center mb-12">
@@ -102,20 +104,21 @@
 </div>
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
 <div class="bg-background-light dark:bg-background-dark rounded-xl p-8 text-center shadow-sm">
-<p class="text-5xl font-black text-primary">150+</p>
-<p class="mt-2 text-lg font-medium">Projects Completed</p>
+<p id="stat-projects" class="text-5xl font-black text-primary">...</p>
+<p class="mt-2 text-lg font-medium">Total Projects</p>
 </div>
 <div class="bg-background-light dark:bg-background-dark rounded-xl p-8 text-center shadow-sm">
-<p class="text-5xl font-black text-primary">500K+</p>
+<p id="stat-lives" class="text-5xl font-black text-primary">...</p>
 <p class="mt-2 text-lg font-medium">Lives Improved</p>
 </div>
 <div class="bg-background-light dark:bg-background-dark rounded-xl p-8 text-center shadow-sm">
-<p class="text-5xl font-black text-primary">75+</p>
-<p class="mt-2 text-lg font-medium">Partnerships Formed</p>
+<p id="stat-volunteers" class="text-5xl font-black text-primary">...</p>
+<p class="mt-2 text-lg font-medium">Volunteers</p>
 </div>
 </div>
 </div>
 </section>
+
 <section class="py-16 sm:py-24">
 <div class="container mx-auto px-4">
 <div class="text-center mb-12">
@@ -147,18 +150,20 @@
 </div>
 </div>
 </section>
+
 <section class="bg-primary/10 dark:bg-primary/20">
 <div class="container mx-auto px-4 py-16 sm:py-24 text-center">
 <h2 class="text-3xl md:text-4xl font-black tracking-tight max-w-3xl mx-auto">Join Us in Making a Difference</h2>
 <p class="mt-4 text-lg text-muted-light dark:text-muted-dark max-w-2xl mx-auto">Your support can help us tackle more challenges and create lasting change around the globe.</p>
 <div class="mt-8">
-<button class="bg-primary text-white rounded-lg h-12 px-8 text-base font-bold hover:bg-opacity-90 transition-all">
+<button onclick="location.href='join.html'" class="bg-primary text-white rounded-lg h-12 px-8 text-base font-bold hover:bg-opacity-90 transition-all">
 <span class="truncate">Get Involved</span>
 </button>
 </div>
 </div>
 </section>
 </main>
+
 <footer class="bg-surface-light dark:bg-surface-dark border-t border-border-light dark:border-border-dark">
 <div class="container mx-auto px-4 py-8">
 <div class="flex flex-col md:flex-row justify-between items-center gap-6">
@@ -176,4 +181,10 @@
 </footer>
 </div>
 </div>
-</body></html>
+
+<!-- Scripts -->
+<script src="../assets/js/config.js"></script>
+<script src="../assets/js/utils.js"></script>
+<script src="../assets/js/home-stats.js"></script>
+</body>
+</html>
