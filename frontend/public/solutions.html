@@ -60,32 +60,37 @@
 <h1 class="text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white sm:text-5xl md:text-6xl">Explore Our Solutions</h1>
 <p class="mt-4 max-w-2xl mx-auto text-xl text-gray-500 dark:text-gray-400">Discover innovative approaches to tackle challenges across various domains.</p>
 </div>
-<div class="mt-20 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-<div class="group transform rounded-lg bg-white/5 p-6 transition-all duration-300 hover:scale-105 hover:bg-white/10 dark:bg-black/5 dark:hover:bg-black/10">
-<div class="flex h-16 w-16 items-center justify-center rounded-lg bg-primary/10 text-primary">
-<span class="material-symbols-outlined text-4xl">devices</span>
-</div>
-<h3 class="mt-6 text-xl font-bold text-gray-900 dark:text-white">Technology</h3>
-<p class="mt-2 text-base text-gray-500 dark:text-gray-400">Innovative tech solutions for modern challenges.</p>
-<a class="mt-6 inline-block text-sm font-semibold text-primary" href="#">Related Posts <span class="transition-transform group-hover:translate-x-1">→</span></a>
-</div>
-<div class="group transform rounded-lg bg-white/5 p-6 transition-all duration-300 hover:scale-105 hover:bg-white/10 dark:bg-black/5 dark:hover:bg-black/10">
-<div class="flex h-16 w-16 items-center justify-center rounded-lg bg-primary/10 text-primary">
-<span class="material-symbols-outlined text-4xl">rocket_launch</span>
-</div>
-<h3 class="mt-6 text-xl font-bold text-gray-900 dark:text-white">Productivity</h3>
-<p class="mt-2 text-base text-gray-500 dark:text-gray-400">Boost your efficiency and achieve more.</p>
-<a class="mt-6 inline-block text-sm font-semibold text-primary" href="#">Related Posts <span class="transition-transform group-hover:translate-x-1">→</span></a>
-</div>
-<div class="group transform rounded-lg bg-white/5 p-6 transition-all duration-300 hover:scale-105 hover:bg-white/10 dark:bg-black/5 dark:hover:bg-black/10">
-<div class="flex h-16 w-16 items-center justify-center rounded-lg bg-primary/10 text-primary">
-<span class="material-symbols-outlined text-4xl">self_improvement</span>
-</div>
-<h3 class="mt-6 text-xl font-bold text-gray-900 dark:text-white">Personal Development</h3>
-<p class="mt-2 text-base text-gray-500 dark:text-gray-400">Unlock your potential and grow personally.</p>
-<a class="mt-6 inline-block text-sm font-semibold text-primary" href="#">Related Posts <span class="transition-transform group-hover:translate-x-1">→</span></a>
+<div id="projects-container" class="mt-20">
+<!-- Os projetos serão carregados dinamicamente aqui -->
 </div>
 </div>
+
+<!-- Modal de Detalhes do Projeto -->
+<div id="project-modal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+  <!-- Overlay/Backdrop -->
+  <div class="fixed inset-0 bg-black/70 backdrop-blur-sm transition-opacity" onclick="closeProjectModal()"></div>
+
+  <!-- Container do Modal -->
+  <div class="flex min-h-full items-center justify-center p-4">
+    <div class="relative transform overflow-hidden rounded-xl bg-white dark:bg-gray-900 shadow-2xl transition-all w-full max-w-3xl">
+
+      <!-- Botão Fechar -->
+      <button
+        onclick="closeProjectModal()"
+        class="absolute right-4 top-4 z-10 rounded-full bg-white/90 dark:bg-gray-800/90 p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors shadow-lg"
+      >
+        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+
+      <!-- Conteúdo do Modal -->
+      <div id="modal-content" class="p-0">
+        <!-- O conteúdo será inserido aqui dinamicamente -->
+      </div>
+
+    </div>
+  </div>
 </div>
 </main>
 <footer class="bg-white/5 dark:bg-black/5">
@@ -122,4 +127,198 @@
 </div>
 </footer>
 </div>
+
+<!-- Scripts da aplicação -->
+<script src="../assets/js/config.js"></script>
+<script src="../assets/js/utils.js"></script>
+<script src="../assets/js/projects.js"></script>
+
+<!-- CSS customizado para animações do modal -->
+<style>
+  @keyframes modalFadeIn {
+    from {
+      opacity: 0;
+      transform: scale(0.95) translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+
+  #project-modal:not(.hidden) > div:last-child > div {
+    animation: modalFadeIn 0.3s ease-out;
+  }
+
+  /* Scroll suave no modal */
+  #project-modal {
+    scroll-behavior: smooth;
+  }
+
+  /* Prevenir scroll do body quando modal está aberto */
+  body.modal-open {
+    overflow: hidden;
+  }
+</style>
+
+<!-- Script para carregar projetos ativos e concluídos -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // Carregar projetos com status 'active' ou 'completed'
+    ProjectsUI.loadActiveAndCompletedProjects('projects-container');
+  });
+
+  /**
+   * Abre o modal de detalhes do projeto
+   * @param {object} projectData - Dados completos do projeto
+   */
+  function openProjectModal(projectData) {
+    const modal = document.getElementById('project-modal');
+    const modalContent = document.getElementById('modal-content');
+
+    // Mapear categorias para nomes legíveis
+    const categoryNames = {
+      'environment': 'Meio Ambiente',
+      'health': 'Saúde',
+      'education': 'Educação',
+      'cybersecurity': 'Segurança Cibernética',
+      'poverty': 'Combate à Pobreza',
+      'technology': 'Tecnologia',
+      'water': 'Água e Saneamento',
+      'energy': 'Energia Limpa',
+      'food': 'Segurança Alimentar',
+      'housing': 'Moradia',
+      'community': 'Desenvolvimento Comunitário',
+      'women-empowerment': 'Empoderamento Feminino',
+      'youth-development': 'Desenvolvimento Juvenil'
+    };
+
+    // Mapear status para nomes legíveis
+    const statusNames = {
+      'planned': 'Planejado',
+      'active': 'Ativo',
+      'completed': 'Concluído',
+      'paused': 'Pausado'
+    };
+
+    const statusColors = {
+      'planned': 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200',
+      'active': 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
+      'completed': 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
+      'paused': 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
+    };
+
+    // Construir HTML do modal
+    modalContent.innerHTML = `
+      <!-- Imagem de cabeçalho -->
+      <div class="relative h-64 w-full overflow-hidden">
+        <img
+          src="${projectData.imageUrl || 'https://via.placeholder.com/800x400'}"
+          alt="${projectData.title}"
+          class="h-full w-full object-cover"
+          onerror="this.src='https://via.placeholder.com/800x400?text=No+Image'"
+        />
+        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+        <div class="absolute bottom-4 left-6 right-6">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="rounded-full bg-primary/90 px-3 py-1 text-xs font-semibold text-white">
+              ${categoryNames[projectData.category] || projectData.category}
+            </span>
+            <span class="rounded-full ${statusColors[projectData.status]} px-3 py-1 text-xs font-semibold">
+              ${statusNames[projectData.status] || projectData.status}
+            </span>
+          </div>
+          <h2 class="text-3xl font-bold text-white">${projectData.title}</h2>
+        </div>
+      </div>
+
+      <!-- Corpo do modal -->
+      <div class="p-6 space-y-6">
+
+        <!-- Descrição -->
+        <div>
+          <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Sobre o Projeto</h3>
+          <p class="text-gray-600 dark:text-gray-400 leading-relaxed">${projectData.description}</p>
+        </div>
+
+        <!-- Barra de Progresso -->
+        ${projectData.progress !== undefined ? `
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Progresso</h3>
+              <span class="text-2xl font-bold text-primary">${projectData.progress}%</span>
+            </div>
+            <div class="h-3 w-full rounded-full bg-gray-200 dark:bg-gray-700 overflow-hidden">
+              <div
+                class="${Utils.getProgressColor(projectData.progress)} h-full rounded-full transition-all duration-500"
+                style="width: ${projectData.progress}%"
+              ></div>
+            </div>
+            ${projectData.completionDate ? `
+              <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                <strong>Conclusão estimada:</strong> ${projectData.completionDate}
+              </p>
+            ` : ''}
+          </div>
+        ` : ''}
+
+        <!-- Métricas -->
+        ${projectData.metrics ? `
+          <div>
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Impacto</h3>
+            <div class="grid grid-cols-2 gap-4">
+              ${projectData.metrics.livesImpacted ? `
+                <div class="rounded-lg bg-primary/10 dark:bg-primary/20 p-4 text-center">
+                  <p class="text-3xl font-bold text-primary">${Utils.formatNumber(projectData.metrics.livesImpacted)}</p>
+                  <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Vidas Impactadas</p>
+                </div>
+              ` : ''}
+              ${projectData.metrics.volunteersInvolved ? `
+                <div class="rounded-lg bg-primary/10 dark:bg-primary/20 p-4 text-center">
+                  <p class="text-3xl font-bold text-primary">${Utils.formatNumber(projectData.metrics.volunteersInvolved)}</p>
+                  <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Voluntários Envolvidos</p>
+                </div>
+              ` : ''}
+            </div>
+          </div>
+        ` : ''}
+
+        <!-- Datas -->
+        <div class="border-t border-gray-200 dark:border-gray-700 pt-4">
+          <div class="grid grid-cols-2 gap-4 text-sm">
+            <div>
+              <p class="text-gray-500 dark:text-gray-400">Criado em</p>
+              <p class="font-medium text-gray-900 dark:text-white">${Utils.formatDate(projectData.createdAt)}</p>
+            </div>
+            <div>
+              <p class="text-gray-500 dark:text-gray-400">Última atualização</p>
+              <p class="font-medium text-gray-900 dark:text-white">${Utils.formatDate(projectData.updatedAt)}</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    `;
+
+    // Mostrar modal
+    modal.classList.remove('hidden');
+    document.body.classList.add('modal-open');
+  }
+
+  /**
+   * Fecha o modal de detalhes
+   */
+  function closeProjectModal() {
+    const modal = document.getElementById('project-modal');
+    modal.classList.add('hidden');
+    document.body.classList.remove('modal-open');
+  }
+
+  // Fechar modal ao pressionar ESC
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeProjectModal();
+    }
+  });
+</script>
 </body></html>

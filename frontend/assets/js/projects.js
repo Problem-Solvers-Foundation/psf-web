@@ -182,29 +182,30 @@ async function loadAllProjects(containerId) {
 }
 
 /**
- * Ver detalhes de um projeto (você pode expandir isso depois)
+ * Ver detalhes de um projeto
  * @param {string} projectId - ID do projeto
  */
 async function viewProjectDetails(projectId) {
   try {
+    // Buscar dados completos do projeto
     const response = await ProjectsAPI.getById(projectId);
-    
+
     if (response.success && response.data) {
-      // Por enquanto, apenas mostra um alert
-      // Você pode criar um modal depois
-      alert(`
-        Projeto: ${response.data.title}
-        
-        Descrição: ${response.data.description}
-        
-        Progresso: ${response.data.progress}%
-        Categoria: ${response.data.category}
-      `);
+      // Verificar se a função openProjectModal existe (definida na página HTML)
+      if (typeof openProjectModal === 'function') {
+        openProjectModal(response.data);
+      } else {
+        // Fallback caso a função não exista
+        console.error('Função openProjectModal não encontrada');
+        alert('Erro ao abrir detalhes do projeto');
+      }
+    } else {
+      alert('Projeto não encontrado');
     }
-    
+
   } catch (error) {
     console.error('Erro ao carregar detalhes:', error);
-    alert('Erro ao carregar detalhes do projeto');
+    alert('Erro ao carregar detalhes do projeto. Verifique se a API está rodando.');
   }
 }
 
@@ -216,39 +217,110 @@ async function viewProjectDetails(projectId) {
 async function searchProjects(searchTerm, containerId) {
   const container = document.getElementById(containerId);
   if (!container) return;
-  
+
   Utils.showLoading(containerId);
-  
+
   try {
     const response = await ProjectsAPI.getAll();
-    
+
     if (!response.success || !response.data) {
       Utils.showError(containerId);
       return;
     }
-    
+
     // Filtrar projetos localmente
-    const filtered = response.data.filter(project => 
+    const filtered = response.data.filter(project =>
       project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       project.description.toLowerCase().includes(searchTerm.toLowerCase())
     );
-    
+
     if (filtered.length === 0) {
       Utils.showEmptyState(containerId, `Nenhum projeto encontrado para "${searchTerm}"`);
       return;
     }
-    
+
     const projectsHTML = filtered.map(project => renderProjectCard(project)).join('');
-    
+
     container.innerHTML = `
       <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
         ${projectsHTML}
       </div>
     `;
-    
+
   } catch (error) {
     console.error('Erro na busca:', error);
     Utils.showError(containerId);
+  }
+}
+
+/**
+ * Carrega projetos com status active ou completed (para página Solutions)
+ * @param {string} containerId - ID do container HTML
+ */
+async function loadActiveAndCompletedProjects(containerId) {
+  const container = document.getElementById(containerId);
+
+  if (!container) {
+    console.error(`Container ${containerId} não encontrado`);
+    return;
+  }
+
+  Utils.showLoading(containerId);
+
+  try {
+    // Buscar projetos com status active e completed em paralelo
+    const [activeResponse, completedResponse] = await Promise.all([
+      fetch(`${API_CONFIG.baseURL}/projects?status=active`),
+      fetch(`${API_CONFIG.baseURL}/projects?status=completed`)
+    ]);
+
+    // Verificar se as requisições foram bem-sucedidas
+    if (!activeResponse.ok || !completedResponse.ok) {
+      throw new Error('Erro ao buscar projetos da API');
+    }
+
+    const activeData = await activeResponse.json();
+    const completedData = await completedResponse.json();
+
+    // Combinar os projetos dos dois status
+    const allProjects = [
+      ...(activeData.data || []),
+      ...(completedData.data || [])
+    ];
+
+    // Verificar se há projetos para exibir
+    if (allProjects.length === 0) {
+      Utils.showEmptyState(
+        containerId,
+        'Nenhum projeto ativo ou concluído disponível no momento'
+      );
+      return;
+    }
+
+    // Ordenar por data de criação (mais recente primeiro)
+    allProjects.sort((a, b) => {
+      const dateA = new Date(a.createdAt || 0);
+      const dateB = new Date(b.createdAt || 0);
+      return dateB - dateA;
+    });
+
+    // Renderizar os cards
+    const projectsHTML = allProjects.map(project => renderProjectCard(project)).join('');
+
+    container.innerHTML = `
+      <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        ${projectsHTML}
+      </div>
+    `;
+
+    console.log(`✅ ${allProjects.length} projeto(s) carregado(s) (active: ${activeData.data.length}, completed: ${completedData.data.length})`);
+
+  } catch (error) {
+    console.error('Erro ao carregar projetos:', error);
+    Utils.showError(
+      containerId,
+      'Erro ao carregar projetos. Verifique se a API está rodando.'
+    );
   }
 }
 
@@ -256,6 +328,7 @@ async function searchProjects(searchTerm, containerId) {
 window.ProjectsUI = {
   loadProjectsByCategory,
   loadAllProjects,
+  loadActiveAndCompletedProjects,
   viewProjectDetails,
   searchProjects,
   renderProjectCard
