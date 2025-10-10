@@ -51,7 +51,7 @@ function renderProjectCard(project) {
       ${progress !== undefined ? `
         <div class="mt-4">
           <div class="mb-2 flex items-center justify-between text-sm">
-            <span class="font-medium text-gray-700 dark:text-gray-300">Progresso</span>
+            <span class="font-medium text-gray-700 dark:text-gray-300">Progress</span>
             <span class="font-bold text-primary">${progress}%</span>
           </div>
           <div class="h-2 w-full rounded-full bg-gray-200 dark:bg-gray-700">
@@ -62,7 +62,7 @@ function renderProjectCard(project) {
           </div>
           ${completionDate ? `
             <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
-              Conclusão estimada: ${completionDate}
+              Expected completion date: ${completionDate}
             </p>
           ` : ''}
         </div>
@@ -74,13 +74,13 @@ function renderProjectCard(project) {
           ${metrics.livesImpacted ? `
             <div class="text-center">
               <p class="text-2xl font-bold text-primary">${Utils.formatNumber(metrics.livesImpacted)}</p>
-              <p class="text-xs text-gray-600 dark:text-gray-400">Vidas Impactadas</p>
+              <p class="text-xs text-gray-600 dark:text-gray-400">Lives Impacted</p>
             </div>
           ` : ''}
           ${metrics.volunteersInvolved ? `
             <div class="text-center">
               <p class="text-2xl font-bold text-primary">${Utils.formatNumber(metrics.volunteersInvolved)}</p>
-              <p class="text-xs text-gray-600 dark:text-gray-400">Voluntários</p>
+              <p class="text-xs text-gray-600 dark:text-gray-400">Volunteers</p>
             </div>
           ` : ''}
         </div>
@@ -91,7 +91,7 @@ function renderProjectCard(project) {
         onclick="viewProjectDetails('${id}')"
         class="mt-4 w-full rounded-lg bg-primary/10 px-4 py-2 text-sm font-semibold text-primary transition-colors hover:bg-primary hover:text-white dark:bg-primary/20"
       >
-        Ver Detalhes →
+        See More →
       </button>
     </div>
   `;
@@ -182,7 +182,7 @@ async function loadAllProjects(containerId) {
 }
 
 /**
- * Ver detalhes de um projeto
+ * See More de um projeto
  * @param {string} projectId - ID do projeto
  */
 async function viewProjectDetails(projectId) {

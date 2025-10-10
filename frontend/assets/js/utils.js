@@ -90,7 +90,7 @@ function formatDate(date) {
     day: 'numeric' 
   };
   
-  return d.toLocaleDateString('pt-BR', options);
+  return d.toLocaleDateString('en-US', options);
 }
 
 /**

@@ -178,27 +178,27 @@
 
     // Mapear categorias para nomes legíveis
     const categoryNames = {
-      'environment': 'Meio Ambiente',
-      'health': 'Saúde',
-      'education': 'Educação',
-      'cybersecurity': 'Segurança Cibernética',
-      'poverty': 'Combate à Pobreza',
-      'technology': 'Tecnologia',
-      'water': 'Água e Saneamento',
-      'energy': 'Energia Limpa',
-      'food': 'Segurança Alimentar',
-      'housing': 'Moradia',
-      'community': 'Desenvolvimento Comunitário',
-      'women-empowerment': 'Empoderamento Feminino',
-      'youth-development': 'Desenvolvimento Juvenil'
+      'environment': 'Environment',
+      'health': 'Health',
+      'education': 'Education',
+      'cybersecurity': 'Cybersecurity',
+      'poverty': 'Poverty',
+      'technology': 'Technology',
+      'water': 'Water & Sanitation',
+      'energy': 'Clean Energy',
+      'food': 'Food',
+      'housing': 'Housing',
+      'community': 'Community Development',
+      'women-empowerment': 'Women’s Empowerment',
+      'youth-development': 'Youth Development'
     };
 
     // Mapear status para nomes legíveis
     const statusNames = {
-      'planned': 'Planejado',
-      'active': 'Ativo',
-      'completed': 'Concluído',
-      'paused': 'Pausado'
+      'planned': 'Planned',
+      'Active': 'Active',
+      'completed': 'Completed',
+      'paused': 'Paused'
     };
 
     const statusColors = {
@@ -237,7 +237,7 @@
 
         <!-- Descrição -->
         <div>
-          <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Sobre o Projeto</h3>
+          <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">About the Project</h3>
           <p class="text-gray-600 dark:text-gray-400 leading-relaxed">${projectData.description}</p>
         </div>
 
@@ -245,7 +245,7 @@
         ${projectData.progress !== undefined ? `
           <div>
             <div class="flex items-center justify-between mb-2">
-              <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Progresso</h3>
+              <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Progress</h3>
               <span class="text-2xl font-bold text-primary">${projectData.progress}%</span>
             </div>
             <div class="h-3 w-full rounded-full bg-gray-200 dark:bg-gray-700 overflow-hidden">
@@ -256,7 +256,7 @@
             </div>
             ${projectData.completionDate ? `
               <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                <strong>Conclusão estimada:</strong> ${projectData.completionDate}
+                <strong>Expected completion date:</strong> ${projectData.completionDate}
               </p>
             ` : ''}
           </div>
@@ -265,18 +265,18 @@
         <!-- Métricas -->
         ${projectData.metrics ? `
           <div>
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Impacto</h3>
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Impact</h3>
             <div class="grid grid-cols-2 gap-4">
               ${projectData.metrics.livesImpacted ? `
                 <div class="rounded-lg bg-primary/10 dark:bg-primary/20 p-4 text-center">
                   <p class="text-3xl font-bold text-primary">${Utils.formatNumber(projectData.metrics.livesImpacted)}</p>
-                  <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Vidas Impactadas</p>
+                  <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Lives Impacted</p>
                 </div>
               ` : ''}
               ${projectData.metrics.volunteersInvolved ? `
                 <div class="rounded-lg bg-primary/10 dark:bg-primary/20 p-4 text-center">
                   <p class="text-3xl font-bold text-primary">${Utils.formatNumber(projectData.metrics.volunteersInvolved)}</p>
-                  <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Voluntários Envolvidos</p>
+                  <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Volunteers Involved</p>
                 </div>
               ` : ''}
             </div>
@@ -287,11 +287,11 @@
         <div class="border-t border-gray-200 dark:border-gray-700 pt-4">
           <div class="grid grid-cols-2 gap-4 text-sm">
             <div>
-              <p class="text-gray-500 dark:text-gray-400">Criado em</p>
+              <p class="text-gray-500 dark:text-gray-400">Created on</p>
               <p class="font-medium text-gray-900 dark:text-white">${Utils.formatDate(projectData.createdAt)}</p>
             </div>
             <div>
-              <p class="text-gray-500 dark:text-gray-400">Última atualização</p>
+              <p class="text-gray-500 dark:text-gray-400">Last updated</p>
               <p class="font-medium text-gray-900 dark:text-white">${Utils.formatDate(projectData.updatedAt)}</p>
             </div>
           </div>
