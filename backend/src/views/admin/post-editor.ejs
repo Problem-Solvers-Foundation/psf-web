@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= post ? 'Edit Post' : 'New Post' %> - Admin Panel</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: "#117dd4"
+          }
+        }
+      }
+    };
+  </script>
+  <!-- Quill Editor -->
+  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+  <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+</head>
+<body class="bg-gray-50">
+
+  <!-- Header -->
+  <header class="bg-white border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center py-4">
+        <div class="flex items-center gap-4">
+          <a href="/admin/dashboard" class="text-gray-600 hover:text-primary">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+            </svg>
+          </a>
+          <h1 class="text-xl font-bold text-gray-900"><%= post ? 'Edit Post' : 'New Post' %></h1>
+        </div>
+        <div class="flex items-center gap-3">
+          <button type="button" onclick="saveAsDraft()" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 font-semibold hover:bg-gray-50">
+            Save Draft
+          </button>
+          <button type="submit" form="post-form" class="px-6 py-2 bg-primary text-white rounded-lg font-bold hover:bg-opacity-90">
+            Publish
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+    <form id="post-form" action="<%= post ? `/admin/posts/edit/${post.id}` : '/admin/posts/create' %>" method="POST">
+
+      <!-- Title -->
+      <div class="bg-white rounded-lg shadow p-6 mb-6">
+        <label for="title" class="block text-sm font-semibold text-gray-700 mb-2">Title</label>
+        <input
+          type="text"
+          id="title"
+          name="title"
+          required
+          value="<%= post ? post.title : '' %>"
+          class="w-full text-3xl font-bold border-0 focus:ring-0 focus:outline-none"
+          placeholder="Post title..."
+          onkeyup="generateSlug()"
+        />
+      </div>
+
+      <!-- Slug -->
+      <div class="bg-white rounded-lg shadow p-6 mb-6">
+        <label for="slug" class="block text-sm font-semibold text-gray-700 mb-2">URL Slug</label>
+        <div class="flex items-center gap-2">
+          <span class="text-gray-500">/blog/</span>
+          <input
+            type="text"
+            id="slug"
+            name="slug"
+            required
+            value="<%= post ? post.slug : '' %>"
+            class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+            placeholder="url-slug-here"
+          />
+        </div>
+      </div>
+
+      <!-- Excerpt -->
+      <div class="bg-white rounded-lg shadow p-6 mb-6">
+        <label for="excerpt" class="block text-sm font-semibold text-gray-700 mb-2">Excerpt (Summary)</label>
+        <textarea
+          id="excerpt"
+          name="excerpt"
+          rows="3"
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+          placeholder="Brief summary of the post..."
+        ><%= post ? post.excerpt : '' %></textarea>
+      </div>
+
+      <!-- Content Editor -->
+      <div class="bg-white rounded-lg shadow p-6 mb-6">
+        <label class="block text-sm font-semibold text-gray-700 mb-2">Content</label>
+        <div id="editor" style="min-height: 400px;"><%= post && post.content ? post.content : '' %></div>
+        <input type="hidden" name="content" id="content-input">
+      </div>
+
+      <!-- Sidebar -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+
+        <!-- Category -->
+        <div class="bg-white rounded-lg shadow p-6">
+          <label for="category" class="block text-sm font-semibold text-gray-700 mb-2">Category</label>
+          <select
+            id="category"
+            name="category"
+            required
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+          >
+            <option value="">Select category...</option>
+            <option value="Announcements" <%= post && post.category === 'Announcements' ? 'selected' : '' %>>Announcements</option>
+            <option value="Technology" <%= post && post.category === 'Technology' ? 'selected' : '' %>>Technology</option>
+            <option value="Impact" <%= post && post.category === 'Impact' ? 'selected' : '' %>>Impact</option>
+            <option value="Stories" <%= post && post.category === 'Stories' ? 'selected' : '' %>>Stories</option>
+            <option value="Updates" <%= post && post.category === 'Updates' ? 'selected' : '' %>>Updates</option>
+          </select>
+        </div>
+
+        <!-- Author -->
+        <div class="bg-white rounded-lg shadow p-6">
+          <label for="author" class="block text-sm font-semibold text-gray-700 mb-2">Author</label>
+          <input
+            type="text"
+            id="author"
+            name="author"
+            required
+            value="<%= post ? post.author : 'PSF Team' %>"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+            placeholder="Author name"
+          />
+        </div>
+
+      </div>
+
+      <!-- Image and Tags -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+
+        <!-- Featured Image -->
+        <div class="bg-white rounded-lg shadow p-6">
+          <label for="imageUrl" class="block text-sm font-semibold text-gray-700 mb-2">Featured Image URL</label>
+          <input
+            type="url"
+            id="imageUrl"
+            name="imageUrl"
+            value="<%= post ? post.imageUrl : '' %>"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+            placeholder="https://example.com/image.jpg"
+          />
+          <p class="text-xs text-gray-500 mt-2">Use Unsplash or any image URL</p>
+        </div>
+
+        <!-- Tags -->
+        <div class="bg-white rounded-lg shadow p-6">
+          <label for="tags" class="block text-sm font-semibold text-gray-700 mb-2">Tags</label>
+          <input
+            type="text"
+            id="tags"
+            name="tags"
+            value="<%= post && post.tags ? post.tags.join(', ') : '' %>"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+            placeholder="tag1, tag2, tag3"
+          />
+          <p class="text-xs text-gray-500 mt-2">Separate with commas</p>
+        </div>
+
+      </div>
+
+      <!-- Published Status -->
+      <input type="hidden" name="isPublished" id="isPublished" value="<%= post && post.isPublished !== undefined ? post.isPublished : 'true' %>">
+
+    </form>
+
+  </main>
+
+  <script>
+    // Initialize Quill editor
+    const quill = new Quill('#editor', {
+      theme: 'snow',
+      modules: {
+        toolbar: [
+          [{ 'header': [1, 2, 3, false] }],
+          ['bold', 'italic', 'underline', 'strike'],
+          ['blockquote', 'code-block'],
+          [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+          [{ 'color': [] }, { 'background': [] }],
+          ['link', 'image'],
+          ['clean']
+        ]
+      }
+    });
+
+    // Generate slug from title
+    function generateSlug() {
+      const title = document.getElementById('title').value;
+      const slug = title
+        .toLowerCase()
+        .replace(/[^\w\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/--+/g, '-')
+        .trim();
+      document.getElementById('slug').value = slug;
+    }
+
+    // Save as draft
+    function saveAsDraft() {
+      document.getElementById('isPublished').value = 'false';
+      document.getElementById('post-form').submit();
+    }
+
+    // Before submit, get HTML from Quill
+    document.getElementById('post-form').addEventListener('submit', function(e) {
+      const content = quill.root.innerHTML;
+      document.getElementById('content-input').value = content;
+    });
+  </script>
+
+</body>
+</html>
