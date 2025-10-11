@@ -3,10 +3,10 @@
  * Solutions, Progress e Impact
  */
 
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const projectController = require('../controllers/projectController');
-// const authMiddleware = require('../middleware/auth'); // Vamos adicionar depois
+import * as projectController from '../controllers/projectController.js';
+// import { authMiddleware } from '../middleware/auth.js'; // Vamos adicionar depois
 
 // ===============================
 // ROTAS PÚBLICAS (sem autenticação)
@@ -65,4 +65,4 @@ router.delete('/:id', /* authMiddleware, */ projectController.deleteProject);
  */
 router.patch('/:id/progress', /* authMiddleware, */ projectController.updateProgress);
 
-module.exports = router;
+export default router;

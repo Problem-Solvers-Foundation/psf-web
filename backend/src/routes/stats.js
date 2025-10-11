@@ -3,9 +3,9 @@
  * Endpoints para métricas e estatísticas agregadas
  */
 
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const statsController = require('../controllers/statsController');
+import * as statsController from '../controllers/statsController.js';
 
 /**
  * GET /api/stats
@@ -19,4 +19,4 @@ router.get('/', statsController.getStats);
  */
 router.get('/category/:category', statsController.getStatsByCategory);
 
-module.exports = router;
+export default router;

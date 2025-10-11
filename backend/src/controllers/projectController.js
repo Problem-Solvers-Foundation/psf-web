@@ -3,8 +3,7 @@
  * Lógica de negócio para projetos da Problem Solver Foundation
  * ATUALIZADO: Categorias por área de atuação + Status do projeto
  */
-
-const { db } = require('../config/firebase');
+import { db } from '../config/firebase.js';
 
 // Referência à coleção 'projects' no Firestore
 const projectsCollection = db.collection('projects');
@@ -44,8 +43,6 @@ const VALID_STATUSES = [
 
 /**
  * Valida se a categoria é válida
- * @param {string} category - Categoria para validar
- * @returns {boolean}
  */
 const isValidCategory = (category) => {
   return VALID_CATEGORIES.includes(category);
@@ -53,8 +50,6 @@ const isValidCategory = (category) => {
 
 /**
  * Valida se o status é válido
- * @param {string} status - Status para validar
- * @returns {boolean}
  */
 const isValidStatus = (status) => {
   return VALID_STATUSES.includes(status);
@@ -62,8 +57,6 @@ const isValidStatus = (status) => {
 
 /**
  * Formata um documento do Firestore para objeto JavaScript
- * @param {object} doc - Documento do Firestore
- * @returns {object}
  */
 const formatProject = (doc) => {
   return {
@@ -82,7 +75,7 @@ const formatProject = (doc) => {
  * GET /api/projects
  * Retorna todos os projetos com filtros opcionais
  */
-exports.getAllProjects = async (req, res) => {
+export const getAllProjects = async (req, res) => {
   try {
     const { 
       category,           // Filtrar por área
@@ -147,7 +140,7 @@ exports.getAllProjects = async (req, res) => {
  * GET /api/projects/:id
  * Retorna um projeto específico
  */
-exports.getProjectById = async (req, res) => {
+export const getProjectById = async (req, res) => {
   try {
     const { id } = req.params;
     
@@ -179,7 +172,7 @@ exports.getProjectById = async (req, res) => {
  * GET /api/projects/category/:category
  * Retorna projetos por categoria (área de atuação)
  */
-exports.getProjectsByCategory = async (req, res) => {
+export const getProjectsByCategory = async (req, res) => {
   try {
     const { category } = req.params;
     
@@ -227,7 +220,7 @@ exports.getProjectsByCategory = async (req, res) => {
  * GET /api/projects/status/:status
  * Retorna projetos por status (planned/active/completed/paused)
  */
-exports.getProjectsByStatus = async (req, res) => {
+export const getProjectsByStatus = async (req, res) => {
   try {
     const { status } = req.params;
     
@@ -273,7 +266,7 @@ exports.getProjectsByStatus = async (req, res) => {
  * POST /api/projects
  * Cria um novo projeto
  */
-exports.createProject = async (req, res) => {
+export const createProject = async (req, res) => {
   try {
     const {
       title,
@@ -355,7 +348,7 @@ exports.createProject = async (req, res) => {
  * PUT /api/projects/:id
  * Atualiza um projeto
  */
-exports.updateProject = async (req, res) => {
+export const updateProject = async (req, res) => {
   try {
     const { id } = req.params;
     const updateData = req.body;
@@ -415,7 +408,7 @@ exports.updateProject = async (req, res) => {
  * DELETE /api/projects/:id
  * Deleta um projeto
  */
-exports.deleteProject = async (req, res) => {
+export const deleteProject = async (req, res) => {
   try {
     const { id } = req.params;
     
@@ -450,7 +443,7 @@ exports.deleteProject = async (req, res) => {
  * PATCH /api/projects/:id/progress
  * Atualiza apenas o progresso
  */
-exports.updateProgress = async (req, res) => {
+export const updateProgress = async (req, res) => {
   try {
     const { id } = req.params;
     const { progress } = req.body;
@@ -493,7 +486,7 @@ exports.updateProgress = async (req, res) => {
  * GET /api/projects/categories
  * Retorna lista de categorias válidas
  */
-exports.getCategories = async (req, res) => {
+export const getCategories = async (req, res) => {
   res.json({
     success: true,
     data: VALID_CATEGORIES.map(cat => ({
@@ -509,7 +502,7 @@ exports.getCategories = async (req, res) => {
  * GET /api/projects/statuses
  * Retorna lista de status válidos
  */
-exports.getStatuses = async (req, res) => {
+export const getStatuses = async (req, res) => {
   res.json({
     success: true,
     data: VALID_STATUSES.map(st => ({

@@ -3,8 +3,7 @@
  * Calcula e retorna métricas agregadas do sistema
  * ATUALIZADO: Otimizado para performance com cálculos no backend
  */
-
-const { db } = require('../config/firebase');
+import { db } from '../config/firebase.js';
 
 const projectsCollection = db.collection('projects');
 
@@ -12,7 +11,7 @@ const projectsCollection = db.collection('projects');
  * GET /api/stats
  * Retorna estatísticas gerais do sistema
  */
-exports.getStats = async (req, res) => {
+export const getStats = async (req, res) => {
   try {
     // Buscar todos os projetos publicados
     const snapshot = await projectsCollection
@@ -88,7 +87,7 @@ exports.getStats = async (req, res) => {
  * GET /api/stats/category/:category
  * Retorna estatísticas de uma categoria específica
  */
-exports.getStatsByCategory = async (req, res) => {
+export const getStatsByCategory = async (req, res) => {
   try {
     const { category } = req.params;
 

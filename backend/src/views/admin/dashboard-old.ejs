@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Admin Panel</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: "#117dd4"
+          }
+        }
+      }
+    };
+  </script>
+</head>
+<body class="bg-gray-50">
+
+  <!-- Header -->
+  <header class="bg-white border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center py-4">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
+            <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 48 48">
+              <path d="M12.08 24L4 19.25L9.96 8.75L18.04 13.5L18.04 4h11.91l.01 9.5L38.04 8.75L44 19.25L35.92 24L44 28.75L38.04 39.25L29.96 34.5L29.96 44H18.04l-.0 -9.5L9.96 39.25L4 28.75L12.08 24Z"/>
+            </svg>
+          </div>
+          <div>
+            <h1 class="text-xl font-bold text-gray-900">Admin Panel</h1>
+            <p class="text-sm text-gray-600">Manage your blog posts</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-4">
+          <a href="/blog" target="_blank" class="text-sm text-gray-600 hover:text-primary">View Blog →</a>
+          <a href="/admin/logout" class="text-sm font-semibold text-red-600 hover:text-red-700">Logout</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+    <!-- Stats -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+      <div class="bg-white rounded-lg shadow p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-600">Total Posts</p>
+            <p class="text-3xl font-bold text-gray-900"><%= posts.length %></p>
+          </div>
+          <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-lg shadow p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-600">Published</p>
+            <p class="text-3xl font-bold text-green-600"><%= posts.filter(p => p.isPublished).length %></p>
+          </div>
+          <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-lg shadow p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-600">Drafts</p>
+            <p class="text-3xl font-bold text-yellow-600"><%= posts.filter(p => !p.isPublished).length %></p>
+          </div>
+          <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+            <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-lg shadow p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-600">Categories</p>
+            <p class="text-3xl font-bold text-purple-600"><%= [...new Set(posts.map(p => p.category))].length %></p>
+          </div>
+          <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+            <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-2xl font-bold text-gray-900">All Posts</h2>
+      <a href="/admin/posts/new" class="bg-primary text-white px-6 py-3 rounded-lg font-bold hover:bg-opacity-90 transition-all inline-flex items-center gap-2">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+        </svg>
+        New Post
+      </a>
+    </div>
+
+    <!-- Posts Table -->
+    <div class="bg-white rounded-lg shadow overflow-hidden">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Title</th>
+            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Author</th>
+            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Category</th>
+            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Status</th>
+            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Date</th>
+            <th class="px-6 py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          <% if (posts.length === 0) { %>
+            <tr>
+              <td colspan="6" class="px-6 py-12 text-center">
+                <p class="text-gray-500">No posts yet. Create your first post!</p>
+              </td>
+            </tr>
+          <% } else { %>
+            <% posts.forEach(post => { %>
+              <tr class="hover:bg-gray-50">
+                <td class="px-6 py-4">
+                  <div class="flex items-center">
+                    <div class="text-sm font-semibold text-gray-900"><%= post.title %></div>
+                  </div>
+                </td>
+                <td class="px-6 py-4 text-sm text-gray-600"><%= post.author || 'N/A' %></td>
+                <td class="px-6 py-4">
+                  <span class="px-3 py-1 text-xs font-semibold rounded-full bg-primary/10 text-primary"><%= post.category %></span>
+                </td>
+                <td class="px-6 py-4">
+                  <% if (post.isPublished) { %>
+                    <span class="px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Published</span>
+                  <% } else { %>
+                    <span class="px-3 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">Draft</span>
+                  <% } %>
+                </td>
+                <td class="px-6 py-4 text-sm text-gray-600">
+                  <%= new Date(post.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %>
+                </td>
+                <td class="px-6 py-4 text-right text-sm font-medium space-x-2">
+                  <a href="/blog/<%= post.slug %>" target="_blank" class="text-gray-600 hover:text-primary">View</a>
+                  <a href="/admin/posts/edit/<%= post.id %>" class="text-primary hover:text-blue-700">Edit</a>
+                  <button onclick="deletePost('<%= post.id %>', '<%= post.title %>')" class="text-red-600 hover:text-red-700">Delete</button>
+                </td>
+              </tr>
+            <% }); %>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+
+  </main>
+
+  <script>
+    function deletePost(postId, postTitle) {
+      if (confirm(`Are you sure you want to delete "${postTitle}"?`)) {
+        fetch(`/admin/posts/delete/${postId}`, {
+          method: 'POST'
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            alert('Post deleted successfully!');
+            location.reload();
+          } else {
+            alert('Error deleting post: ' + data.error);
+          }
+        })
+        .catch(err => {
+          alert('Error: ' + err.message);
+        });
+      }
+    }
+  </script>
+
+</body>
+</html>
