@@ -3,7 +3,7 @@
  * Vamos implementar depois - por enquanto só retorna uma mensagem
  */
 
-const express = require('express');
+import express from 'express';
 const router = express.Router();
 
 // Rota temporária
@@ -14,4 +14,4 @@ router.get('/', (req, res) => {
   });
 });
 
-module.exports = router;
+export default router;
