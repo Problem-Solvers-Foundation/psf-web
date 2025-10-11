@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Meta tags dinâmicas para SEO -->
+  <title><%= title || 'Problem Solver Foundation - Blog' %></title>
+  <meta name="description" content="<%= description || 'Blog da Problem Solver Foundation com artigos sobre impacto social, tecnologia e inovação.' %>">
+
+  <!-- Open Graph (redes sociais) -->
+  <meta property="og:title" content="<%= title || 'Problem Solver Foundation - Blog' %>">
+  <meta property="og:description" content="<%= description || 'Blog da PSF' %>">
+  <meta property="og:type" content="website">
+
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/x-icon;base64," type="image/x-icon">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#117dd4",
+            "background-light": "#f6f7f8",
+            "background-dark": "#101a22",
+            "text-light": "#101a22",
+            "text-dark": "#f6f7f8",
+            "surface-light": "#ffffff",
+            "surface-dark": "#1b2733",
+            "border-light": "#e7eef3",
+            "border-dark": "#2a3b4c",
+            "muted-light": "#4c779a",
+            "muted-dark": "#a0b3c4"
+          },
+          fontFamily: {
+            "display": ["Inter", "sans-serif"]
+          },
+          borderRadius: {
+            "DEFAULT": "0.5rem",
+            "lg": "0.75rem",
+            "xl": "1rem",
+            "full": "9999px"
+          },
+        },
+      },
+    };
+  </script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?display=swap&family=Inter:wght@400;500;700;900&family=Noto+Sans:wght@400;500;700;900" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+
+  <!-- Tailwind Typography para conteúdo de posts -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap');
+
+    /* Estilo para conteúdo de posts */
+    .prose {
+      max-width: 65ch;
+    }
+    .prose p {
+      margin-bottom: 1.25em;
+      line-height: 1.75;
+    }
+    .prose h2 {
+      font-size: 1.5em;
+      font-weight: 700;
+      margin-top: 2em;
+      margin-bottom: 1em;
+    }
+    .prose h3 {
+      font-size: 1.25em;
+      font-weight: 600;
+      margin-top: 1.6em;
+      margin-bottom: 0.6em;
+    }
+    .prose ul, .prose ol {
+      margin-top: 1.25em;
+      margin-bottom: 1.25em;
+      padding-left: 1.625em;
+    }
+    .prose li {
+      margin-top: 0.5em;
+      margin-bottom: 0.5em;
+    }
+    .prose a {
+      color: #117dd4;
+      text-decoration: underline;
+    }
+    .prose a:hover {
+      opacity: 0.8;
+    }
+    .prose strong {
+      font-weight: 600;
+    }
+    .prose code {
+      background-color: #f3f4f6;
+      padding: 0.2em 0.4em;
+      border-radius: 0.25rem;
+      font-size: 0.875em;
+    }
+    .dark .prose code {
+      background-color: #374151;
+    }
+  </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-text-light dark:text-text-dark">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-10 flex items-center justify-between whitespace-nowrap border-b border-border-light dark:border-border-dark bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm px-4 md:px-10 py-4">
+    <div class="flex items-center gap-3">
+      <div class="text-primary size-7">
+        <svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+          <path clip-rule="evenodd" d="M12.0799 24L4 19.2479L9.95537 8.75216L18.04 13.4961L18.0446 4H29.9554L29.96 13.4961L38.0446 8.75216L44 19.2479L35.92 24L44 28.7521L38.0446 39.2479L29.96 34.5039L29.9554 44H18.0446L18.04 34.5039L9.95537 39.2479L4 28.7521L12.0799 24Z" fill="currentColor" fill-rule="evenodd"></path>
+        </svg>
+      </div>
+      <h2 class="text-lg font-bold">Problem Solver Foundation</h2>
+    </div>
+    <nav class="hidden md:flex items-center gap-6">
+      <a class="text-sm font-medium hover:text-primary transition-colors" href="http://127.0.0.1:5500/frontend/public/index.html">Home</a>
+      <a class="text-sm font-medium hover:text-primary transition-colors" href="http://127.0.0.1:5500/frontend/public/solutions.html">Solutions</a>
+      <a class="text-sm font-medium hover:text-primary transition-colors" href="http://127.0.0.1:5500/frontend/public/impact-dynamic.html">Impact</a>
+      <a class="text-sm font-medium hover:text-primary transition-colors" href="/blog">Blog</a>
+      <a class="text-sm font-medium hover:text-primary transition-colors" href="http://127.0.0.1:5500/frontend/public/about.html">About</a>
+      <a class="text-sm font-medium hover:text-primary transition-colors" href="http://127.0.0.1:5500/frontend/public/contact.html">Contact</a>
+    </nav>
+    <div class="flex items-center gap-4">
+      <button onclick="location.href='http://127.0.0.1:5500/frontend/public/join-options.html'" class="bg-primary text-white rounded-lg h-10 px-4 text-sm font-bold hover:bg-opacity-90 transition-all">
+        <span class="truncate">Join</span>
+      </button>
+      <button class="md:hidden p-2 rounded-lg hover:bg-primary/10">
+        <span class="material-symbols-outlined">menu</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Conteúdo da página (será injetado aqui) -->
+  <main class="flex-grow">
+    <%- body %>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-white/5 dark:bg-black/5 mt-16">
+    <div class="mx-auto max-w-7xl overflow-hidden px-6 py-12 lg:px-8">
+      <nav aria-label="Footer" class="-mb-6 columns-2 sm:flex sm:justify-center sm:space-x-12">
+        <div class="pb-6">
+          <a class="text-sm leading-6 text-gray-600 hover:text-primary dark:text-gray-400 dark:hover:text-primary" href="#">Privacy Policy</a>
+        </div>
+        <div class="pb-6">
+          <a class="text-sm leading-6 text-gray-600 hover:text-primary dark:text-gray-400 dark:hover:text-primary" href="#">Terms of Service</a>
+        </div>
+      </nav>
+      <div class="mt-10 flex justify-center space-x-6">
+        <a class="text-gray-400 hover:text-primary dark:text-gray-500 dark:hover:text-primary" href="#">
+          <span class="sr-only">Twitter</span>
+          <svg aria-hidden="true" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.71v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84"></path>
+          </svg>
+        </a>
+        <a class="text-gray-400 hover:text-primary dark:text-gray-500 dark:hover:text-primary" href="#">
+          <span class="sr-only">Facebook</span>
+          <svg aria-hidden="true" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+            <path clip-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" fill-rule="evenodd"></path>
+          </svg>
+        </a>
+        <a class="text-gray-400 hover:text-primary dark:text-gray-500 dark:hover:text-primary" href="#">
+          <span class="sr-only">Instagram</span>
+          <svg aria-hidden="true" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+            <path clip-rule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.024.06 1.378.06 3.808s-.012 2.784-.06 3.808c-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.024.048-1.378.06-3.808.06s-2.784-.013-3.808-.06c-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.048-1.024-.06-1.378-.06-3.808s.012-2.784.06-3.808c.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 016.345 2.525c.636-.247 1.363-.416 2.427-.465C9.795 2.013 10.148 2 12.315 2zm-1.163 1.943c-1.049.045-1.634.21-2.186.42a2.916 2.916 0 00-1.084.772 2.916 2.916 0 00-.772 1.084c-.21.552-.375 1.137-.42 2.186-.045 1.024-.057 1.347-.057 3.593s.012 2.569.057 3.593c.045 1.049.21 1.634.42 2.186.21.552.479 1.002.772 1.398s.846.562 1.398.772c.552.21 1.137.375 2.186.42 1.024.045 1.347.057 3.593.057s2.569-.012 3.593-.057c1.049-.045 1.634-.21 2.186-.42.552-.21 1.002-.479 1.398-.772s.562-.846.772-1.398c.21-.552.375-1.137.42-2.186.045-1.024.057-1.347.057-3.593s-.012-2.569-.057-3.593c-.045-1.049-.21-1.634-.42-2.186a2.916 2.916 0 00-.772-1.084 2.916 2.916 0 00-1.084-.772c-.552-.21-1.137-.375-2.186-.42-1.024-.045-1.347-.057-3.593-.057zM12 6.865a5.135 5.135 0 100 10.27 5.135 5.135 0 000-10.27zm0 1.943a3.192 3.192 0 110 6.384 3.192 3.192 0 010-6.384zM16.92 8.283a1.148 1.148 0 10-2.296 0 1.148 1.148 0 002.296 0z" fill-rule="evenodd"></path>
+          </svg>
+        </a>
+      </div>
+      <p class="mt-10 text-center text-xs leading-5 text-gray-500 dark:text-gray-400">© 2024 Problem Solver Foundation. All rights reserved.</p>
+    </div>
+  </footer>
+
+</body>
+</html>
