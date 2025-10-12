@@ -42,3 +42,9 @@ coverage/
 temp/
 tmp/
 *.tmp
+
+node_modules/
+.env
+backend/serviceAccountKey.json
+*.log
+.DS_Store
