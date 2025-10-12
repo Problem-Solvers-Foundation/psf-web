@@ -8,6 +8,7 @@ import bcrypt from 'bcryptjs';
 const postsCollection = db.collection('posts');
 const projectsCollection = db.collection('projects');
 const usersCollection = db.collection('users');
+const applicationsCollection = db.collection('applications');
 
 // Credenciais padrão (em produção, use variáveis de ambiente e hash)
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@psf.org';
@@ -549,5 +550,157 @@ export const deleteUser = async (req, res) => {
   } catch (error) {
     console.error('Error deleting user:', error);
     res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+// ===============================
+// GERENCIAMENTO DE APPLICATIONS (CANDIDATURAS)
+// ===============================
+
+/**
+ * GET /admin/applications
+ * Lista de candidaturas
+ */
+export const showApplications = async (req, res) => {
+  try {
+    const snapshot = await applicationsCollection.orderBy('submittedAt', 'desc').get();
+    const applications = snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
+      submittedAt: doc.data().submittedAt?.toDate(),
+      reviewedAt: doc.data().reviewedAt?.toDate()
+    }));
+
+    // Estatísticas
+    const stats = {
+      total: applications.length,
+      pending: applications.filter(app => app.status === 'pending').length,
+      reviewing: applications.filter(app => app.status === 'reviewing').length,
+      approved: applications.filter(app => app.status === 'approved').length,
+      rejected: applications.filter(app => app.status === 'rejected').length
+    };
+
+    res.render('admin/applications', { applications, stats });
+  } catch (error) {
+    console.error('Error loading applications:', error);
+    res.status(500).send('Error loading applications');
+  }
+};
+
+/**
+ * GET /admin/applications/view/:id
+ * Visualizar e editar candidatura específica
+ */
+export const showApplicationDetail = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const doc = await applicationsCollection.doc(id).get();
+
+    if (!doc.exists) {
+      return res.status(404).send('Application not found');
+    }
+
+    const application = {
+      id: doc.id,
+      ...doc.data(),
+      submittedAt: doc.data().submittedAt?.toDate(),
+      reviewedAt: doc.data().reviewedAt?.toDate()
+    };
+
+    res.render('admin/application-detail', { application });
+  } catch (error) {
+    console.error('Error loading application:', error);
+    res.status(500).send('Error loading application');
+  }
+};
+
+/**
+ * POST /admin/applications/update/:id
+ * Atualiza candidatura (status, notas, campos adicionais)
+ */
+export const updateApplication = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status, reviewNotes, score, interviewDate, priority, tags } = req.body;
+
+    // Construir objeto de atualização apenas com campos fornecidos
+    const updateData = {
+      updatedAt: new Date()
+    };
+
+    // Adicionar apenas campos que foram fornecidos
+    if (status) updateData.status = status;
+    if (reviewNotes !== undefined) updateData.reviewNotes = reviewNotes;
+    if (score !== undefined && score !== '') updateData.score = parseInt(score) || 0;
+    if (interviewDate !== undefined && interviewDate !== '') updateData.interviewDate = interviewDate;
+    if (priority !== undefined) updateData.priority = priority;
+    if (tags !== undefined) updateData.tags = tags;
+
+    // Se status está sendo alterado, adicionar informações de revisão
+    if (status && status !== 'pending') {
+      updateData.reviewedAt = new Date();
+      updateData.reviewedBy = req.session.user?.email || 'admin';
+    }
+
+    await applicationsCollection.doc(id).update(updateData);
+
+    // Retornar JSON para AJAX ou redirecionar para formulário normal
+    if (req.headers['content-type'] === 'application/json') {
+      res.json({ success: true, message: 'Application updated successfully' });
+    } else {
+      res.redirect(`/admin/applications/view/${id}`);
+    }
+  } catch (error) {
+    console.error('Error updating application:', error);
+
+    // Retornar JSON para AJAX ou HTML para formulário normal
+    if (req.headers['content-type'] === 'application/json') {
+      res.status(500).json({ success: false, error: error.message });
+    } else {
+      res.status(500).send('Error updating application');
+    }
+  }
+};
+
+/**
+ * POST /admin/applications/delete/:id
+ * Deleta candidatura
+ */
+export const deleteApplication = async (req, res) => {
+  try {
+    const { id } = req.params;
+    await applicationsCollection.doc(id).delete();
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Error deleting application:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+/**
+ * GET /admin/applications/export/:id/pdf
+ * Exporta candidatura para PDF (renderiza HTML para impressão)
+ */
+export const exportApplicationPDF = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const doc = await applicationsCollection.doc(id).get();
+
+    if (!doc.exists) {
+      return res.status(404).send('Application not found');
+    }
+
+    const application = {
+      id: doc.id,
+      ...doc.data(),
+      submittedAt: doc.data().submittedAt?.toDate(),
+      reviewedAt: doc.data().reviewedAt?.toDate()
+    };
+
+    // Renderizar página HTML para impressão como PDF
+    res.render('admin/application-pdf', { application });
+  } catch (error) {
+    console.error('Error exporting application:', error);
+    res.status(500).send('Error generating PDF');
   }
 };
