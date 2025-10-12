@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= application.fullName || 'Application' %> - PSF Admin</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: "#117dd4"
+          }
+        }
+      }
+    };
+  </script>
+</head>
+<body class="bg-gray-50">
+
+  <!-- Sidebar -->
+  <div class="fixed inset-y-0 left-0 w-64 bg-gray-900 text-white">
+    <!-- Logo -->
+    <div class="flex items-center gap-3 px-6 py-5 border-b border-gray-800">
+      <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
+        <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 48 48">
+          <path d="M12.08 24L4 19.25L9.96 8.75L18.04 13.5L18.04 4h11.91l.01 9.5L38.04 8.75L44 19.25L35.92 24L44 28.75L38.04 39.25L29.96 34.5L29.96 44H18.04l-.0 -9.5L9.96 39.25L4 28.75L12.08 24Z"/>
+        </svg>
+      </div>
+      <div>
+        <h1 class="text-lg font-bold">PSF Admin</h1>
+        <p class="text-xs text-gray-400">Control Panel</p>
+      </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="px-4 py-6 space-y-1">
+      <a href="/admin/dashboard" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800 transition-colors text-gray-300">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+        </svg>
+        <span class="font-medium">Dashboard</span>
+      </a>
+
+      <a href="/admin/dashboard" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800 transition-colors text-gray-300">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
+        </svg>
+        <span class="font-medium">Blog Posts</span>
+      </a>
+
+      <a href="/admin/projects" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800 transition-colors text-gray-300">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
+        </svg>
+        <span class="font-medium">Projects</span>
+      </a>
+
+      <a href="/admin/users" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800 transition-colors text-gray-300">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+        </svg>
+        <span class="font-medium">Users</span>
+      </a>
+
+      <a href="/admin/applications" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800 transition-colors bg-gray-800 text-white">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+        </svg>
+        <span class="font-medium">Applications</span>
+      </a>
+
+      <!-- Divider -->
+      <div class="pt-6 mt-6 border-t border-gray-800">
+        <a href="/" target="_blank" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800 transition-colors text-gray-300">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+          </svg>
+          <span class="font-medium">View Site</span>
+        </a>
+
+        <a href="/admin/logout" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-red-900 transition-colors text-gray-300 hover:text-white">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+          </svg>
+          <span class="font-medium">Logout</span>
+        </a>
+      </div>
+    </nav>
+  </div>
+
+  <!-- Main Content -->
+  <div class="ml-64 min-h-screen">
+    <!-- Top Bar -->
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-10">
+      <div class="px-8 py-4">
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="flex items-center gap-4">
+              <a href="/admin/applications" class="text-gray-500 hover:text-gray-700">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                </svg>
+              </a>
+              <div>
+                <h2 class="text-2xl font-bold text-gray-900"><%= application.fullName || 'Unnamed Applicant' %></h2>
+                <p class="text-sm text-gray-600 mt-1">Application Details</p>
+              </div>
+            </div>
+          </div>
+          <div>
+            <%
+              let statusClass = 'bg-gray-100 text-gray-800';
+              let statusText = application.status || 'pending';
+              if (application.status === 'pending') statusClass = 'bg-yellow-100 text-yellow-800';
+              else if (application.status === 'reviewing') statusClass = 'bg-blue-100 text-blue-800';
+              else if (application.status === 'approved') statusClass = 'bg-green-100 text-green-800';
+              else if (application.status === 'rejected') statusClass = 'bg-red-100 text-red-800';
+            %>
+            <span class="px-4 py-2 inline-flex text-sm font-semibold rounded-full <%= statusClass %>">
+              <%= statusText.toUpperCase() %>
+            </span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Page Content -->
+    <main class="p-8">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Left Column - Application Details (2/3) -->
+        <div class="lg:col-span-2 space-y-6">
+
+          <!-- Basic Information -->
+          <div class="bg-white rounded-lg shadow-md overflow-hidden">
+            <div class="bg-primary px-6 py-4">
+              <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                </svg>
+                Basic Information
+              </h3>
+            </div>
+            <div class="p-6 space-y-4">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="text-sm font-semibold text-gray-600">Full Name</label>
+                  <p class="text-gray-900 mt-1"><%= application.fullName || 'N/A' %></p>
+                </div>
+                <div>
+                  <label class="text-sm font-semibold text-gray-600">Email</label>
+                  <p class="text-gray-900 mt-1">
+                    <a href="mailto:<%= application.email %>" class="text-primary hover:underline">
+                      <%= application.email || 'N/A' %>
+                    </a>
+                  </p>
+                </div>
+                <div>
+                  <label class="text-sm font-semibold text-gray-600">Location</label>
+                  <p class="text-gray-900 mt-1"><%= application.location || 'N/A' %></p>
+                </div>
+                <div>
+                  <label class="text-sm font-semibold text-gray-600">Age</label>
+                  <p class="text-gray-900 mt-1"><%= application.age || 'N/A' %></p>
+                </div>
+              </div>
+
+              <div class="border-t pt-4 mt-4">
+                <label class="text-sm font-semibold text-gray-600">Social Links</label>
+                <div class="flex gap-4 mt-2">
+                  <% if (application.linkedin) { %>
+                    <a href="<%= application.linkedin %>" target="_blank" class="flex items-center gap-2 text-primary hover:underline">
+                      <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                      </svg>
+                      LinkedIn
+                    </a>
+                  <% } %>
+                  <% if (application.instagram) { %>
+                    <a href="<%= application.instagram %>" target="_blank" class="flex items-center gap-2 text-pink-600 hover:underline">
+                      <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                      </svg>
+                      Instagram
+                    </a>
+                  <% } %>
+                  <% if (!application.linkedin && !application.instagram) { %>
+                    <p class="text-gray-500 text-sm">No social links provided</p>
+                  <% } %>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Motivation and Purpose -->
+          <div class="bg-white rounded-lg shadow-md overflow-hidden">
+            <div class="bg-primary px-6 py-4">
+              <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                </svg>
+                Motivation and Purpose
+              </h3>
+            </div>
+            <div class="p-6">
+              <label class="text-sm font-semibold text-gray-600">Why do you want to join Problem Solvers Foundation?</label>
+              <p class="text-gray-900 mt-2 leading-relaxed whitespace-pre-wrap"><%= application.motivation || 'No response provided' %></p>
+            </div>
+          </div>
+
+          <!-- Projects and Initiatives -->
+          <div class="bg-white rounded-lg shadow-md overflow-hidden">
+            <div class="bg-primary px-6 py-4">
+              <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                </svg>
+                Projects and Initiatives
+              </h3>
+            </div>
+            <div class="p-6 space-y-4">
+              <div>
+                <label class="text-sm font-semibold text-gray-600">Has Previous Project/Initiative?</label>
+                <p class="text-gray-900 mt-1">
+                  <% if (application.hasProject === 'yes') { %>
+                    <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-100 text-green-800 text-sm font-medium">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                      </svg>
+                      Yes
+                    </span>
+                  <% } else if (application.hasProject === 'no') { %>
+                    <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gray-100 text-gray-800 text-sm font-medium">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                      </svg>
+                      No
+                    </span>
+                  <% } else { %>
+                    <span class="text-gray-500">N/A</span>
+                  <% } %>
+                </p>
+              </div>
+
+              <% if (application.hasProject === 'yes' && application.projectDetails) { %>
+                <div class="border-t pt-4">
+                  <label class="text-sm font-semibold text-gray-600">Project Details</label>
+                  <p class="text-gray-900 mt-2 leading-relaxed whitespace-pre-wrap"><%= application.projectDetails %></p>
+                </div>
+              <% } %>
+            </div>
+          </div>
+
+          <!-- Areas of Interest -->
+          <div class="bg-white rounded-lg shadow-md overflow-hidden">
+            <div class="bg-primary px-6 py-4">
+              <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                </svg>
+                Areas of Interest
+              </h3>
+            </div>
+            <div class="p-6">
+              <label class="text-sm font-semibold text-gray-600">Problem Areas to Address</label>
+              <% if (application.problemAreas && application.problemAreas.length > 0) { %>
+                <div class="flex flex-wrap gap-2 mt-3">
+                  <%
+                  const areas = Array.isArray(application.problemAreas)
+                    ? application.problemAreas
+                    : (typeof application.problemAreas === 'string'
+                      ? application.problemAreas.split(',')
+                      : []);
+                  %>
+                  <% areas.forEach(area => { %>
+                    <span class="px-3 py-1 bg-blue-50 text-primary rounded-full text-sm font-medium border border-blue-200">
+                      <%= area.trim() %>
+                    </span>
+                  <% }); %>
+                </div>
+              <% } else { %>
+                <p class="text-gray-500 mt-2">No areas specified</p>
+              <% } %>
+            </div>
+          </div>
+
+          <!-- Skills -->
+          <div class="bg-white rounded-lg shadow-md overflow-hidden">
+            <div class="bg-primary px-6 py-4">
+              <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
+                </svg>
+                Skills and Expertise
+              </h3>
+            </div>
+            <div class="p-6 space-y-4">
+              <% if (application.skills && application.skills.length > 0) { %>
+                <div class="flex flex-wrap gap-2">
+                  <%
+                  const skills = Array.isArray(application.skills)
+                    ? application.skills
+                    : (typeof application.skills === 'string'
+                      ? application.skills.split(',')
+                      : []);
+                  %>
+                  <% skills.forEach(skill => { %>
+                    <span class="px-3 py-1 bg-green-50 text-green-700 rounded-full text-sm font-medium border border-green-200">
+                      <%= skill.trim() %>
+                    </span>
+                  <% }); %>
+                </div>
+              <% } else { %>
+                <p class="text-gray-500">No skills specified</p>
+              <% } %>
+
+              <% if (application.skillsOther) { %>
+                <div class="border-t pt-4">
+                  <label class="text-sm font-semibold text-gray-600">Additional Skills</label>
+                  <p class="text-gray-900 mt-2"><%= application.skillsOther %></p>
+                </div>
+              <% } %>
+            </div>
+          </div>
+
+          <!-- Collaboration Preference -->
+          <div class="bg-white rounded-lg shadow-md overflow-hidden">
+            <div class="bg-primary px-6 py-4">
+              <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                </svg>
+                Collaboration Preference
+              </h3>
+            </div>
+            <div class="p-6">
+              <p class="text-gray-900 leading-relaxed whitespace-pre-wrap"><%= application.collaboration || 'No preference specified' %></p>
+            </div>
+          </div>
+
+          <!-- Additional Information -->
+          <% if (application.additionalInfo) { %>
+            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+              <div class="bg-primary px-6 py-4">
+                <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  </svg>
+                  Additional Information
+                </h3>
+              </div>
+              <div class="p-6">
+                <p class="text-gray-900 leading-relaxed whitespace-pre-wrap"><%= application.additionalInfo %></p>
+              </div>
+            </div>
+          <% } %>
+
+        </div>
+
+        <!-- Right Column - Review Panel (1/3) -->
+        <div class="lg:col-span-1">
+          <div class="sticky top-24 space-y-6">
+
+            <!-- Submission Info -->
+            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+              <div class="bg-gray-800 px-6 py-4">
+                <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  </svg>
+                  Timeline
+                </h3>
+              </div>
+              <div class="p-6 space-y-3">
+                <div>
+                  <label class="text-xs font-semibold text-gray-500 uppercase">Submitted</label>
+                  <p class="text-sm text-gray-900 mt-1">
+                    <%= application.submittedAt ? new Date(application.submittedAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'N/A' %>
+                  </p>
+                </div>
+                <% if (application.reviewedAt) { %>
+                  <div class="border-t pt-3">
+                    <label class="text-xs font-semibold text-gray-500 uppercase">Reviewed</label>
+                    <p class="text-sm text-gray-900 mt-1">
+                      <%= new Date(application.reviewedAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' }) %>
+                    </p>
+                  </div>
+                <% } %>
+                <% if (application.reviewedBy) { %>
+                  <div class="border-t pt-3">
+                    <label class="text-xs font-semibold text-gray-500 uppercase">Reviewed By</label>
+                    <p class="text-sm text-gray-900 mt-1"><%= application.reviewedBy %></p>
+                  </div>
+                <% } %>
+              </div>
+            </div>
+
+            <!-- Review Form -->
+            <form id="reviewForm" action="/admin/applications/update/<%= application.id %>" method="POST" class="bg-white rounded-lg shadow-md overflow-hidden">
+              <div class="bg-gray-800 px-6 py-4">
+                <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                  </svg>
+                  Review Panel
+                </h3>
+              </div>
+              <div class="p-6 space-y-4">
+
+                <!-- Status -->
+                <div>
+                  <label for="status" class="block text-sm font-semibold text-gray-700 mb-2">Status</label>
+                  <select id="status" name="status" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                    <option value="pending" <%= application.status === 'pending' ? 'selected' : '' %>>Pending</option>
+                    <option value="reviewing" <%= application.status === 'reviewing' ? 'selected' : '' %>>Reviewing</option>
+                    <option value="approved" <%= application.status === 'approved' ? 'selected' : '' %>>Approved</option>
+                    <option value="rejected" <%= application.status === 'rejected' ? 'selected' : '' %>>Rejected</option>
+                  </select>
+                </div>
+
+                <!-- Review Notes -->
+                <div>
+                  <label for="reviewNotes" class="block text-sm font-semibold text-gray-700 mb-2">Review Notes</label>
+                  <textarea id="reviewNotes" name="reviewNotes" rows="6" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent resize-none" placeholder="Add your review notes here..."><%= application.reviewNotes || '' %></textarea>
+                </div>
+
+                <!-- Score -->
+                <div>
+                  <label for="score" class="block text-sm font-semibold text-gray-700 mb-2">Score (0-100)</label>
+                  <input type="number" id="score" name="score" min="0" max="100" value="<%= application.score || '' %>" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="e.g., 85">
+                </div>
+
+                <!-- Interview Date -->
+                <div>
+                  <label for="interviewDate" class="block text-sm font-semibold text-gray-700 mb-2">Interview Date</label>
+                  <input type="datetime-local" id="interviewDate" name="interviewDate" value="<%= application.interviewDate ? new Date(application.interviewDate).toISOString().slice(0, 16) : '' %>" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                </div>
+
+                <!-- Priority -->
+                <div>
+                  <label for="priority" class="block text-sm font-semibold text-gray-700 mb-2">Priority</label>
+                  <select id="priority" name="priority" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                    <option value="">None</option>
+                    <option value="low" <%= application.priority === 'low' ? 'selected' : '' %>>Low</option>
+                    <option value="medium" <%= application.priority === 'medium' ? 'selected' : '' %>>Medium</option>
+                    <option value="high" <%= application.priority === 'high' ? 'selected' : '' %>>High</option>
+                  </select>
+                </div>
+
+                <!-- Tags -->
+                <div>
+                  <label for="tags" class="block text-sm font-semibold text-gray-700 mb-2">Tags</label>
+                  <input type="text" id="tags" name="tags" value="<%= application.tags || '' %>" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="e.g., leadership, technical, innovative">
+                  <p class="text-xs text-gray-500 mt-1">Separate tags with commas</p>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="pt-4 border-t space-y-3">
+                  <button type="submit" class="w-full bg-primary text-white px-6 py-3 rounded-lg font-bold hover:bg-opacity-90 transition-all flex items-center justify-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    Save Changes
+                  </button>
+
+                  <a href="/admin/applications/export/<%= application.id %>/pdf" target="_blank" class="w-full bg-green-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-opacity-90 transition-all flex items-center justify-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    Export to PDF
+                  </a>
+
+                  <a href="/admin/applications" class="w-full bg-gray-200 text-gray-700 px-6 py-3 rounded-lg font-bold hover:bg-gray-300 transition-all flex items-center justify-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                    </svg>
+                    Back to List
+                  </a>
+
+                  <button type="button" onclick="deleteApplication()" class="w-full bg-red-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-red-700 transition-all flex items-center justify-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                    </svg>
+                    Delete Application
+                  </button>
+                </div>
+              </div>
+            </form>
+
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script>
+    function deleteApplication() {
+      if (!confirm('Are you sure you want to delete this application? This action cannot be undone.')) {
+        return;
+      }
+
+      fetch('/admin/applications/delete/<%= application.id %>', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          alert('Application deleted successfully!');
+          window.location.href = '/admin/applications';
+        } else {
+          alert('Failed to delete application: ' + (data.error || 'Unknown error'));
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while deleting the application');
+      });
+    }
+
+    // Form submission handler with success feedback
+    document.getElementById('reviewForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const formData = new FormData(this);
+      const data = Object.fromEntries(formData.entries());
+
+      fetch(this.action, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+      .then(response => response.json())
+      .then(result => {
+        if (result.success) {
+          // Show success message
+          const button = this.querySelector('button[type="submit"]');
+          const originalText = button.innerHTML;
+          button.innerHTML = `
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+            </svg>
+            Saved Successfully!
+          `;
+          button.classList.remove('bg-primary');
+          button.classList.add('bg-green-600');
+
+          setTimeout(() => {
+            button.innerHTML = originalText;
+            button.classList.remove('bg-green-600');
+            button.classList.add('bg-primary');
+          }, 2000);
+        } else {
+          alert('Failed to save changes: ' + (result.error || 'Unknown error'));
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while saving changes');
+      });
+    });
+
+    // Status change color indicator
+    document.getElementById('status').addEventListener('change', function() {
+      const status = this.value;
+      let color = 'border-gray-300';
+
+      if (status === 'pending') color = 'border-yellow-400';
+      else if (status === 'reviewing') color = 'border-blue-400';
+      else if (status === 'approved') color = 'border-green-400';
+      else if (status === 'rejected') color = 'border-red-400';
+
+      this.className = this.className.replace(/border-\w+-\d+/g, '') + ' ' + color;
+    });
+  </script>
+
+</body>
+</html>
