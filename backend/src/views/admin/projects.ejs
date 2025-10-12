@@ -137,33 +137,8 @@
   </div>
 
   <script>
-    // Dados de exemplo para demonstração
-    const projects = [
-      {
-        id: '1',
-        title: 'Clean Water Initiative',
-        category: 'Water & Sanitation',
-        status: 'active',
-        progress: 75,
-        metrics: { livesImpacted: 1500 }
-      },
-      {
-        id: '2',
-        title: 'Education Program 2024',
-        category: 'Education',
-        status: 'completed',
-        progress: 100,
-        metrics: { livesImpacted: 850 }
-      },
-      {
-        id: '3',
-        title: 'Healthcare Outreach',
-        category: 'Healthcare',
-        status: 'planned',
-        progress: 25,
-        metrics: { livesImpacted: 0 }
-      }
-    ];
+    // Projetos vindos do servidor
+    const projects = <%- JSON.stringify(projects) %>;
 
     function renderProjects() {
       const tbody = document.getElementById('projects-tbody');
