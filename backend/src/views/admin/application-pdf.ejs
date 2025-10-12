@@ -226,7 +226,12 @@
     <% if (application.instagram) { %>
       <div class="field">
         <div class="field-label">Instagram</div>
-        <div class="field-value"><%= application.instagram %></div>
+        <%
+          // Extrair username e construir URL do Instagram
+          let username = application.instagram.replace(/^@/, '').replace(/^https?:\/\/(www\.)?instagram\.com\//, '').replace(/\/$/, '');
+          let instagramUrl = `https://www.instagram.com/${username}/`;
+        %>
+        <div class="field-value"><%= instagramUrl %></div>
       </div>
     <% } %>
   </div>
