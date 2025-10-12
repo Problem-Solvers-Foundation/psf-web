@@ -161,4 +161,38 @@ router.post('/users/edit/:id', requireAuth, adminController.updateUser);
  */
 router.post('/users/delete/:id', requireAuth, adminController.deleteUser);
 
+// ===============================
+// GERENCIAMENTO DE APPLICATIONS
+// ===============================
+
+/**
+ * GET /admin/applications
+ * Listagem de candidaturas
+ */
+router.get('/applications', requireAuth, adminController.showApplications);
+
+/**
+ * GET /admin/applications/view/:id
+ * Visualizar candidatura específica
+ */
+router.get('/applications/view/:id', requireAuth, adminController.showApplicationDetail);
+
+/**
+ * POST /admin/applications/update/:id
+ * Atualiza candidatura
+ */
+router.post('/applications/update/:id', requireAuth, adminController.updateApplication);
+
+/**
+ * POST /admin/applications/delete/:id
+ * Deleta candidatura
+ */
+router.post('/applications/delete/:id', requireAuth, adminController.deleteApplication);
+
+/**
+ * GET /admin/applications/export/:id/pdf
+ * Exporta candidatura para PDF
+ */
+router.get('/applications/export/:id/pdf', requireAuth, adminController.exportApplicationPDF);
+
 export default router;
