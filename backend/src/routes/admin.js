@@ -77,6 +77,18 @@ router.post('/posts/edit/:id', requireAuth, adminController.updatePost);
 router.post('/posts/delete/:id', requireAuth, adminController.deletePost);
 
 /**
+ * POST /admin/posts/toggle/:id
+ * Alterna status de publicação do post
+ */
+router.post('/posts/toggle/:id', requireAuth, adminController.togglePostStatus);
+
+/**
+ * GET /admin/posts/preview/:id
+ * Pré-visualiza post (rascunho ou publicado)
+ */
+router.get('/posts/preview/:id', requireAuth, adminController.previewPost);
+
+/**
  * GET /admin (redireciona para dashboard)
  */
 router.get('/', (req, res) => {

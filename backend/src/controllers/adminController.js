@@ -272,6 +272,64 @@ export const deletePost = async (req, res) => {
   }
 };
 
+/**
+ * POST /admin/posts/toggle/:id
+ * Alterna o status de publicação do post (rascunho ↔ publicado)
+ */
+export const togglePostStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const doc = await postsCollection.doc(id).get();
+
+    if (!doc.exists) {
+      return res.status(404).json({ success: false, error: 'Post not found' });
+    }
+
+    const currentStatus = doc.data().isPublished;
+    await postsCollection.doc(id).update({
+      isPublished: !currentStatus,
+      updatedAt: new Date()
+    });
+
+    res.json({
+      success: true,
+      newStatus: !currentStatus,
+      message: `Post ${!currentStatus ? 'published' : 'unpublished'} successfully`
+    });
+  } catch (error) {
+    console.error('Error toggling post status:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+/**
+ * GET /admin/posts/preview/:id
+ * Pré-visualiza um post (rascunho ou publicado)
+ */
+export const previewPost = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const doc = await postsCollection.doc(id).get();
+
+    if (!doc.exists) {
+      return res.status(404).send('Post not found');
+    }
+
+    const post = {
+      id: doc.id,
+      ...doc.data(),
+      createdAt: doc.data().createdAt?.toDate(),
+      updatedAt: doc.data().updatedAt?.toDate()
+    };
+
+    // Renderizar página de blog post
+    res.render('blog/post', { post });
+  } catch (error) {
+    console.error('Error loading preview:', error);
+    res.status(500).send('Error loading preview');
+  }
+};
+
 // ===============================
 // GERENCIAMENTO DE PROJETOS
 // ===============================

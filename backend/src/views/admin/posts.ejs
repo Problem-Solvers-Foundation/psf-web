@@ -166,8 +166,15 @@
                     <%= new Date(post.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %>
                   </td>
                   <td class="px-6 py-4 text-right text-sm font-medium space-x-2">
-                    <a href="/blog/<%= post.slug %>" target="_blank" class="text-gray-600 hover:text-primary">View</a>
+                    <% if (post.isPublished) { %>
+                      <a href="/blog/<%= post.slug %>" target="_blank" class="text-gray-600 hover:text-primary">View</a>
+                    <% } else { %>
+                      <a href="/admin/posts/preview/<%= post.id %>" target="_blank" class="text-gray-600 hover:text-primary">Preview</a>
+                    <% } %>
                     <a href="/admin/posts/edit/<%= post.id %>" class="text-primary hover:text-blue-700">Edit</a>
+                    <button onclick="toggleStatus('<%= post.id %>', <%= post.isPublished %>)" class="text-purple-600 hover:text-purple-700">
+                      <%= post.isPublished ? 'Unpublish' : 'Publish' %>
+                    </button>
                     <button onclick="deletePost('<%= post.id %>', '<%= post.title %>')" class="text-red-600 hover:text-red-700">Delete</button>
                   </td>
                 </tr>
@@ -192,6 +199,27 @@
             location.reload();
           } else {
             alert('Error deleting post: ' + data.error);
+          }
+        })
+        .catch(err => {
+          alert('Error: ' + err.message);
+        });
+      }
+    }
+
+    function toggleStatus(postId, currentStatus) {
+      const action = currentStatus ? 'unpublish' : 'publish';
+      if (confirm(`Are you sure you want to ${action} this post?`)) {
+        fetch(`/admin/posts/toggle/${postId}`, {
+          method: 'POST'
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            alert(data.message);
+            location.reload();
+          } else {
+            alert('Error: ' + data.error);
           }
         })
         .catch(err => {
