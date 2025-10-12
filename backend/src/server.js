@@ -14,11 +14,13 @@ import { dirname } from 'path';
 // Carregar variáveis de ambiente
 dotenv.config();
 
+
 // Para usar __dirname em ES Modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 // Importar rotas
+import publicRoutes from './routes/public.js';
 import projectRoutes from './routes/projects.js';
 import blogRoutes from './routes/blog.js';
 import authRoutes from './routes/auth.js';
@@ -60,7 +62,7 @@ app.use(session({
 }));
 
 // Servir arquivos estáticos (CSS, JS, imagens)
-app.use('/public', express.static(path.join(__dirname, '../../frontend/public')));
+app.use('/assets', express.static(path.join(__dirname, '../../frontend/assets')));
 
 // Middleware para log de requisições (útil para debug)
 app.use((req, _res, next) => {
@@ -72,29 +74,18 @@ app.use((req, _res, next) => {
 // ROTAS
 // ===============================
 
-// Rota de teste
-app.get('/', (_req, res) => {
-  res.json({
-    message: '🚀 API Problem Solver Foundation',
-    version: '1.0.0',
-    endpoints: {
-      projects: '/api/projects',
-      blog: '/api/blog',
-      auth: '/api/auth',
-      stats: '/api/stats'
-    }
-  });
-});
+// Rotas da API (JSON) - Prioridade alta
+app.use('/api/projects', projectRoutes);
+app.use('/api/blog', blogRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/stats', statsRoutes);
 
 // Rotas SSR (Server-Side Rendering) - HTML renderizado
 app.use('/blog', blogRoutes);
 app.use('/admin', adminRoutes);
 
-// Rotas da API (JSON)
-app.use('/api/projects', projectRoutes);
-app.use('/api/blog', blogRoutes);
-app.use('/api/auth', authRoutes);
-app.use('/api/stats', statsRoutes);
+// Rotas Públicas (DEVE VIR POR ÚLTIMO para não sobrescrever outras rotas)
+app.use('/', publicRoutes);
 
 // ===============================
 // TRATAMENTO DE ERROS

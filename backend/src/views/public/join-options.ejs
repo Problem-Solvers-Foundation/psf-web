@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title><%= title %></title>
+  <meta name="description" content="<%= description %>">
+  <link href="data:image/x-icon;base64," rel="icon" type="image/x-icon"/>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script>tailwind.config={darkMode:"class",theme:{extend:{colors:{"primary":"#117dd4","background-light":"#f6f7f8","background-dark":"#101a22","text-light":"#101a22","text-dark":"#f6f7f8","surface-light":"#ffffff","surface-dark":"#1b2733","border-light":"#e7eef3","border-dark":"#2a3b4c","muted-light":"#4c779a","muted-dark":"#a0b3c4"},fontFamily:{"display":["Inter","sans-serif"]},borderRadius:{"DEFAULT":"0.5rem","lg":"0.75rem","xl":"1rem","full":"9999px"}}}}</script>
+  <link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet"/>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark">
+  <div class="relative flex h-auto min-h-screen w-full flex-col">
+    <div class="layout-container flex h-full grow flex-col">
+      <%- include('../partials/header', { currentPage: currentPage }) %>
+      <main class="flex-1">
+        <div class="container mx-auto px-4 py-12 sm:px-6 lg:px-8 lg:py-24">
+          <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-12">
+              <h2 class="text-3xl font-extrabold tracking-tight sm:text-4xl">Choose How to Help</h2>
+              <p class="mt-4 text-lg text-black/60 dark:text-white/60">Select the way you'd like to contribute to our mission.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <a href="/join" class="flex flex-col items-center justify-center text-center p-6 rounded-lg bg-primary text-white hover:bg-opacity-90 transition-all duration-300 group">
+                <svg class="w-16 h-16 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                </svg>
+                <h3 class="text-xl font-bold mb-2">Become a Volunteer</h3>
+                <p class="text-sm opacity-90">Join our team and make a direct impact</p>
+              </a>
+              <a href="/contact" class="flex flex-col items-center justify-center text-center p-6 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all duration-300">
+                <svg class="w-16 h-16 mb-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <h3 class="text-xl font-bold mb-2">Make a Donation</h3>
+                <p class="text-sm text-gray-600 dark:text-gray-400">Support our programs financially</p>
+              </a>
+            </div>
+          </div>
+        </div>
+      </main>
+      <%- include('../partials/footer') %>
+    </div>
+  </div>
+  <%- include('../partials/scripts', { pageScripts: [], inlineScript: null }) %>
+</body>
+</html>

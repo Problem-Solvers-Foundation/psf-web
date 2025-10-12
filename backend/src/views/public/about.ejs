@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title><%= title %></title>
+  <meta name="description" content="<%= description %>">
+  <link href="data:image/x-icon;base64," rel="icon" type="image/x-icon"/>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script>tailwind.config={darkMode:"class",theme:{extend:{colors:{"primary":"#117dd4","background-light":"#f6f7f8","background-dark":"#101a22","text-light":"#101a22","text-dark":"#f6f7f8","surface-light":"#ffffff","surface-dark":"#1b2733","border-light":"#e7eef3","border-dark":"#2a3b4c","muted-light":"#4c779a","muted-dark":"#a0b3c4"},fontFamily:{"display":["Inter","sans-serif"]},borderRadius:{"DEFAULT":"0.5rem","lg":"0.75rem","xl":"1rem","full":"9999px"}}}}</script>
+  <link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark">
+  <div class="relative flex h-auto min-h-screen w-full flex-col">
+    <div class="layout-container flex h-full grow flex-col">
+      <%- include('../partials/header', { currentPage: currentPage }) %>
+      <main class="flex-1">
+        <div class="container mx-auto px-4 py-12 sm:px-6 lg:px-8 lg:py-24">
+          <div class="grid grid-cols-1 gap-12 lg:grid-cols-5 lg:gap-16">
+            <div class="lg:col-span-3">
+              <div class="mb-8">
+                <h2 class="text-3xl font-extrabold tracking-tight sm:text-4xl">About Us</h2>
+                <p class="mt-4 text-lg text-black/60 dark:text-white/60">
+                  The Problem Solver Foundation is dedicated to addressing global challenges through innovative solutions and collaborative efforts. Our work is driven by a commitment to creating a more equitable and sustainable world for all.
+                </p>
+              </div>
+              <div class="space-y-10">
+                <div>
+                  <h3 class="text-2xl font-bold">Our Story</h3>
+                  <p class="mt-3 text-black/60 dark:text-white/60">
+                    Founded in 2015 by Dr. Anya Sharma, the Problem Solver Foundation emerged from a deep-seated desire to tackle pressing global issues. Dr. Sharma, a renowned expert in sustainable development and social innovation, envisioned an organization that could bridge the gap between research and practical action.
+                  </p>
+                </div>
+                <div>
+                  <h3 class="text-2xl font-bold">Our Mission</h3>
+                  <p class="mt-3 text-black/60 dark:text-white/60">
+                    Our mission is to catalyze positive change by developing and implementing innovative solutions to global challenges. We focus on fostering collaboration, promoting sustainable practices, and empowering communities to create lasting impact.
+                  </p>
+                </div>
+                <div>
+                  <h3 class="text-2xl font-bold">Areas of Expertise</h3>
+                  <p class="mt-3 text-black/60 dark:text-white/60">
+                    Our work spans several critical areas, including sustainable development, climate action, education, and healthcare. We leverage our expertise in these domains to design and implement impactful programs that address the root causes of challenges and promote long-term solutions.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="lg:col-span-2">
+              <div class="sticky top-28 space-y-8">
+                <div class="aspect-w-1 aspect-h-1 overflow-hidden rounded-xl">
+                  <img alt="Dr. Anya Sharma" class="h-full w-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCzQY0LK9OqOnoYHtvqEirVUgwf0aWHjLWKJ_IlNn70PHnsD-NrqNeWlfMtsysCVfW_InZ6WYbt9llCzbuWlU1bPj_0XNIzrGDlL2ytXABXyUht8iqTYjcw1O3l-0utVpSt0HTBUanSvlRPYcLSpt_ttjARCfVNd5AUJgU21r8NFgSAkrqv6STZaDuMTHS0d7Dauxg-aU7Y8bVLzDfVt3Y8_frbt1ApMqNIgq9RdMFJuVL7WmBwdzeBum-sFsdanl0Squj1sOhKs5Na"/>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+      <%- include('../partials/footer') %>
+    </div>
+  </div>
+  <%- include('../partials/scripts', { pageScripts: [], inlineScript: null }) %>
+</body>
+</html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title><%= title %></title>
+  <meta name="description" content="<%= description %>">
+  <link href="data:image/x-icon;base64," rel="icon" type="image/x-icon"/>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script>tailwind.config={darkMode:"class",theme:{extend:{colors:{"primary":"#117dd4","background-light":"#f6f7f8","background-dark":"#101a22","text-light":"#101a22","text-dark":"#f6f7f8","surface-light":"#ffffff","surface-dark":"#1b2733","border-light":"#e7eef3","border-dark":"#2a3b4c","muted-light":"#4c779a","muted-dark":"#a0b3c4"},fontFamily:{"display":["Inter","sans-serif"]},borderRadius:{"DEFAULT":"0.5rem","lg":"0.75rem","xl":"1rem","full":"9999px"}}}}</script>
+  <link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet"/>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark">
+  <div class="relative flex h-auto min-h-screen w-full flex-col">
+    <div class="layout-container flex h-full grow flex-col">
+      <%- include('../partials/header', { currentPage: currentPage }) %>
+      <main class="flex-1">
+        <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+          <div class="text-center mb-12">
+            <h1 class="text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white sm:text-5xl md:text-6xl">Explore Our Solutions</h1>
+            <p class="mt-4 max-w-2xl mx-auto text-xl text-gray-500 dark:text-gray-400">Discover innovative approaches to tackle challenges across various domains.</p>
+          </div>
+          
+          <% if (projects && projects.length > 0) { %>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <% projects.forEach(project => { %>
+                <div class="bg-white dark:bg-gray-900 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow cursor-pointer" onclick="openModal('<%= project.id %>')">
+                  <% if (project.imageUrl) { %>
+                    <img src="<%= project.imageUrl %>" alt="<%= project.title %>" class="w-full h-48 object-cover"/>
+                  <% } else { %>
+                    <div class="w-full h-48 bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
+                      <span class="text-4xl text-primary">🚀</span>
+                    </div>
+                  <% } %>
+                  <div class="p-6">
+                    <span class="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-primary/10 text-primary mb-3"><%= project.category || 'General' %></span>
+                    <h3 class="text-xl font-bold mb-2"><%= project.title %></h3>
+                    <p class="text-gray-600 dark:text-gray-400 mb-4 line-clamp-2"><%= project.description %></p>
+                    <% if (project.progress) { %>
+                      <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-500"><%= project.progress %>% Complete</span>
+                        <button class="text-primary hover:text-primary/80 font-medium text-sm">View Details →</button>
+                      </div>
+                    <% } %>
+                  </div>
+                </div>
+
+                <!-- Modal for this project -->
+                <div id="modal-<%= project.id %>" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onclick="closeModal('<%= project.id %>')">
+                  <div class="bg-white dark:bg-gray-900 rounded-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
+                    <div class="relative">
+                      <% if (project.imageUrl) { %>
+                        <img src="<%= project.imageUrl %>" alt="<%= project.title %>" class="w-full h-64 object-cover"/>
+                      <% } else { %>
+                        <div class="w-full h-64 bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
+                          <span class="text-6xl text-primary">🚀</span>
+                        </div>
+                      <% } %>
+                      <button onclick="closeModal('<%= project.id %>')" class="absolute top-4 right-4 bg-white dark:bg-gray-800 rounded-full p-2 hover:bg-gray-100 dark:hover:bg-gray-700">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                      </button>
+                    </div>
+                    
+                    <div class="p-8">
+                      <div class="flex items-center gap-3 mb-4">
+                        <span class="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-primary/10 text-primary"><%= project.category || 'General' %></span>
+                        <% if (project.status) { %>
+                          <span class="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300"><%= project.status %></span>
+                        <% } %>
+                      </div>
+                      
+                      <h2 class="text-3xl font-bold mb-4"><%= project.title %></h2>
+                      <p class="text-gray-600 dark:text-gray-400 mb-6"><%= project.description %></p>
+                      
+                      <% if (project.progress) { %>
+                        <div class="mb-6">
+                          <div class="flex justify-between mb-2">
+                            <span class="font-medium">Progress</span>
+                            <span class="font-bold text-primary"><%= project.progress %>%</span>
+                          </div>
+                          <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
+                            <div class="bg-primary h-3 rounded-full" style="width: <%= project.progress %>%"></div>
+                          </div>
+                        </div>
+                      <% } %>
+                      
+                      <% if (project.metrics) { %>
+                        <div class="border-t border-gray-200 dark:border-gray-700 pt-6 mt-6">
+                          <h3 class="font-bold text-xl mb-4">Impact Metrics</h3>
+                          <div class="grid grid-cols-2 gap-4">
+                            <% if (project.metrics.livesImpacted) { %>
+                              <div class="bg-primary/5 rounded-lg p-4">
+                                <div class="text-2xl font-bold text-primary"><%= project.metrics.livesImpacted.toLocaleString() %></div>
+                                <div class="text-sm text-gray-600 dark:text-gray-400">Lives Impacted</div>
+                              </div>
+                            <% } %>
+                            <% if (project.metrics.volunteersInvolved) { %>
+                              <div class="bg-primary/5 rounded-lg p-4">
+                                <div class="text-2xl font-bold text-primary"><%= project.metrics.volunteersInvolved %></div>
+                                <div class="text-sm text-gray-600 dark:text-gray-400">Volunteers</div>
+                              </div>
+                            <% } %>
+                          </div>
+                        </div>
+                      <% } %>
+                      
+                      <% if (project.completionDate) { %>
+                        <div class="border-t border-gray-200 dark:border-gray-700 pt-6 mt-6">
+                          <p class="text-sm text-gray-600 dark:text-gray-400">
+                            <strong>Expected Completion:</strong> <%= project.completionDate %>
+                          </p>
+                        </div>
+                      <% } %>
+                      
+                      <div class="mt-8 flex gap-4">
+                        <button onclick="closeModal('<%= project.id %>')" class="flex-1 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg py-3 font-bold hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
+                          Close
+                        </button>
+                        <button onclick="location.href='/join'" class="flex-1 bg-primary text-white rounded-lg py-3 font-bold hover:bg-opacity-90 transition-colors">
+                          Get Involved
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              <% }); %>
+            </div>
+          <% } else { %>
+            <p class="col-span-3 text-center text-gray-500">No solutions available yet.</p>
+          <% } %>
+        </div>
+      </main>
+      <%- include('../partials/footer') %>
+    </div>
+  </div>
+  
+  <script>
+    function openModal(projectId) {
+      document.getElementById('modal-' + projectId).classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+    
+    function closeModal(projectId) {
+      document.getElementById('modal-' + projectId).classList.add('hidden');
+      document.body.style.overflow = 'auto';
+    }
+    
+    // Close modal on ESC key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        const modals = document.querySelectorAll('[id^="modal-"]');
+        modals.forEach(modal => {
+          modal.classList.add('hidden');
+        });
+        document.body.style.overflow = 'auto';
+      }
+    });
+  </script>
+  
+  <%- include('../partials/scripts', { pageScripts: [], inlineScript: null }) %>
+</body>
+</html>

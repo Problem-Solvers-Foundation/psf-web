@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title><%= title %></title>
+  <meta name="description" content="<%= description %>">
+  <link href="data:image/x-icon;base64," rel="icon" type="image/x-icon"/>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script>tailwind.config={darkMode:"class",theme:{extend:{colors:{"primary":"#117dd4","background-light":"#f6f7f8","background-dark":"#101a22","text-light":"#101a22","text-dark":"#f6f7f8","surface-light":"#ffffff","surface-dark":"#1b2733","border-light":"#e7eef3","border-dark":"#2a3b4c","muted-light":"#4c779a","muted-dark":"#a0b3c4"},fontFamily:{"display":["Inter","sans-serif"]},borderRadius:{"DEFAULT":"0.5rem","lg":"0.75rem","xl":"1rem","full":"9999px"}}}}</script>
+  <link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet"/>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark">
+  <div class="relative flex h-auto min-h-screen w-full flex-col">
+    <div class="layout-container flex h-full grow flex-col">
+      <%- include('../partials/header', { currentPage: currentPage }) %>
+      <main class="flex-1">
+        <!-- Hero Section -->
+        <section class="bg-gradient-to-br from-primary/10 to-primary/5 py-20">
+          <div class="container mx-auto px-4 text-center">
+            <h1 class="text-4xl md:text-6xl font-black tracking-tight mb-4">Our Impact</h1>
+            <p class="text-xl text-muted-light dark:text-muted-dark max-w-3xl mx-auto">
+              We measure our success by the lives we change and the communities we empower.
+            </p>
+          </div>
+        </section>
+
+        <!-- Statistics Section -->
+        <section class="py-16 sm:py-24">
+          <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
+              <!-- Total Projects -->
+              <div class="bg-surface-light dark:bg-surface-dark rounded-xl p-8 text-center shadow-lg hover:shadow-xl transition-shadow">
+                <div class="text-6xl font-black text-primary mb-4"><%= stats.totalProjects %>+</div>
+                <p class="text-xl font-bold text-text-light dark:text-text-dark">Total Projects</p>
+                <p class="text-sm text-muted-light dark:text-muted-dark mt-2">Active initiatives worldwide</p>
+              </div>
+
+              <!-- Lives Improved -->
+              <div class="bg-surface-light dark:bg-surface-dark rounded-xl p-8 text-center shadow-lg hover:shadow-xl transition-shadow">
+                <div class="text-6xl font-black text-primary mb-4"><%= (stats.totalLives / 1000).toFixed(0) %>K+</div>
+                <p class="text-xl font-bold text-text-light dark:text-text-dark">Lives Improved</p>
+                <p class="text-sm text-muted-light dark:text-muted-dark mt-2">People directly impacted</p>
+              </div>
+
+              <!-- Volunteers -->
+              <div class="bg-surface-light dark:bg-surface-dark rounded-xl p-8 text-center shadow-lg hover:shadow-xl transition-shadow">
+                <div class="text-6xl font-black text-primary mb-4"><%= stats.totalVolunteers %>+</div>
+                <p class="text-xl font-bold text-text-light dark:text-text-dark">Volunteers</p>
+                <p class="text-sm text-muted-light dark:text-muted-dark mt-2">Dedicated team members</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Impact Stories (Visual Section) -->
+        <section class="bg-surface-light dark:bg-surface-dark py-16 sm:py-24">
+          <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+              <h2 class="text-3xl md:text-4xl font-bold tracking-tight">Impact Stories</h2>
+              <p class="mt-4 text-lg text-muted-light dark:text-muted-dark max-w-2xl mx-auto">
+                Real stories from communities we've helped transform
+              </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <div class="bg-background-light dark:bg-background-dark rounded-xl overflow-hidden shadow-sm">
+                <img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=400&h=300&fit=crop" alt="Education" class="w-full h-48 object-cover"/>
+                <div class="p-6">
+                  <h3 class="text-xl font-bold mb-2">Education Access</h3>
+                  <p class="text-muted-light dark:text-muted-dark">Providing quality education to underserved communities worldwide.</p>
+                </div>
+              </div>
+
+              <div class="bg-background-light dark:bg-background-dark rounded-xl overflow-hidden shadow-sm">
+                <img src="https://images.unsplash.com/photo-1576765608535-5f04d1e3f289?w=400&h=300&fit=crop" alt="Healthcare" class="w-full h-48 object-cover"/>
+                <div class="p-6">
+                  <h3 class="text-xl font-bold mb-2">Healthcare Initiatives</h3>
+                  <p class="text-muted-light dark:text-muted-dark">Delivering essential healthcare services to remote areas.</p>
+                </div>
+              </div>
+
+              <div class="bg-background-light dark:bg-background-dark rounded-xl overflow-hidden shadow-sm">
+                <img src="https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?w=400&h=300&fit=crop" alt="Technology" class="w-full h-48 object-cover"/>
+                <div class="p-6">
+                  <h3 class="text-xl font-bold mb-2">Tech Innovation</h3>
+                  <p class="text-muted-light dark:text-muted-dark">Empowering communities through technology and innovation.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Call to Action -->
+        <section class="py-16 sm:py-24">
+          <div class="container mx-auto px-4 text-center">
+            <h2 class="text-3xl md:text-4xl font-black tracking-tight max-w-3xl mx-auto mb-6">
+              Be Part of Our Impact
+            </h2>
+            <p class="text-lg text-muted-light dark:text-muted-dark max-w-2xl mx-auto mb-8">
+              Join thousands of volunteers making a real difference in communities around the world.
+            </p>
+            <button onclick="location.href='/join'" class="bg-primary text-white rounded-lg h-12 px-8 text-base font-bold hover:bg-opacity-90 transition-all">
+              Join Us Today
+            </button>
+          </div>
+        </section>
+      </main>
+      <%- include('../partials/footer') %>
+    </div>
+  </div>
+  <%- include('../partials/scripts', { pageScripts: [], inlineScript: null }) %>
+</body>
+</html>

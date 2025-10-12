@@ -1,0 +1,17 @@
+<!-- Scripts comuns -->
+<script src="/assets/js/config.js"></script>
+<script src="/assets/js/utils.js"></script>
+
+<!-- Scripts específicos da página (opcional) -->
+<% if (typeof pageScripts !== 'undefined' && pageScripts && pageScripts.length > 0) { %>
+  <% pageScripts.forEach(script => { %>
+    <script src="<%= script %>"></script>
+  <% }); %>
+<% } %>
+
+<!-- Script inline (opcional) -->
+<% if (typeof inlineScript !== 'undefined' && inlineScript) { %>
+  <script>
+    <%- inlineScript %>
+  </script>
+<% } %>

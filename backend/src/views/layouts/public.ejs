@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <!-- Meta Tags Dinâmicas -->
+  <title><%= title || 'Problem Solver Foundation' %></title>
+  <meta name="description" content="<%= description || 'Impact 1 billion people by 2035' %>">
+
+  <!-- Favicon -->
+  <link href="data:image/x-icon;base64," rel="icon" type="image/x-icon"/>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+  <!-- Tailwind Utilities -->
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .material-symbols-outlined {
+        font-variation-settings:
+          'FILL' 0,
+          'wght' 400,
+          'GRAD' 0,
+          'opsz' 24;
+      }
+    }
+  </style>
+
+  <!-- Tailwind Config -->
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#117dd4",
+            "background-light": "#f6f7f8",
+            "background-dark": "#101a22",
+            "text-light": "#101a22",
+            "text-dark": "#f6f7f8",
+            "surface-light": "#ffffff",
+            "surface-dark": "#1b2733",
+            "border-light": "#e7eef3",
+            "border-dark": "#2a3b4c",
+            "muted-light": "#4c779a",
+            "muted-dark": "#a0b3c4"
+          },
+          fontFamily: {
+            "display": ["Inter", "sans-serif"]
+          },
+          borderRadius: {
+            "DEFAULT": "0.5rem",
+            "lg": "0.75rem",
+            "xl": "1rem",
+            "full": "9999px"
+          },
+        },
+      },
+    }
+  </script>
+
+  <!-- Google Fonts -->
+  <link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+
+  <!-- CSS Customizado (opcional) -->
+  <% if (typeof customCSS !== 'undefined' && customCSS) { %>
+    <link rel="stylesheet" href="<%= customCSS %>">
+  <% } %>
+</head>
+
+<body class="font-display bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark">
+  <div class="relative flex h-auto min-h-screen w-full flex-col">
+    <div class="layout-container flex h-full grow flex-col">
+
+      <!-- Header (reutilizável) -->
+      <%- include('../partials/header', { currentPage: currentPage || 'home' }) %>
+
+      <!-- Conteúdo Principal (específico de cada página) -->
+      <main class="flex-1">
+        <%- body %>
+      </main>
+
+      <!-- Footer (reutilizável) -->
+      <%- include('../partials/footer') %>
+
+    </div>
+  </div>
+
+  <!-- Scripts (reutilizáveis) -->
+  <%- include('../partials/scripts', {
+    pageScripts: typeof pageScripts !== 'undefined' ? pageScripts : [],
+    inlineScript: typeof inlineScript !== 'undefined' ? inlineScript : null
+  }) %>
+</body>
+</html>

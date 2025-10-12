@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title><%= title %></title>
+  <meta name="description" content="<%= description %>">
+  <link href="data:image/x-icon;base64," rel="icon" type="image/x-icon"/>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script>tailwind.config={darkMode:"class",theme:{extend:{colors:{"primary":"#117dd4","background-light":"#f6f7f8","background-dark":"#101a22","text-light":"#101a22","text-dark":"#f6f7f8","surface-light":"#ffffff","surface-dark":"#1b2733","border-light":"#e7eef3","border-dark":"#2a3b4c","muted-light":"#4c779a","muted-dark":"#a0b3c4"},fontFamily:{"display":["Inter","sans-serif"]},borderRadius:{"DEFAULT":"0.5rem","lg":"0.75rem","xl":"1rem","full":"9999px"}}}}</script>
+  <link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark">
+  <div class="relative flex h-auto min-h-screen w-full flex-col">
+    <div class="layout-container flex h-full grow flex-col">
+      <%- include('../partials/header', { currentPage: currentPage }) %>
+      <main class="flex-1">
+        <div class="container mx-auto px-4 py-12 sm:px-6 lg:px-8 lg:py-24">
+          <div class="max-w-2xl mx-auto">
+            <div class="text-center mb-12">
+              <h2 class="text-3xl font-extrabold tracking-tight sm:text-4xl">Contact Us</h2>
+              <p class="mt-4 text-lg text-black/60 dark:text-white/60">Get in touch with us. We'd love to hear from you.</p>
+            </div>
+            <form class="space-y-6">
+              <div>
+                <label for="name" class="block text-sm font-medium">Name</label>
+                <input type="text" id="name" name="name" class="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-4 py-2 text-gray-900 dark:text-white focus:border-primary focus:ring-primary" required>
+              </div>
+              <div>
+                <label for="email" class="block text-sm font-medium">Email</label>
+                <input type="email" id="email" name="email" class="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-4 py-2 text-gray-900 dark:text-white focus:border-primary focus:ring-primary" required>
+              </div>
+              <div>
+                <label for="message" class="block text-sm font-medium">Message</label>
+                <textarea id="message" name="message" rows="6" class="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-4 py-2 text-gray-900 dark:text-white focus:border-primary focus:ring-primary" required></textarea>
+              </div>
+              <div>
+                <button type="submit" class="w-full bg-primary text-white rounded-lg h-12 px-6 text-base font-bold hover:bg-opacity-90 transition-all">Send Message</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </main>
+      <%- include('../partials/footer') %>
+    </div>
+  </div>
+  <%- include('../partials/scripts', { pageScripts: [], inlineScript: null }) %>
+</body>
+</html>

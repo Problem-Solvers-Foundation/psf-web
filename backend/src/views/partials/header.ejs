@@ -1,0 +1,35 @@
+<header class="sticky top-0 z-10 flex items-center justify-between whitespace-nowrap border-b border-border-light dark:border-border-dark bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm px-4 md:px-10 py-4">
+  <div class="flex items-center gap-3">
+    <div class="text-primary size-7">
+      <svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+        <path clip-rule="evenodd" d="M12.0799 24L4 19.2479L9.95537 8.75216L18.04 13.4961L18.0446 4H29.9554L29.96 13.4961L38.0446 8.75216L44 19.2479L35.92 24L44 28.7521L38.0446 39.2479L29.96 34.5039L29.9554 44H18.0446L18.04 34.5039L9.95537 39.2479L4 28.7521L12.0799 24Z" fill="currentColor" fill-rule="evenodd"></path>
+      </svg>
+    </div>
+    <h2 class="text-lg font-bold">Problem Solver Foundation</h2>
+  </div>
+
+  <nav class="hidden md:flex items-center gap-6">
+    <a class="text-sm font-medium hover:text-primary transition-colors <%= currentPage === 'home' ? 'text-primary' : '' %>" href="/">Home</a>
+    <a class="text-sm font-medium hover:text-primary transition-colors <%= currentPage === 'solutions' ? 'text-primary' : '' %>" href="/solutions">Solutions</a>
+    <a class="text-sm font-medium hover:text-primary transition-colors <%= currentPage === 'impact' ? 'text-primary' : '' %>" href="/impact">Impact</a>
+    <a class="text-sm font-medium hover:text-primary transition-colors <%= currentPage === 'about' ? 'text-primary' : '' %>" href="/about">About</a>
+    <a class="text-sm font-medium hover:text-primary transition-colors <%= currentPage === 'contact' ? 'text-primary' : '' %>" href="/contact">Contact</a>
+    <a class="text-sm font-medium hover:text-primary transition-colors <%= currentPage === 'blog' ? 'text-primary' : '' %>" href="/blog">Blog</a>
+    <a class="text-sm font-medium hover:text-primary transition-colors <%= currentPage === 'join' ? 'text-primary' : '' %>" href="/join">Join</a>
+  </nav>
+
+  <div class="flex items-center gap-3">
+    <button onclick="location.href='/admin/login'" class="hidden md:flex items-center gap-2 border border-primary text-primary rounded-lg h-10 px-4 text-sm font-bold hover:bg-primary hover:text-white transition-all">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+      </svg>
+      <span class="truncate">Login</span>
+    </button>
+    <button onclick="location.href='/join'" class="bg-primary text-white rounded-lg h-10 px-4 text-sm font-bold hover:bg-opacity-90 transition-all md:hidden">
+      <span class="truncate">Join</span>
+    </button>
+    <button class="md:hidden p-2 rounded-lg hover:bg-primary/10">
+      <span class="material-symbols-outlined">menu</span>
+    </button>
+  </div>
+</header>
