@@ -10,43 +10,324 @@
   <script>tailwind.config={darkMode:"class",theme:{extend:{colors:{"primary":"#117dd4","background-light":"#f6f7f8","background-dark":"#101a22","text-light":"#101a22","text-dark":"#f6f7f8","surface-light":"#ffffff","surface-dark":"#1b2733","border-light":"#e7eef3","border-dark":"#2a3b4c","muted-light":"#4c779a","muted-dark":"#a0b3c4"},fontFamily:{"display":["Inter","sans-serif"]},borderRadius:{"DEFAULT":"0.5rem","lg":"0.75rem","xl":"1rem","full":"9999px"}}}}</script>
   <link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet"/>
+  <style>
+    .progress-bar {
+      transition: width 0.3s ease;
+    }
+    .char-counter {
+      font-size: 0.75rem;
+      color: #6b7280;
+    }
+    .char-counter.warning {
+      color: #f59e0b;
+    }
+    .char-counter.error {
+      color: #ef4444;
+    }
+  </style>
 </head>
 <body class="font-display bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark">
   <div class="relative flex h-auto min-h-screen w-full flex-col">
     <div class="layout-container flex h-full grow flex-col">
       <%- include('../partials/header', { currentPage: currentPage }) %>
       <main class="flex-1">
-        <div class="container mx-auto px-4 py-12 sm:px-6 lg:px-8 lg:py-24">
-          <div class="max-w-2xl mx-auto">
-            <div class="text-center mb-12">
-              <h2 class="text-3xl font-extrabold tracking-tight sm:text-4xl">Join Us</h2>
-              <p class="mt-4 text-lg text-black/60 dark:text-white/60">Become part of our mission to solve global challenges.</p>
+        <div class="container mx-auto px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
+          <div class="max-w-4xl mx-auto">
+            <!-- Header -->
+            <div class="text-center mb-8">
+              <h1 class="text-4xl font-extrabold tracking-tight sm:text-5xl mb-4">Join the Problem Solvers Movement</h1>
+              <p class="text-lg text-black/70 dark:text-white/70 max-w-2xl mx-auto">
+                Welcome to the Problem Solvers Foundation. We're looking for curious, committed, and courageous minds to tackle real-world problems through action, collaboration, and innovation.
+              </p>
             </div>
-            <form class="space-y-6">
-              <div>
-                <label for="fullName" class="block text-sm font-medium">Full Name</label>
-                <input type="text" id="fullName" name="fullName" class="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-4 py-2 text-gray-900 dark:text-white focus:border-primary focus:ring-primary" required>
+
+            <!-- Progress Indicator -->
+            <div class="mb-8">
+              <div class="flex justify-between items-center mb-2">
+                <span id="progress-text" class="text-sm font-medium text-gray-700 dark:text-gray-300">Basic Information</span>
+                <span id="progress-percentage" class="text-sm font-medium text-gray-700 dark:text-gray-300">0%</span>
               </div>
-              <div>
-                <label for="email" class="block text-sm font-medium">Email</label>
-                <input type="email" id="email" name="email" class="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-4 py-2 text-gray-900 dark:text-white focus:border-primary focus:ring-primary" required>
+              <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                <div id="progress-bar" class="progress-bar bg-primary h-2 rounded-full" style="width: 0%"></div>
               </div>
-              <div>
-                <label for="interest" class="block text-sm font-medium">Area of Interest</label>
-                <select id="interest" name="interest" class="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-4 py-2 text-gray-900 dark:text-white focus:border-primary focus:ring-primary">
-                  <option>Volunteering</option>
-                  <option>Donations</option>
-                  <option>Partnerships</option>
-                  <option>Other</option>
-                </select>
+            </div>
+
+            <!-- Form -->
+            <form id="applicationForm" class="space-y-8">
+              <!-- Section 1: Basic Information -->
+              <div id="section-1" class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md">
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                  <span class="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-bold">1</span>
+                  Basic Information
+                </h2>
+
+                <div class="space-y-5">
+                  <div>
+                    <label for="email" class="block text-sm font-medium mb-1">Email <span class="text-red-500">*</span></label>
+                    <input type="email" id="email" name="email" required
+                      class="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-4 py-3 text-gray-900 dark:text-white focus:border-primary focus:ring-primary">
+                  </div>
+
+                  <div>
+                    <label for="fullName" class="block text-sm font-medium mb-1">Full Name <span class="text-red-500">*</span></label>
+                    <input type="text" id="fullName" name="fullName" required
+                      class="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-4 py-3 text-gray-900 dark:text-white focus:border-primary focus:ring-primary">
+                  </div>
+
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div>
+                      <label for="linkedin" class="block text-sm font-medium mb-1">LinkedIn Account</label>
+                      <input type="url" id="linkedin" name="linkedin" placeholder="https://linkedin.com/in/yourprofile"
+                        class="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-4 py-3 text-gray-900 dark:text-white focus:border-primary focus:ring-primary">
+                    </div>
+
+                    <div>
+                      <label for="instagram" class="block text-sm font-medium mb-1">Instagram Account</label>
+                      <input type="text" id="instagram" name="instagram" placeholder="@yourusername"
+                        class="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-4 py-3 text-gray-900 dark:text-white focus:border-primary focus:ring-primary">
+                    </div>
+                  </div>
+
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div>
+                      <label for="location" class="block text-sm font-medium mb-1">Where are you from? <span class="text-red-500">*</span></label>
+                      <input type="text" id="location" name="location" required placeholder="City, Country"
+                        class="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-4 py-3 text-gray-900 dark:text-white focus:border-primary focus:ring-primary">
+                    </div>
+
+                    <div>
+                      <label for="age" class="block text-sm font-medium mb-1">Your Age <span class="text-red-500">*</span></label>
+                      <input type="number" id="age" name="age" required min="16" max="99"
+                        class="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-4 py-3 text-gray-900 dark:text-white focus:border-primary focus:ring-primary">
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mt-6 flex justify-end">
+                  <button type="button" onclick="nextSection(2)" class="bg-primary text-white rounded-lg px-6 py-3 font-bold hover:bg-opacity-90 transition-all">
+                    Next →
+                  </button>
+                </div>
               </div>
-              <div>
-                <label for="message" class="block text-sm font-medium">Tell us about yourself</label>
-                <textarea id="message" name="message" rows="4" class="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-4 py-2 text-gray-900 dark:text-white focus:border-primary focus:ring-primary"></textarea>
+
+              <!-- Section 2: Motivation and Purpose -->
+              <div id="section-2" class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md hidden">
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                  <span class="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-bold">2</span>
+                  Motivation and Purpose
+                </h2>
+
+                <div class="space-y-5">
+                  <div>
+                    <label for="motivation" class="block text-sm font-medium mb-1">
+                      Why do you want to join Problem Solvers? <span class="text-red-500">*</span>
+                    </label>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">Tell us what drives you and what kind of impact you want to create.</p>
+                    <textarea id="motivation" name="motivation" rows="6" required minlength="100"
+                      class="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-4 py-3 text-gray-900 dark:text-white focus:border-primary focus:ring-primary"
+                      oninput="updateCharCount('motivation', 100)"></textarea>
+                    <div class="flex justify-between items-center mt-1">
+                      <span id="motivation-counter" class="char-counter">0 / 100 characters minimum</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mt-6 flex justify-between">
+                  <button type="button" onclick="prevSection(1)" class="bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg px-6 py-3 font-bold hover:bg-opacity-90 transition-all">
+                    ← Previous
+                  </button>
+                  <button type="button" onclick="nextSection(3)" class="bg-primary text-white rounded-lg px-6 py-3 font-bold hover:bg-opacity-90 transition-all">
+                    Next →
+                  </button>
+                </div>
               </div>
-              <div>
-                <button type="submit" class="w-full bg-primary text-white rounded-lg h-12 px-6 text-base font-bold hover:bg-opacity-90 transition-all">Submit Application</button>
+
+              <!-- Section 3: Projects and Initiatives -->
+              <div id="section-3" class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md hidden">
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                  <span class="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-bold">3</span>
+                  Projects and Initiatives
+                </h2>
+
+                <div class="space-y-5">
+                  <div>
+                    <label class="block text-sm font-medium mb-3">Do you already have a project or idea you're working on? <span class="text-red-500">*</span></label>
+                    <div class="space-y-2">
+                      <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="radio" name="hasProject" value="yes" required onchange="toggleProjectDescription(true)"
+                          class="text-primary focus:ring-primary">
+                        <span>Yes</span>
+                      </label>
+                      <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="radio" name="hasProject" value="no" required onchange="toggleProjectDescription(false)"
+                          class="text-primary focus:ring-primary">
+                        <span>No</span>
+                      </label>
+                      <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="radio" name="hasProject" value="maybe" required onchange="toggleProjectDescription(true)"
+                          class="text-primary focus:ring-primary">
+                        <span>Maybe</span>
+                      </label>
+                    </div>
+                  </div>
+
+                  <div id="projectDescription" class="hidden">
+                    <label for="projectDetails" class="block text-sm font-medium mb-1">Briefly describe it</label>
+                    <textarea id="projectDetails" name="projectDetails" rows="4" maxlength="300"
+                      class="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-4 py-3 text-gray-900 dark:text-white focus:border-primary focus:ring-primary"
+                      oninput="updateCharCount('projectDetails', 0, 300)"></textarea>
+                    <span id="projectDetails-counter" class="char-counter">0 / 300 characters maximum</span>
+                  </div>
+                </div>
+
+                <div class="mt-6 flex justify-between">
+                  <button type="button" onclick="prevSection(2)" class="bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg px-6 py-3 font-bold hover:bg-opacity-90 transition-all">
+                    ← Previous
+                  </button>
+                  <button type="button" onclick="nextSection(4)" class="bg-primary text-white rounded-lg px-6 py-3 font-bold hover:bg-opacity-90 transition-all">
+                    Next →
+                  </button>
+                </div>
               </div>
+
+              <!-- Section 4: Areas of Interest & Skills -->
+              <div id="section-4" class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md hidden">
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                  <span class="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-bold">4</span>
+                  Areas of Interest & Skills
+                </h2>
+
+                <div class="space-y-6">
+                  <div>
+                    <label for="problemAreas" class="block text-sm font-medium mb-1">What problems are you most passionate about solving? <span class="text-red-500">*</span></label>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">Examples: climate change, inequality, education, mental health, innovation, technology access, entrepreneurship, community development</p>
+                    <textarea id="problemAreas" name="problemAreas" rows="3" required
+                      class="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-4 py-3 text-gray-900 dark:text-white focus:border-primary focus:ring-primary"></textarea>
+                  </div>
+
+                  <div>
+                    <label class="block text-sm font-medium mb-3">Which skills do you bring to the table? <span class="text-red-500">*</span></label>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">Select all that apply:</p>
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+                      <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" name="skills" value="coding" class="rounded text-primary focus:ring-primary">
+                        <span class="text-sm">Coding</span>
+                      </label>
+                      <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" name="skills" value="design" class="rounded text-primary focus:ring-primary">
+                        <span class="text-sm">Design</span>
+                      </label>
+                      <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" name="skills" value="storytelling" class="rounded text-primary focus:ring-primary">
+                        <span class="text-sm">Storytelling</span>
+                      </label>
+                      <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" name="skills" value="organizing" class="rounded text-primary focus:ring-primary">
+                        <span class="text-sm">Organizing</span>
+                      </label>
+                      <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" name="skills" value="finance" class="rounded text-primary focus:ring-primary">
+                        <span class="text-sm">Finance</span>
+                      </label>
+                      <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" name="skills" value="research" class="rounded text-primary focus:ring-primary">
+                        <span class="text-sm">Research</span>
+                      </label>
+                      <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" name="skills" value="marketing" class="rounded text-primary focus:ring-primary">
+                        <span class="text-sm">Marketing</span>
+                      </label>
+                      <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" name="skills" value="data-analysis" class="rounded text-primary focus:ring-primary">
+                        <span class="text-sm">Data Analysis</span>
+                      </label>
+                      <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" name="skills" value="project-management" class="rounded text-primary focus:ring-primary">
+                        <span class="text-sm">Project Management</span>
+                      </label>
+                    </div>
+                    <div class="mt-3">
+                      <input type="text" name="skillsOther" placeholder="Other skills (separate with commas)"
+                        class="block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-4 py-2 text-sm text-gray-900 dark:text-white focus:border-primary focus:ring-primary">
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mt-6 flex justify-between">
+                  <button type="button" onclick="prevSection(3)" class="bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg px-6 py-3 font-bold hover:bg-opacity-90 transition-all">
+                    ← Previous
+                  </button>
+                  <button type="button" onclick="nextSection(5)" class="bg-primary text-white rounded-lg px-6 py-3 font-bold hover:bg-opacity-90 transition-all">
+                    Next →
+                  </button>
+                </div>
+              </div>
+
+              <!-- Section 5: Collaboration & Final Thoughts -->
+              <div id="section-5" class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md hidden">
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                  <span class="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-bold">5</span>
+                  Collaboration & Final Thoughts
+                </h2>
+
+                <div class="space-y-5">
+                  <div>
+                    <label class="block text-sm font-medium mb-3">Are you interested in collaborating with others? <span class="text-red-500">*</span></label>
+                    <div class="space-y-2">
+                      <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="radio" name="collaboration" value="yes" required class="text-primary focus:ring-primary">
+                        <span>Yes, I'd love to collaborate</span>
+                      </label>
+                      <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="radio" name="collaboration" value="maybe" required class="text-primary focus:ring-primary">
+                        <span>Maybe, depends on the project</span>
+                      </label>
+                      <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="radio" name="collaboration" value="solo" required class="text-primary focus:ring-primary">
+                        <span>I prefer to work solo</span>
+                      </label>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label for="additionalInfo" class="block text-sm font-medium mb-1">Anything else you'd like to share?</label>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">This is your space to express yourself. We're listening.</p>
+                    <textarea id="additionalInfo" name="additionalInfo" rows="5"
+                      class="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-4 py-3 text-gray-900 dark:text-white focus:border-primary focus:ring-primary"></textarea>
+                  </div>
+                </div>
+
+                <div class="mt-6 flex justify-between">
+                  <button type="button" onclick="prevSection(4)" class="bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg px-6 py-3 font-bold hover:bg-opacity-90 transition-all">
+                    ← Previous
+                  </button>
+                  <button type="submit" id="submitButton" class="bg-green-600 text-white rounded-lg px-8 py-3 font-bold hover:bg-green-700 transition-all flex items-center gap-2">
+                    <span>Submit Application</span>
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Success Message (hidden initially) -->
+              <div id="successMessage" class="bg-green-50 dark:bg-green-900/20 border-2 border-green-500 rounded-xl p-8 text-center hidden">
+                <div class="flex justify-center mb-4">
+                  <div class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center">
+                    <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                  </div>
+                </div>
+                <h3 class="text-2xl font-bold text-green-700 dark:text-green-400 mb-2">Application Submitted Successfully!</h3>
+                <p class="text-gray-700 dark:text-gray-300 mb-6">
+                  Thank you for your interest in joining Problem Solvers Foundation. We'll review your application and get back to you soon.
+                </p>
+                <a href="/" class="inline-block bg-primary text-white rounded-lg px-6 py-3 font-bold hover:bg-opacity-90 transition-all">
+                  Return to Home
+                </a>
+              </div>
+
             </form>
           </div>
         </div>
@@ -54,6 +335,161 @@
       <%- include('../partials/footer') %>
     </div>
   </div>
+
+  <script>
+    let currentSection = 1;
+    const totalSections = 5;
+
+    function updateProgress() {
+      const percentage = (currentSection / totalSections) * 100;
+      document.getElementById('progress-bar').style.width = percentage + '%';
+      document.getElementById('progress-percentage').textContent = Math.round(percentage) + '%';
+
+      const sections = ['Basic Information', 'Motivation', 'Projects', 'Skills', 'Final Thoughts'];
+      document.getElementById('progress-text').textContent = sections[currentSection - 1];
+    }
+
+    function nextSection(section) {
+      // Validate current section
+      const currentForm = document.getElementById(`section-${currentSection}`);
+      const inputs = currentForm.querySelectorAll('[required]');
+      let isValid = true;
+
+      inputs.forEach(input => {
+        if (!input.checkValidity()) {
+          isValid = false;
+          input.reportValidity();
+        }
+      });
+
+      if (!isValid) return;
+
+      // Hide current section
+      document.getElementById(`section-${currentSection}`).classList.add('hidden');
+
+      // Show next section
+      currentSection = section;
+      document.getElementById(`section-${section}`).classList.remove('hidden');
+
+      // Update progress
+      updateProgress();
+
+      // Scroll to top
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function prevSection(section) {
+      // Hide current section
+      document.getElementById(`section-${currentSection}`).classList.add('hidden');
+
+      // Show previous section
+      currentSection = section;
+      document.getElementById(`section-${section}`).classList.remove('hidden');
+
+      // Update progress
+      updateProgress();
+
+      // Scroll to top
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function toggleProjectDescription(show) {
+      const projectDesc = document.getElementById('projectDescription');
+      if (show) {
+        projectDesc.classList.remove('hidden');
+      } else {
+        projectDesc.classList.add('hidden');
+        document.getElementById('projectDetails').value = '';
+      }
+    }
+
+    function updateCharCount(fieldId, minChars = 0, maxChars = 0) {
+      const field = document.getElementById(fieldId);
+      const counter = document.getElementById(`${fieldId}-counter`);
+      const length = field.value.length;
+
+      if (maxChars > 0) {
+        counter.textContent = `${length} / ${maxChars} characters maximum`;
+        if (length > maxChars * 0.9) {
+          counter.classList.add('warning');
+        } else {
+          counter.classList.remove('warning');
+        }
+      } else if (minChars > 0) {
+        counter.textContent = `${length} / ${minChars} characters minimum`;
+        if (length < minChars) {
+          counter.classList.add('error');
+        } else {
+          counter.classList.remove('error');
+          counter.classList.add('text-green-600');
+        }
+      }
+    }
+
+    // Form submission
+    document.getElementById('applicationForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const submitButton = document.getElementById('submitButton');
+      submitButton.disabled = true;
+      submitButton.innerHTML = '<span>Submitting...</span>';
+
+      // Collect form data
+      const formData = new FormData(e.target);
+      const data = {};
+
+      // Handle regular fields
+      for (let [key, value] of formData.entries()) {
+        if (key === 'skills') {
+          if (!data.skills) data.skills = [];
+          data.skills.push(value);
+        } else {
+          data[key] = value;
+        }
+      }
+
+      // Add timestamp
+      data.submittedAt = new Date().toISOString();
+      data.status = 'pending';
+
+      try {
+        const response = await fetch('/api/applications/submit', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+          // Hide form sections
+          for (let i = 1; i <= totalSections; i++) {
+            document.getElementById(`section-${i}`).classList.add('hidden');
+          }
+
+          // Hide progress bar
+          document.querySelector('.mb-8').classList.add('hidden');
+
+          // Show success message
+          document.getElementById('successMessage').classList.remove('hidden');
+
+          // Scroll to top
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+          throw new Error('Submission failed');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred while submitting your application. Please try again.');
+        submitButton.disabled = false;
+        submitButton.innerHTML = '<span>Submit Application</span>';
+      }
+    });
+
+    // Initialize progress
+    updateProgress();
+  </script>
+
   <%- include('../partials/scripts', { pageScripts: [], inlineScript: null }) %>
 </body>
 </html>
