@@ -11,19 +11,12 @@
   <link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet"/>
   <style>
-    .progress-bar {
-      transition: width 0.3s ease;
-    }
-    .char-counter {
-      font-size: 0.75rem;
-      color: #6b7280;
-    }
-    .char-counter.warning {
-      color: #f59e0b;
-    }
-    .char-counter.error {
-      color: #ef4444;
-    }
+    .progress-bar { transition: width 0.3s ease; }
+    .char-counter { font-size: 0.75rem; color: #6b7280; }
+    .char-counter.warning { color: #f59e0b; }
+    .char-counter.error { color: #ef4444; }
+    .char-counter.success { color: #10b981; }
+    .word-counter { font-size: 0.75rem; color: #6b7280; margin-top: 0.25rem; }
   </style>
 </head>
 <body class="font-display bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark">
@@ -33,12 +26,36 @@
       <main class="flex-1">
         <div class="container mx-auto px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
           <div class="max-w-4xl mx-auto">
+            
             <!-- Header -->
             <div class="text-center mb-8">
               <h1 class="text-4xl font-extrabold tracking-tight sm:text-5xl mb-4">Join the Problem Solvers Movement</h1>
-              <p class="text-lg text-black/70 dark:text-white/70 max-w-2xl mx-auto">
-                Welcome to the Problem Solvers Foundation. We're looking for curious, committed, and courageous minds to tackle real-world problems through action, collaboration, and innovation.
+              <p class="text-lg text-black/70 dark:text-white/70 max-w-2xl mx-auto mb-6">
+                We're looking for curious, committed, and courageous minds to tackle real-world problems through action, collaboration, and innovation.
               </p>
+              
+              <!-- Application Period Info -->
+              <div class="bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-500 rounded-xl p-4 mb-6">
+                <p class="text-sm font-bold text-blue-700 dark:text-blue-400 mb-2">
+                  <span id="applicationPeriod"></span> Application Period
+                </p>
+                <p class="text-sm text-gray-700 dark:text-gray-300">
+                  <strong>20 spots available</strong> - 10 spots per selection process<br>
+                  Applications close in <strong><span id="daysRemaining"></span> days</strong>
+                </p>
+              </div>
+
+              <!-- Process Overview -->
+              <div class="bg-gray-50 dark:bg-gray-800 rounded-xl p-4 mb-6 text-left">
+                <h3 class="font-bold text-sm mb-2">Selection Process Timeline:</h3>
+                <ul class="text-xs space-y-1 text-gray-600 dark:text-gray-400">
+                  <li>✓ <strong>Weeks 1-4:</strong> Complete this application (all sections + video)</li>
+                  <li>✓ <strong>Week 5:</strong> Committee review (30-40 finalists selected)</li>
+                  <li>✓ <strong>Week 8:</strong> Interview Panel (60 min, 15-20 advance)</li>
+                  <li>✓ <strong>Weekend 9:</strong> Final Hackathon (2 days online)</li>
+                  <li>✓ <strong>Week 10:</strong> Results & Onboarding (10 selected)</li>
+                </ul>
+              </div>
             </div>
 
             <!-- Progress Indicator -->
@@ -54,47 +71,42 @@
 
             <!-- Form -->
             <form id="applicationForm" class="space-y-8">
-              <!-- Section 1: Basic Information -->
+              
+              <!-- SECTION 1: Basic Information -->
               <div id="section-1" class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md">
                 <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
                   <span class="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-bold">1</span>
                   Basic Information
                 </h2>
-
                 <div class="space-y-5">
                   <div>
                     <label for="email" class="block text-sm font-medium mb-1">Email <span class="text-red-500">*</span></label>
                     <input type="email" id="email" name="email" required
                       class="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-4 py-3 text-gray-900 dark:text-white focus:border-primary focus:ring-primary">
                   </div>
-
                   <div>
                     <label for="fullName" class="block text-sm font-medium mb-1">Full Name <span class="text-red-500">*</span></label>
                     <input type="text" id="fullName" name="fullName" required
                       class="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-4 py-3 text-gray-900 dark:text-white focus:border-primary focus:ring-primary">
                   </div>
-
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div>
                       <label for="linkedin" class="block text-sm font-medium mb-1">LinkedIn Account</label>
                       <input type="url" id="linkedin" name="linkedin" placeholder="https://linkedin.com/in/yourprofile"
                         class="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-4 py-3 text-gray-900 dark:text-white focus:border-primary focus:ring-primary">
                     </div>
-
                     <div>
                       <label for="instagram" class="block text-sm font-medium mb-1">Instagram Account</label>
                       <input type="text" id="instagram" name="instagram" placeholder="@yourusername"
                         class="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-4 py-3 text-gray-900 dark:text-white focus:border-primary focus:ring-primary">
                     </div>
                   </div>
-
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div>
                       <label for="location" class="block text-sm font-medium mb-1">Where are you from? <span class="text-red-500">*</span></label>
                       <input type="text" id="location" name="location" required placeholder="City, Country"
                         class="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-4 py-3 text-gray-900 dark:text-white focus:border-primary focus:ring-primary">
                     </div>
-
                     <div>
                       <label for="age" class="block text-sm font-medium mb-1">Your Age <span class="text-red-500">*</span></label>
                       <input type="number" id="age" name="age" required min="16" max="99"
@@ -102,7 +114,6 @@
                     </div>
                   </div>
                 </div>
-
                 <div class="mt-6 flex justify-end">
                   <button type="button" onclick="nextSection(2)" class="bg-primary text-white rounded-lg px-6 py-3 font-bold hover:bg-opacity-90 transition-all">
                     Next →
@@ -110,13 +121,12 @@
                 </div>
               </div>
 
-              <!-- Section 2: Motivation and Purpose -->
+              <!-- SECTION 2: Motivation and Purpose -->
               <div id="section-2" class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md hidden">
                 <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
                   <span class="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-bold">2</span>
                   Motivation and Purpose
                 </h2>
-
                 <div class="space-y-5">
                   <div>
                     <label for="motivation" class="block text-sm font-medium mb-1">
@@ -126,12 +136,9 @@
                     <textarea id="motivation" name="motivation" rows="6" required minlength="100"
                       class="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-4 py-3 text-gray-900 dark:text-white focus:border-primary focus:ring-primary"
                       oninput="updateCharCount('motivation', 100)"></textarea>
-                    <div class="flex justify-between items-center mt-1">
-                      <span id="motivation-counter" class="char-counter">0 / 100 characters minimum</span>
-                    </div>
+                    <span id="motivation-counter" class="char-counter">0 / 100 characters minimum</span>
                   </div>
                 </div>
-
                 <div class="mt-6 flex justify-between">
                   <button type="button" onclick="prevSection(1)" class="bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg px-6 py-3 font-bold hover:bg-opacity-90 transition-all">
                     ← Previous
@@ -142,14 +149,14 @@
                 </div>
               </div>
 
-              <!-- Section 3: Projects and Initiatives -->
+              <!-- SECTION 3: Projects, Skills & Collaboration -->
               <div id="section-3" class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md hidden">
                 <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
                   <span class="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-bold">3</span>
-                  Projects and Initiatives
+                  Projects, Skills & Collaboration
                 </h2>
-
-                <div class="space-y-5">
+                <div class="space-y-6">
+                  <!-- Project Status -->
                   <div>
                     <label class="block text-sm font-medium mb-3">Do you already have a project or idea you're working on? <span class="text-red-500">*</span></label>
                     <div class="space-y-2">
@@ -170,7 +177,8 @@
                       </label>
                     </div>
                   </div>
-
+                  
+                  <!-- Project Description (conditional) -->
                   <div id="projectDescription" class="hidden">
                     <label for="projectDetails" class="block text-sm font-medium mb-1">Briefly describe it</label>
                     <textarea id="projectDetails" name="projectDetails" rows="4" maxlength="300"
@@ -178,26 +186,8 @@
                       oninput="updateCharCount('projectDetails', 0, 300)"></textarea>
                     <span id="projectDetails-counter" class="char-counter">0 / 300 characters maximum</span>
                   </div>
-                </div>
 
-                <div class="mt-6 flex justify-between">
-                  <button type="button" onclick="prevSection(2)" class="bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg px-6 py-3 font-bold hover:bg-opacity-90 transition-all">
-                    ← Previous
-                  </button>
-                  <button type="button" onclick="nextSection(4)" class="bg-primary text-white rounded-lg px-6 py-3 font-bold hover:bg-opacity-90 transition-all">
-                    Next →
-                  </button>
-                </div>
-              </div>
-
-              <!-- Section 4: Areas of Interest & Skills -->
-              <div id="section-4" class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md hidden">
-                <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
-                  <span class="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-bold">4</span>
-                  Areas of Interest & Skills
-                </h2>
-
-                <div class="space-y-6">
+                  <!-- Problem Areas -->
                   <div>
                     <label for="problemAreas" class="block text-sm font-medium mb-1">What problems are you most passionate about solving? <span class="text-red-500">*</span></label>
                     <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">Examples: climate change, inequality, education, mental health, innovation, technology access, entrepreneurship, community development</p>
@@ -205,9 +195,9 @@
                       class="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-4 py-3 text-gray-900 dark:text-white focus:border-primary focus:ring-primary"></textarea>
                   </div>
 
+                  <!-- Skills -->
                   <div>
                     <label class="block text-sm font-medium mb-3">Which skills do you bring to the table? <span class="text-red-500">*</span></label>
-                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">Select all that apply:</p>
                     <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
                       <label class="flex items-center gap-2 cursor-pointer">
                         <input type="checkbox" name="skills" value="coding" class="rounded text-primary focus:ring-primary">
@@ -251,26 +241,8 @@
                         class="block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-4 py-2 text-sm text-gray-900 dark:text-white focus:border-primary focus:ring-primary">
                     </div>
                   </div>
-                </div>
 
-                <div class="mt-6 flex justify-between">
-                  <button type="button" onclick="prevSection(3)" class="bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg px-6 py-3 font-bold hover:bg-opacity-90 transition-all">
-                    ← Previous
-                  </button>
-                  <button type="button" onclick="nextSection(5)" class="bg-primary text-white rounded-lg px-6 py-3 font-bold hover:bg-opacity-90 transition-all">
-                    Next →
-                  </button>
-                </div>
-              </div>
-
-              <!-- Section 5: Collaboration & Final Thoughts -->
-              <div id="section-5" class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md hidden">
-                <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
-                  <span class="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-bold">5</span>
-                  Collaboration & Final Thoughts
-                </h2>
-
-                <div class="space-y-5">
+                  <!-- Collaboration -->
                   <div>
                     <label class="block text-sm font-medium mb-3">Are you interested in collaborating with others? <span class="text-red-500">*</span></label>
                     <div class="space-y-2">
@@ -289,16 +261,646 @@
                     </div>
                   </div>
 
+                  <!-- Additional Info -->
                   <div>
                     <label for="additionalInfo" class="block text-sm font-medium mb-1">Anything else you'd like to share?</label>
                     <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">This is your space to express yourself. We're listening.</p>
-                    <textarea id="additionalInfo" name="additionalInfo" rows="5"
+                    <textarea id="additionalInfo" name="additionalInfo" rows="4"
                       class="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-4 py-3 text-gray-900 dark:text-white focus:border-primary focus:ring-primary"></textarea>
                   </div>
                 </div>
+                <div class="mt-6 flex justify-between">
+                  <button type="button" onclick="prevSection(2)" class="bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg px-6 py-3 font-bold hover:bg-opacity-90 transition-all">
+                    ← Previous
+                  </button>
+                  <button type="button" onclick="nextSection(4)" class="bg-primary text-white rounded-lg px-6 py-3 font-bold hover:bg-opacity-90 transition-all">
+                    Next →
+                  </button>
+                </div>
+              </div>
 
+              <!-- SECTION 4: Personal Story & Achievements -->
+              <div id="section-4" class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md hidden">
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                  <span class="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-bold">4</span>
+                  Your Story & Achievements
+                </h2>
+                <div class="space-y-6">
+                  <!-- Personal Story -->
+                  <div>
+                    <label for="personalStory" class="block text-sm font-medium mb-1">Tell us your story <span class="text-red-500">*</span></label>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                      Where do you come from? What shaped who you are today? What experiences, challenges, or turning points made you the person you are now?
+                    </p>
+                    <textarea id="personalStory" name="personalStory" rows="8" required
+                      class="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-4 py-3 text-gray-900 dark:text-white focus:border-primary focus:ring-primary"
+                      oninput="updateWordCount('personalStory', 100)"></textarea>
+                    <span id="personalStory-counter" class="word-counter">0 words (minimum 100 words)</span>
+                  </div>
+
+                  <!-- Top 3 Achievements -->
+                  <div>
+                    <label class="block text-sm font-medium mb-3">What are your top 3 achievements in the last 3 years? <span class="text-red-500">*</span></label>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                      List them in order of personal significance. For each: What you did, why it mattered, what impact it had (use numbers/evidence when possible).
+                    </p>
+                    
+                    <div class="space-y-4">
+                      <div>
+                        <label for="achievement1" class="block text-sm font-medium mb-1">Achievement #1 <span class="text-red-500">*</span></label>
+                        <textarea id="achievement1" name="achievement1" rows="4" required
+                          class="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-4 py-3 text-gray-900 dark:text-white focus:border-primary focus:ring-primary"
+                          oninput="updateWordCount('achievement1', 100)"></textarea>
+                        <span id="achievement1-counter" class="word-counter">0 words (minimum 100 words)</span>
+                      </div>
+                      
+                      <div>
+                        <label for="achievement2" class="block text-sm font-medium mb-1">Achievement #2 <span class="text-red-500">*</span></label>
+                        <textarea id="achievement2" name="achievement2" rows="4" required
+                          class="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-4 py-3 text-gray-900 dark:text-white focus:border-primary focus:ring-primary"
+                          oninput="updateWordCount('achievement2', 100)"></textarea>
+                        <span id="achievement2-counter" class="word-counter">0 words (minimum 100 words)</span>
+                      </div>
+                      
+                      <div>
+                        <label for="achievement3" class="block text-sm font-medium mb-1">Achievement #3 <span class="text-red-500">*</span></label>
+                        <textarea id="achievement3" name="achievement3" rows="4" required
+                          class="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-4 py-3 text-gray-900 dark:text-white focus:border-primary focus:ring-primary"
+                          oninput="updateWordCount('achievement3', 100)"></textarea>
+                        <span id="achievement3-counter" class="word-counter">0 words (minimum 100 words)</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Recognition -->
+                  <div>
+                    <label for="recognition" class="block text-sm font-medium mb-1">Have you received any awards, scholarships, or recognition?</label>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">If yes, describe the most meaningful one and why it matters to you.</p>
+                    <textarea id="recognition" name="recognition" rows="3"
+                      class="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-4 py-3 text-gray-900 dark:text-white focus:border-primary focus:ring-primary"></textarea>
+                  </div>
+                </div>
+                <div class="mt-6 flex justify-between">
+                  <button type="button" onclick="prevSection(3)" class="bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg px-6 py-3 font-bold hover:bg-opacity-90 transition-all">
+                    ← Previous
+                  </button>
+                  <button type="button" onclick="nextSection(5)" class="bg-primary text-white rounded-lg px-6 py-3 font-bold hover:bg-opacity-90 transition-all">
+                    Next →
+                  </button>
+                </div>
+              </div>
+
+              <!-- SECTION 5: Leadership & Impact -->
+              <div id="section-5" class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md hidden">
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                  <span class="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-bold">5</span>
+                  Leadership & Impact
+                </h2>
+                <div class="space-y-6">
+                  <!-- Leading Change -->
+                  <div>
+                    <label for="leadingChange" class="block text-sm font-medium mb-1">Describe a moment when you led a change <span class="text-red-500">*</span></label>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                      What was the situation? What change did you want to create? How did you mobilize others? What was the outcome?
+                    </p>
+                    <textarea id="leadingChange" name="leadingChange" rows="8" required
+                      class="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-4 py-3 text-gray-900 dark:text-white focus:border-primary focus:ring-primary"
+                      oninput="updateWordCount('leadingChange', 100)"></textarea>
+                    <span id="leadingChange-counter" class="word-counter">0 words (minimum 100 words)</span>
+                  </div>
+
+                  <!-- Project from Scratch -->
+                  <div>
+                    <label for="projectFromScratch" class="block text-sm font-medium mb-1">Describe a project you led from scratch <span class="text-red-500">*</span></label>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                      What problem were you solving? How did you go from idea to execution? Who did you involve? What were the measurable results?
+                    </p>
+                    <textarea id="projectFromScratch" name="projectFromScratch" rows="8" required
+                      class="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-4 py-3 text-gray-900 dark:text-white focus:border-primary focus:ring-primary"
+                      oninput="updateWordCount('projectFromScratch', 100)"></textarea>
+                    <span id="projectFromScratch-counter" class="word-counter">0 words (minimum 100 words)</span>
+                  </div>
+
+                  <!-- Social Impact -->
+                  <div>
+                    <label for="socialImpact" class="block text-sm font-medium mb-1">What problem in your country (or the world) do you most want to solve and why? <span class="text-red-500">*</span></label>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                      Why does this problem matter to you personally? What have you already done to address it? What would you do if you had unlimited resources?
+                    </p>
+                    <textarea id="socialImpact" name="socialImpact" rows="6" required
+                      class="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-4 py-3 text-gray-900 dark:text-white focus:border-primary focus:ring-primary"
+                      oninput="updateWordCount('socialImpact', 100)"></textarea>
+                    <span id="socialImpact-counter" class="word-counter">0 words (minimum 100 words)</span>
+                  </div>
+                </div>
                 <div class="mt-6 flex justify-between">
                   <button type="button" onclick="prevSection(4)" class="bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg px-6 py-3 font-bold hover:bg-opacity-90 transition-all">
+                    ← Previous
+                  </button>
+                  <button type="button" onclick="nextSection(6)" class="bg-primary text-white rounded-lg px-6 py-3 font-bold hover:bg-opacity-90 transition-all">
+                    Next →
+                  </button>
+                </div>
+              </div>
+
+              <!-- SECTION 6: Resilience & Learning -->
+              <div id="section-6" class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md hidden">
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                  <span class="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-bold">6</span>
+                  Resilience & Learning
+                </h2>
+                <div class="space-y-6">
+                  <!-- Biggest Challenge -->
+                  <div>
+                    <label for="biggestChallenge" class="block text-sm font-medium mb-1">What was your biggest challenge and how did you overcome it? <span class="text-red-500">*</span></label>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                      Describe the situation in detail. What made it so difficult? What strategies did you use to overcome it? What did you learn about yourself?
+                    </p>
+                    <textarea id="biggestChallenge" name="biggestChallenge" rows="8" required
+                      class="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-4 py-3 text-gray-900 dark:text-white focus:border-primary focus:ring-primary"
+                      oninput="updateWordCount('biggestChallenge', 100)"></textarea>
+                    <span id="biggestChallenge-counter" class="word-counter">0 words (minimum 100 words)</span>
+                  </div>
+
+                  <!-- Significant Failure -->
+                  <div>
+                    <label for="significantFailure" class="block text-sm font-medium mb-1">Tell us about a significant failure <span class="text-red-500">*</span></label>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                      What happened? How did you feel? What did you learn? How did this failure change your approach?
+                    </p>
+                    <textarea id="significantFailure" name="significantFailure" rows="6" required
+                      class="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-4 py-3 text-gray-900 dark:text-white focus:border-primary focus:ring-primary"
+                      oninput="updateWordCount('significantFailure', 100)"></textarea>
+                    <span id="significantFailure-counter" class="word-counter">0 words (minimum 100 words)</span>
+                  </div>
+
+                  <!-- Development -->
+                  <div>
+                    <label for="development" class="block text-sm font-medium mb-1">How have you developed yourself in the last 2 years? <span class="text-red-500">*</span></label>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                      Give concrete examples. What new skills did you acquire? What books, courses, or experiences shaped your thinking? How did you step out of your comfort zone?
+                    </p>
+                    <textarea id="development" name="development" rows="6" required
+                      class="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-4 py-3 text-gray-900 dark:text-white focus:border-primary focus:ring-primary"
+                      oninput="updateWordCount('development', 100)"></textarea>
+                    <span id="development-counter" class="word-counter">0 words (minimum 100 words)</span>
+                  </div>
+
+                  <!-- Future Vision -->
+                  <div>
+                    <label for="futureVision" class="block text-sm font-medium mb-1">Where do you see yourself in 5 years? <span class="text-red-500">*</span></label>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                      What impact do you want to have made? What kind of leader do you want to become? How does Problem Solvers fit into this vision?
+                    </p>
+                    <textarea id="futureVision" name="futureVision" rows="5" required
+                      class="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-4 py-3 text-gray-900 dark:text-white focus:border-primary focus:ring-primary"
+                      oninput="updateWordCount('futureVision', 100)"></textarea>
+                    <span id="futureVision-counter" class="word-counter">0 words (minimum 100 words)</span>
+                  </div>
+                </div>
+                <div class="mt-6 flex justify-between">
+                  <button type="button" onclick="prevSection(5)" class="bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg px-6 py-3 font-bold hover:bg-opacity-90 transition-all">
+                    ← Previous
+                  </button>
+                  <button type="button" onclick="nextSection(7)" class="bg-primary text-white rounded-lg px-6 py-3 font-bold hover:bg-opacity-90 transition-all">
+                    Next →
+                  </button>
+                </div>
+              </div>
+
+              <!-- SECTION 7: Values & Ethics -->
+              <div id="section-7" class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md hidden">
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                  <span class="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-bold">7</span>
+                  Values & Ethics
+                </h2>
+                <div class="space-y-6">
+                  <!-- Unique Value Proposition -->
+                  <div>
+                    <label for="uniqueValue" class="block text-sm font-medium mb-1">Why you and not another equally qualified candidate? <span class="text-red-500">*</span></label>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                      What makes you uniquely suited for this movement? What perspective, experience, or skill do you bring that others might not?
+                    </p>
+                    <textarea id="uniqueValue" name="uniqueValue" rows="5" required
+                      class="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-4 py-3 text-gray-900 dark:text-white focus:border-primary focus:ring-primary"
+                      oninput="updateWordCount('uniqueValue', 100)"></textarea>
+                    <span id="uniqueValue-counter" class="word-counter">0 words (minimum 100 words)</span>
+                  </div>
+
+                  <!-- Ethical Dilemma -->
+                  <div>
+                    <label for="ethicalDilemma" class="block text-sm font-medium mb-1">Ethical Dilemma Response <span class="text-red-500">*</span></label>
+                    <div class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700 rounded-lg p-4 mb-3">
+                      <p class="text-sm text-gray-800 dark:text-gray-200">
+                        <strong>Scenario:</strong> You're leading a project with a tight deadline. A team member is underperforming and putting the project at risk. They're going through personal difficulties. What do you do?
+                      </p>
+                    </div>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                      Describe your decision-making process. What factors would you consider? What would you actually do?
+                    </p>
+                    <textarea id="ethicalDilemma" name="ethicalDilemma" rows="5" required
+                      class="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-4 py-3 text-gray-900 dark:text-white focus:border-primary focus:ring-primary"
+                      oninput="updateWordCount('ethicalDilemma', 100)"></textarea>
+                    <span id="ethicalDilemma-counter" class="word-counter">0 words (minimum 100 words)</span>
+                  </div>
+
+                  <!-- Leadership vs Recognition -->
+                  <div>
+                    <label for="leadershipVsRecognition" class="block text-sm font-medium mb-1">Collaboration vs. Protagonism <span class="text-red-500">*</span></label>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                      What's more important to you: being recognized as the leader, or seeing the project succeed? Explain your answer with a real example.
+                    </p>
+                    <textarea id="leadershipVsRecognition" name="leadershipVsRecognition" rows="5" required
+                      class="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-4 py-3 text-gray-900 dark:text-white focus:border-primary focus:ring-primary"
+                      oninput="updateWordCount('leadershipVsRecognition', 100)"></textarea>
+                    <span id="leadershipVsRecognition-counter" class="word-counter">0 words (minimum 100 words)</span>
+                  </div>
+
+                  <!-- Top 3 Values -->
+                  <div>
+                    <label class="block text-sm font-medium mb-3">What are your top 3 non-negotiable values? <span class="text-red-500">*</span></label>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">For each value, describe a moment when you had to defend it.</p>
+                    
+                    <div class="space-y-4">
+                      <div>
+                        <label for="value1" class="block text-sm font-medium mb-1">Value #1 <span class="text-red-500">*</span></label>
+                        <input type="text" id="value1Name" name="value1Name" required placeholder="e.g., Integrity"
+                          class="mb-2 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-4 py-2 text-gray-900 dark:text-white focus:border-primary focus:ring-primary">
+                        <textarea id="value1" name="value1" rows="3" required placeholder="Describe a moment when you had to defend this value..."
+                          class="block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-4 py-3 text-gray-900 dark:text-white focus:border-primary focus:ring-primary"></textarea>
+                      </div>
+                      
+                      <div>
+                        <label for="value2" class="block text-sm font-medium mb-1">Value #2 <span class="text-red-500">*</span></label>
+                        <input type="text" id="value2Name" name="value2Name" required placeholder="e.g., Empathy"
+                          class="mb-2 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-4 py-2 text-gray-900 dark:text-white focus:border-primary focus:ring-primary">
+                        <textarea id="value2" name="value2" rows="3" required placeholder="Describe a moment when you had to defend this value..."
+                          class="block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-4 py-3 text-gray-900 dark:text-white focus:border-primary focus:ring-primary"></textarea>
+                      </div>
+                      
+                      <div>
+                        <label for="value3" class="block text-sm font-medium mb-1">Value #3 <span class="text-red-500">*</span></label>
+                        <input type="text" id="value3Name" name="value3Name" required placeholder="e.g., Courage"
+                          class="mb-2 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-4 py-2 text-gray-900 dark:text-white focus:border-primary focus:ring-primary">
+                        <textarea id="value3" name="value3" rows="3" required placeholder="Describe a moment when you had to defend this value..."
+                          class="block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-4 py-3 text-gray-900 dark:text-white focus:border-primary focus:ring-primary"></textarea>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="mt-6 flex justify-between">
+                  <button type="button" onclick="prevSection(6)" class="bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg px-6 py-3 font-bold hover:bg-opacity-90 transition-all">
+                    ← Previous
+                  </button>
+                  <button type="button" onclick="nextSection(8)" class="bg-primary text-white rounded-lg px-6 py-3 font-bold hover:bg-opacity-90 transition-all">
+                    Next →
+                  </button>
+                </div>
+              </div>
+
+              <!-- SECTION 8: Commitment & Availability -->
+              <div id="section-8" class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md hidden">
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                  <span class="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-bold">8</span>
+                  Commitment & Availability
+                </h2>
+                <div class="space-y-6">
+                  <!-- Time Commitment -->
+                  <div>
+                    <label class="block text-sm font-medium mb-3">How many hours per week can you realistically commit to Problem Solvers? <span class="text-red-500">*</span></label>
+                    <div class="space-y-2">
+                      <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="radio" name="timeCommitment" value="2-5" required class="text-primary focus:ring-primary">
+                        <span>2-5 hours</span>
+                      </label>
+                      <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="radio" name="timeCommitment" value="5-10" required class="text-primary focus:ring-primary">
+                        <span>5-10 hours</span>
+                      </label>
+                      <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="radio" name="timeCommitment" value="10-15" required class="text-primary focus:ring-primary">
+                        <span>10-15 hours</span>
+                      </label>
+                      <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="radio" name="timeCommitment" value="15+" required class="text-primary focus:ring-primary">
+                        <span>15+ hours</span>
+                      </label>
+                    </div>
+                  </div>
+
+                  <!-- Potential Obstacles -->
+                  <div>
+                    <label for="obstacles" class="block text-sm font-medium mb-1">What might prevent you from maintaining this commitment? <span class="text-red-500">*</span></label>
+                    <textarea id="obstacles" name="obstacles" rows="3" required
+                      class="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-4 py-3 text-gray-900 dark:text-white focus:border-primary focus:ring-primary"></textarea>
+                  </div>
+
+                  <!-- Intrinsic Motivation -->
+                  <div>
+                    <label for="intrinsicMotivation" class="block text-sm font-medium mb-1">What will keep you engaged when things get difficult? <span class="text-red-500">*</span></label>
+                    <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-300 dark:border-blue-700 rounded-lg p-4 mb-3">
+                      <p class="text-sm text-gray-800 dark:text-gray-200">
+                        <strong>Remember:</strong> This is a volunteer movement with no financial compensation.
+                      </p>
+                    </div>
+                    <textarea id="intrinsicMotivation" name="intrinsicMotivation" rows="5" required
+                      class="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-4 py-3 text-gray-900 dark:text-white focus:border-primary focus:ring-primary"
+                      oninput="updateWordCount('intrinsicMotivation', 100)"></textarea>
+                    <span id="intrinsicMotivation-counter" class="word-counter">0 words (minimum 100 words)</span>
+                  </div>
+                </div>
+                <div class="mt-6 flex justify-between">
+                  <button type="button" onclick="prevSection(7)" class="bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg px-6 py-3 font-bold hover:bg-opacity-90 transition-all">
+                    ← Previous
+                  </button>
+                  <button type="button" onclick="nextSection(9)" class="bg-primary text-white rounded-lg px-6 py-3 font-bold hover:bg-opacity-90 transition-all">
+                    Next →
+                  </button>
+                </div>
+              </div>
+
+              <!-- SECTION 9: Grit Scale Assessment -->
+              <div id="section-9" class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md hidden">
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                  <span class="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-bold">9</span>
+                  Grit Scale Assessment
+                </h2>
+                <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-300 dark:border-blue-700 rounded-lg p-4 mb-6">
+                  <p class="text-sm text-gray-800 dark:text-gray-200">
+                    <strong>Instructions:</strong> Please respond honestly to the following 12 items. There are no right or wrong answers! This assessment measures your perseverance and passion for long-term goals.
+                  </p>
+                </div>
+                
+                <div class="space-y-5">
+                  <!-- Grit Questions -->
+                  <div class="border-b border-gray-200 dark:border-gray-700 pb-4">
+                    <p class="text-sm font-medium mb-3">1. I have overcome setbacks to conquer an important challenge.</p>
+                    <div class="space-y-2">
+                      <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="grit1" value="5" required class="text-primary focus:ring-primary"><span class="text-sm">Very much like me</span></label>
+                      <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="grit1" value="4" required class="text-primary focus:ring-primary"><span class="text-sm">Mostly like me</span></label>
+                      <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="grit1" value="3" required class="text-primary focus:ring-primary"><span class="text-sm">Somewhat like me</span></label>
+                      <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="grit1" value="2" required class="text-primary focus:ring-primary"><span class="text-sm">Not much like me</span></label>
+                      <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="grit1" value="1" required class="text-primary focus:ring-primary"><span class="text-sm">Not like me at all</span></label>
+                    </div>
+                  </div>
+
+                  <div class="border-b border-gray-200 dark:border-gray-700 pb-4">
+                    <p class="text-sm font-medium mb-3">2. New ideas and projects sometimes distract me from previous ones. <span class="text-xs text-gray-500">(Reverse scored)</span></p>
+                    <div class="space-y-2">
+                      <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="grit2" value="1" required class="text-primary focus:ring-primary"><span class="text-sm">Very much like me</span></label>
+                      <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="grit2" value="2" required class="text-primary focus:ring-primary"><span class="text-sm">Mostly like me</span></label>
+                      <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="grit2" value="3" required class="text-primary focus:ring-primary"><span class="text-sm">Somewhat like me</span></label>
+                      <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="grit2" value="4" required class="text-primary focus:ring-primary"><span class="text-sm">Not much like me</span></label>
+                      <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="grit2" value="5" required class="text-primary focus:ring-primary"><span class="text-sm">Not like me at all</span></label>
+                    </div>
+                  </div>
+
+                  <div class="border-b border-gray-200 dark:border-gray-700 pb-4">
+                    <p class="text-sm font-medium mb-3">3. My interests change from year to year. <span class="text-xs text-gray-500">(Reverse scored)</span></p>
+                    <div class="space-y-2">
+                      <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="grit3" value="1" required class="text-primary focus:ring-primary"><span class="text-sm">Very much like me</span></label>
+                      <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="grit3" value="2" required class="text-primary focus:ring-primary"><span class="text-sm">Mostly like me</span></label>
+                      <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="grit3" value="3" required class="text-primary focus:ring-primary"><span class="text-sm">Somewhat like me</span></label>
+                      <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="grit3" value="4" required class="text-primary focus:ring-primary"><span class="text-sm">Not much like me</span></label>
+                      <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="grit3" value="5" required class="text-primary focus:ring-primary"><span class="text-sm">Not like me at all</span></label>
+                    </div>
+                  </div>
+
+                  <div class="border-b border-gray-200 dark:border-gray-700 pb-4">
+                    <p class="text-sm font-medium mb-3">4. Setbacks don't discourage me.</p>
+                    <div class="space-y-2">
+                      <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="grit4" value="5" required class="text-primary focus:ring-primary"><span class="text-sm">Very much like me</span></label>
+                      <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="grit4" value="4" required class="text-primary focus:ring-primary"><span class="text-sm">Mostly like me</span></label>
+                      <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="grit4" value="3" required class="text-primary focus:ring-primary"><span class="text-sm">Somewhat like me</span></label>
+                      <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="grit4" value="2" required class="text-primary focus:ring-primary"><span class="text-sm">Not much like me</span></label>
+                      <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="grit4" value="1" required class="text-primary focus:ring-primary"><span class="text-sm">Not like me at all</span></label>
+                    </div>
+                  </div>
+
+                  <div class="border-b border-gray-200 dark:border-gray-700 pb-4">
+                    <p class="text-sm font-medium mb-3">5. I have been obsessed with a certain idea or project for a short time but later lost interest. <span class="text-xs text-gray-500">(Reverse scored)</span></p>
+                    <div class="space-y-2">
+                      <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="grit5" value="1" required class="text-primary focus:ring-primary"><span class="text-sm">Very much like me</span></label>
+                      <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="grit5" value="2" required class="text-primary focus:ring-primary"><span class="text-sm">Mostly like me</span></label>
+                      <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="grit5" value="3" required class="text-primary focus:ring-primary"><span class="text-sm">Somewhat like me</span></label>
+                      <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="grit5" value="4" required class="text-primary focus:ring-primary"><span class="text-sm">Not much like me</span></label>
+                      <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="grit5" value="5" required class="text-primary focus:ring-primary"><span class="text-sm">Not like me at all</span></label>
+                    </div>
+                  </div>
+
+                  <div class="border-b border-gray-200 dark:border-gray-700 pb-4">
+                    <p class="text-sm font-medium mb-3">6. I am a hard worker.</p>
+                    <div class="space-y-2">
+                      <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="grit6" value="5" required class="text-primary focus:ring-primary"><span class="text-sm">Very much like me</span></label>
+                      <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="grit6" value="4" required class="text-primary focus:ring-primary"><span class="text-sm">Mostly like me</span></label>
+                      <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="grit6" value="3" required class="text-primary focus:ring-primary"><span class="text-sm">Somewhat like me</span></label>
+                      <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="grit6" value="2" required class="text-primary focus:ring-primary"><span class="text-sm">Not much like me</span></label>
+                      <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="grit6" value="1" required class="text-primary focus:ring-primary"><span class="text-sm">Not like me at all</span></label>
+                    </div>
+                  </div>
+
+                  <div class="border-b border-gray-200 dark:border-gray-700 pb-4">
+                    <p class="text-sm font-medium mb-3">7. I often set a goal but later choose to pursue a different one. <span class="text-xs text-gray-500">(Reverse scored)</span></p>
+                    <div class="space-y-2">
+                      <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="grit7" value="1" required class="text-primary focus:ring-primary"><span class="text-sm">Very much like me</span></label>
+                      <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="grit7" value="2" required class="text-primary focus:ring-primary"><span class="text-sm">Mostly like me</span></label>
+                      <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="grit7" value="3" required class="text-primary focus:ring-primary"><span class="text-sm">Somewhat like me</span></label>
+                      <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="grit7" value="4" required class="text-primary focus:ring-primary"><span class="text-sm">Not much like me</span></label>
+                      <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="grit7" value="5" required class="text-primary focus:ring-primary"><span class="text-sm">Not like me at all</span></label>
+                    </div>
+                  </div>
+
+                  <div class="border-b border-gray-200 dark:border-gray-700 pb-4">
+                    <p class="text-sm font-medium mb-3">8. I have difficulty maintaining my focus on projects that take more than a few months to complete. <span class="text-xs text-gray-500">(Reverse scored)</span></p>
+                    <div class="space-y-2">
+                      <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="grit8" value="1" required class="text-primary focus:ring-primary"><span class="text-sm">Very much like me</span></label>
+                      <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="grit8" value="2" required class="text-primary focus:ring-primary"><span class="text-sm">Mostly like me</span></label>
+                      <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="grit8" value="3" required class="text-primary focus:ring-primary"><span class="text-sm">Somewhat like me</span></label>
+                      <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="grit8" value="4" required class="text-primary focus:ring-primary"><span class="text-sm">Not much like me</span></label>
+                      <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="grit8" value="5" required class="text-primary focus:ring-primary"><span class="text-sm">Not like me at all</span></label>
+                    </div>
+                  </div>
+
+                  <div class="border-b border-gray-200 dark:border-gray-700 pb-4">
+                    <p class="text-sm font-medium mb-3">9. I finish whatever I begin.</p>
+                    <div class="space-y-2">
+                      <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="grit9" value="5" required class="text-primary focus:ring-primary"><span class="text-sm">Very much like me</span></label>
+                      <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="grit9" value="4" required class="text-primary focus:ring-primary"><span class="text-sm">Mostly like me</span></label>
+                      <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="grit9" value="3" required class="text-primary focus:ring-primary"><span class="text-sm">Somewhat like me</span></label>
+                      <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="grit9" value="2" required class="text-primary focus:ring-primary"><span class="text-sm">Not much like me</span></label>
+                      <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="grit9" value="1" required class="text-primary focus:ring-primary"><span class="text-sm">Not like me at all</span></label>
+                    </div>
+                  </div>
+
+                  <div class="border-b border-gray-200 dark:border-gray-700 pb-4">
+                    <p class="text-sm font-medium mb-3">10. I have achieved a goal that took years of work.</p>
+                    <div class="space-y-2">
+                      <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="grit10" value="5" required class="text-primary focus:ring-primary"><span class="text-sm">Very much like me</span></label>
+                      <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="grit10" value="4" required class="text-primary focus:ring-primary"><span class="text-sm">Mostly like me</span></label>
+                      <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="grit10" value="3" required class="text-primary focus:ring-primary"><span class="text-sm">Somewhat like me</span></label>
+                      <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="grit10" value="2" required class="text-primary focus:ring-primary"><span class="text-sm">Not much like me</span></label>
+                      <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="grit10" value="1" required class="text-primary focus:ring-primary"><span class="text-sm">Not like me at all</span></label>
+                    </div>
+                  </div>
+
+                  <div class="border-b border-gray-200 dark:border-gray-700 pb-4">
+                    <p class="text-sm font-medium mb-3">11. I become interested in new pursuits every few months. <span class="text-xs text-gray-500">(Reverse scored)</span></p>
+                    <div class="space-y-2">
+                      <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="grit11" value="1" required class="text-primary focus:ring-primary"><span class="text-sm">Very much like me</span></label>
+                      <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="grit11" value="2" required class="text-primary focus:ring-primary"><span class="text-sm">Mostly like me</span></label>
+                      <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="grit11" value="3" required class="text-primary focus:ring-primary"><span class="text-sm">Somewhat like me</span></label>
+                      <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="grit11" value="4" required class="text-primary focus:ring-primary"><span class="text-sm">Not much like me</span></label>
+                      <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="grit11" value="5" required class="text-primary focus:ring-primary"><span class="text-sm">Not like me at all</span></label>
+                    </div>
+                  </div>
+
+                  <div class="pb-4">
+                    <p class="text-sm font-medium mb-3">12. I am diligent.</p>
+                    <div class="space-y-2">
+                      <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="grit12" value="5" required class="text-primary focus:ring-primary"><span class="text-sm">Very much like me</span></label>
+                      <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="grit12" value="4" required class="text-primary focus:ring-primary"><span class="text-sm">Mostly like me</span></label>
+                      <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="grit12" value="3" required class="text-primary focus:ring-primary"><span class="text-sm">Somewhat like me</span></label>
+                      <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="grit12" value="2" required class="text-primary focus:ring-primary"><span class="text-sm">Not much like me</span></label>
+                      <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="grit12" value="1" required class="text-primary focus:ring-primary"><span class="text-sm">Not like me at all</span></label>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Grit Score Display -->
+                <div id="gritScoreDisplay" class="bg-blue-50 dark:bg-blue-900/20 border border-blue-300 dark:border-blue-700 rounded-lg p-4 mt-6 hidden">
+                  <p class="text-sm font-bold text-blue-700 dark:text-blue-400 mb-2">Your Grit Score: <span id="gritScore">0.00</span> / 5.00</p>
+                  <p id="gritInterpretation" class="text-sm text-gray-700 dark:text-gray-300"></p>
+                </div>
+
+                <div class="mt-6 flex justify-between">
+                  <button type="button" onclick="prevSection(8)" class="bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg px-6 py-3 font-bold hover:bg-opacity-90 transition-all">
+                    ← Previous
+                  </button>
+                  <button type="button" onclick="calculateGritAndNext()" class="bg-primary text-white rounded-lg px-6 py-3 font-bold hover:bg-opacity-90 transition-all">
+                    Calculate Grit Score & Continue →
+                  </button>
+                </div>
+              </div>
+
+              <!-- SECTION 10: Video Presentation & References -->
+              <div id="section-10" class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md hidden">
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                  <span class="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-bold">10</span>
+                  Video Presentation & References
+                </h2>
+                
+                <!-- Video Presentation -->
+                <div class="space-y-6">
+                  <div>
+                    <label for="videoUrl" class="block text-sm font-medium mb-1">YouTube Video Link <span class="text-red-500">*</span></label>
+                    <div class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700 rounded-lg p-4 mb-3">
+                      <p class="text-sm font-bold text-yellow-800 dark:text-yellow-300 mb-2">Video Requirements:</p>
+                      <ul class="text-sm text-gray-700 dark:text-gray-300 space-y-1">
+                        <li>✓ <strong>Duration:</strong> 2-3 minutes (videos over 3:30 will not be reviewed)</li>
+                        <li>✓ <strong>Platform:</strong> YouTube only (required)</li>
+                        <li>✓ <strong>Privacy:</strong> Must be PUBLIC (not unlisted or private)</li>
+                        <li>✓ <strong>Title Format:</strong> "Problem Solvers Foundation - Admission Proposal <span id="videoYear"></span> <span id="videoMoment"></span>"</li>
+                      </ul>
+                      <p class="text-xs text-gray-600 dark:text-gray-400 mt-2">
+                        Example: "Problem Solvers Foundation - Admission Proposal 2025 1st moment"
+                      </p>
+                    </div>
+                    <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-300 dark:border-blue-700 rounded-lg p-4 mb-3">
+                      <p class="text-sm font-bold text-blue-700 dark:text-blue-400 mb-2">What to include in your video:</p>
+                      <ul class="text-sm text-gray-700 dark:text-gray-300 space-y-1">
+                        <li>• Who you are beyond the form</li>
+                        <li>• What drives you</li>
+                        <li>• Why this movement matters to you</li>
+                        <li>• What you hope to contribute and learn</li>
+                      </ul>
+                      <p class="text-xs text-gray-600 dark:text-gray-400 mt-2">
+                        <strong>Remember:</strong> Be authentic - we value genuineness over production quality!
+                      </p>
+                    </div>
+                    <input type="url" id="videoUrl" name="videoUrl" required 
+                      placeholder="https://www.youtube.com/watch?v=..."
+                      class="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-4 py-3 text-gray-900 dark:text-white focus:border-primary focus:ring-primary">
+                    <p class="text-xs text-red-500 mt-1">⚠️ Videos that don't follow the requirements will be automatically disqualified</p>
+                  </div>
+
+                  <!-- Supporting Materials (Optional) -->
+                  <div>
+                    <label for="portfolioUrl" class="block text-sm font-medium mb-1">Portfolio / Additional Materials (Optional)</label>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                      Link to your portfolio, articles, project documentation, or any other relevant materials
+                    </p>
+                    <input type="url" id="portfolioUrl" name="portfolioUrl" 
+                      placeholder="https://..."
+                      class="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-4 py-3 text-gray-900 dark:text-white focus:border-primary focus:ring-primary">
+                  </div>
+
+                  <!-- References -->
+                  <div>
+                    <label class="block text-sm font-medium mb-3">References <span class="text-red-500">*</span></label>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                      Provide 2 references who can speak to your character, work ethic, and impact.
+                    </p>
+                    
+                    <div class="space-y-6">
+                      <!-- Reference 1 -->
+                      <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+                        <h4 class="font-bold text-sm mb-3">Reference #1</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <label for="ref1Name" class="block text-xs font-medium mb-1">Full Name <span class="text-red-500">*</span></label>
+                            <input type="text" id="ref1Name" name="ref1Name" required
+                              class="block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-primary focus:ring-primary">
+                          </div>
+                          <div>
+                            <label for="ref1Relationship" class="block text-xs font-medium mb-1">Relationship <span class="text-red-500">*</span></label>
+                            <input type="text" id="ref1Relationship" name="ref1Relationship" required placeholder="e.g., Professor, Manager, Mentor"
+                              class="block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-primary focus:ring-primary">
+                          </div>
+                          <div>
+                            <label for="ref1Email" class="block text-xs font-medium mb-1">Email <span class="text-red-500">*</span></label>
+                            <input type="email" id="ref1Email" name="ref1Email" required
+                              class="block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-primary focus:ring-primary">
+                          </div>
+                          <div>
+                            <label for="ref1Phone" class="block text-xs font-medium mb-1">Phone <span class="text-red-500">*</span></label>
+                            <input type="tel" id="ref1Phone" name="ref1Phone" required
+                              class="block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-primary focus:ring-primary">
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Reference 2 -->
+                      <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+                        <h4 class="font-bold text-sm mb-3">Reference #2</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <label for="ref2Name" class="block text-xs font-medium mb-1">Full Name <span class="text-red-500">*</span></label>
+                            <input type="text" id="ref2Name" name="ref2Name" required
+                              class="block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-primary focus:ring-primary">
+                          </div>
+                          <div>
+                            <label for="ref2Relationship" class="block text-xs font-medium mb-1">Relationship <span class="text-red-500">*</span></label>
+                            <input type="text" id="ref2Relationship" name="ref2Relationship" required placeholder="e.g., Professor, Manager, Mentor"
+                              class="block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-primary focus:ring-primary">
+                          </div>
+                          <div>
+                            <label for="ref2Email" class="block text-xs font-medium mb-1">Email <span class="text-red-500">*</span></label>
+                            <input type="email" id="ref2Email" name="ref2Email" required
+                              class="block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-primary focus:ring-primary">
+                          </div>
+                          <div>
+                            <label for="ref2Phone" class="block text-xs font-medium mb-1">Phone <span class="text-red-500">*</span></label>
+                            <input type="tel" id="ref2Phone" name="ref2Phone" required
+                              class="block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-primary focus:ring-primary">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mt-8 flex justify-between">
+                  <button type="button" onclick="prevSection(9)" class="bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg px-6 py-3 font-bold hover:bg-opacity-90 transition-all">
                     ← Previous
                   </button>
                   <button type="submit" id="submitButton" class="bg-green-600 text-white rounded-lg px-8 py-3 font-bold hover:bg-green-700 transition-all flex items-center gap-2">
@@ -310,7 +912,7 @@
                 </div>
               </div>
 
-              <!-- Success Message (hidden initially) -->
+              <!-- Success Message -->
               <div id="successMessage" class="bg-green-50 dark:bg-green-900/20 border-2 border-green-500 rounded-xl p-8 text-center hidden">
                 <div class="flex justify-center mb-4">
                   <div class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center">
@@ -320,9 +922,21 @@
                   </div>
                 </div>
                 <h3 class="text-2xl font-bold text-green-700 dark:text-green-400 mb-2">Application Submitted Successfully!</h3>
-                <p class="text-gray-700 dark:text-gray-300 mb-6">
-                  Thank you for your interest in joining Problem Solvers Foundation. We'll review your application and get back to you soon.
+                <p class="text-gray-700 dark:text-gray-300 mb-4">
+                  Thank you for your interest in joining Problem Solvers Foundation.
                 </p>
+                <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-300 dark:border-blue-700 rounded-lg p-4 mb-6 text-left">
+                  <p class="text-sm font-bold text-blue-700 dark:text-blue-400 mb-2">Next Steps:</p>
+                  <ul class="text-sm text-gray-700 dark:text-gray-300 space-y-1">
+                    <li>✓ Week 5: Committee will review all applications (30-40 finalists selected)</li>
+                    <li>✓ Week 8: Selected finalists will be invited for a 60-minute interview</li>
+                    <li>✓ Weekend 9: Top candidates participate in our 2-day online hackathon</li>
+                    <li>✓ Week 10: Final results announced - 10 candidates will be selected</li>
+                  </ul>
+                  <p class="text-xs text-gray-600 dark:text-gray-400 mt-3">
+                    You'll receive an email confirmation shortly. Check your spam folder if you don't see it within 24 hours.
+                  </p>
+                </div>
                 <a href="/" class="inline-block bg-primary text-white rounded-lg px-6 py-3 font-bold hover:bg-opacity-90 transition-all">
                   Return to Home
                 </a>
@@ -338,58 +952,79 @@
 
   <script>
     let currentSection = 1;
-    const totalSections = 5;
+    const totalSections = 10;
+    let gritScoreValue = 0;
+
+    // Initialize application period
+    function initializeApplicationPeriod() {
+      const now = new Date();
+      const month = now.getMonth() + 1; // 1-12
+      const year = now.getFullYear();
+      
+      let moment, periodText;
+      if (month >= 1 && month <= 6) {
+        moment = '1st moment';
+        periodText = 'July';
+      } else {
+        moment = '2nd moment';
+        periodText = 'December';
+      }
+      
+      document.getElementById('applicationPeriod').textContent = periodText;
+      document.getElementById('videoYear').textContent = year;
+      document.getElementById('videoMoment').textContent = moment;
+      
+      // Calculate days remaining (mock - adjust based on actual dates)
+      const daysRemaining = month <= 6 ? 30 - (now.getDate() % 30) : 30 - (now.getDate() % 30);
+      document.getElementById('daysRemaining').textContent = daysRemaining;
+    }
 
     function updateProgress() {
       const percentage = (currentSection / totalSections) * 100;
       document.getElementById('progress-bar').style.width = percentage + '%';
       document.getElementById('progress-percentage').textContent = Math.round(percentage) + '%';
-
-      const sections = ['Basic Information', 'Motivation', 'Projects', 'Skills', 'Final Thoughts'];
+      
+      const sections = [
+        'Basic Information', 
+        'Motivation', 
+        'Projects & Skills', 
+        'Your Story',
+        'Leadership',
+        'Resilience',
+        'Values',
+        'Commitment',
+        'Grit Assessment',
+        'Video & References'
+      ];
       document.getElementById('progress-text').textContent = sections[currentSection - 1];
     }
 
     function nextSection(section) {
-      // Validate current section
       const currentForm = document.getElementById(`section-${currentSection}`);
       const inputs = currentForm.querySelectorAll('[required]');
       let isValid = true;
-
+      
       inputs.forEach(input => {
         if (!input.checkValidity()) {
           isValid = false;
           input.reportValidity();
         }
       });
-
+      
       if (!isValid) return;
-
-      // Hide current section
+      
       document.getElementById(`section-${currentSection}`).classList.add('hidden');
-
-      // Show next section
       currentSection = section;
       document.getElementById(`section-${section}`).classList.remove('hidden');
-
-      // Update progress
       updateProgress();
-
-      // Scroll to top
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function prevSection(section) {
-      // Hide current section
       document.getElementById(`section-${currentSection}`).classList.add('hidden');
-
-      // Show previous section
       currentSection = section;
       document.getElementById(`section-${section}`).classList.remove('hidden');
-
-      // Update progress
       updateProgress();
-
-      // Scroll to top
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
@@ -407,37 +1042,90 @@
       const field = document.getElementById(fieldId);
       const counter = document.getElementById(`${fieldId}-counter`);
       const length = field.value.length;
-
+      
       if (maxChars > 0) {
         counter.textContent = `${length} / ${maxChars} characters maximum`;
-        if (length > maxChars * 0.9) {
-          counter.classList.add('warning');
-        } else {
-          counter.classList.remove('warning');
-        }
+        counter.classList.toggle('warning', length > maxChars * 0.9);
+        counter.classList.toggle('error', length > maxChars);
       } else if (minChars > 0) {
         counter.textContent = `${length} / ${minChars} characters minimum`;
-        if (length < minChars) {
-          counter.classList.add('error');
-        } else {
-          counter.classList.remove('error');
-          counter.classList.add('text-green-600');
-        }
+        counter.classList.toggle('error', length < minChars);
+        counter.classList.toggle('success', length >= minChars);
       }
+    }
+
+    function updateWordCount(fieldId, minWords) {
+      const field = document.getElementById(fieldId);
+      const counter = document.getElementById(`${fieldId}-counter`);
+      const text = field.value.trim();
+      const wordCount = text.length > 0 ? text.split(/\s+/).length : 0;
+      
+      counter.textContent = `${wordCount} words (minimum ${minWords} words)`;
+      
+      if (wordCount < minWords) {
+        counter.style.color = '#ef4444';
+      } else if (wordCount < minWords * 1.2) {
+        counter.style.color = '#f59e0b';
+      } else {
+        counter.style.color = '#10b981';
+      }
+    }
+
+    function calculateGritAndNext() {
+      // Check if all grit questions are answered
+      let allAnswered = true;
+      let totalScore = 0;
+      
+      for (let i = 1; i <= 12; i++) {
+        const selected = document.querySelector(`input[name="grit${i}"]:checked`);
+        if (!selected) {
+          allAnswered = false;
+          alert('Please answer all Grit Scale questions before continuing.');
+          return;
+        }
+        totalScore += parseInt(selected.value);
+      }
+      
+      // Calculate average
+      gritScoreValue = (totalScore / 12).toFixed(2);
+      
+      // Display score
+      document.getElementById('gritScore').textContent = gritScoreValue;
+      const scoreDisplay = document.getElementById('gritScoreDisplay');
+      const interpretation = document.getElementById('gritInterpretation');
+      
+      if (gritScoreValue >= 4.5) {
+        interpretation.textContent = 'Extremely High Grit (Top 5%) - Exceptional perseverance and passion!';
+      } else if (gritScoreValue >= 4.0) {
+        interpretation.textContent = 'High Grit (Top 20%) - Strong perseverance and dedication!';
+      } else if (gritScoreValue >= 3.5) {
+        interpretation.textContent = 'Above Average Grit - Good balance of persistence and focus.';
+      } else if (gritScoreValue >= 3.0) {
+        interpretation.textContent = 'Average Grit - Room for growth in long-term persistence.';
+      } else {
+        interpretation.textContent = 'Below Average Grit - Consider how you can strengthen your perseverance.';
+      }
+      
+      scoreDisplay.classList.remove('hidden');
+      
+      // Move to next section after a brief delay
+      setTimeout(() => {
+        nextSection(10);
+      }, 2000);
     }
 
     // Form submission
     document.getElementById('applicationForm').addEventListener('submit', async (e) => {
       e.preventDefault();
-
+      
       const submitButton = document.getElementById('submitButton');
       submitButton.disabled = true;
       submitButton.innerHTML = '<span>Submitting...</span>';
-
+      
       // Collect form data
       const formData = new FormData(e.target);
       const data = {};
-
+      
       // Handle regular fields
       for (let [key, value] of formData.entries()) {
         if (key === 'skills') {
@@ -447,11 +1135,20 @@
           data[key] = value;
         }
       }
-
-      // Add timestamp
+      
+      // Add grit score
+      data.gritScore = gritScoreValue;
+      
+      // Add timestamp and status
       data.submittedAt = new Date().toISOString();
       data.status = 'pending';
-
+      
+      // Determine application period
+      const now = new Date();
+      const month = now.getMonth() + 1;
+      data.applicationPeriod = month <= 6 ? '1st moment' : '2nd moment';
+      data.applicationYear = now.getFullYear();
+      
       try {
         const response = await fetch('/api/applications/submit', {
           method: 'POST',
@@ -460,19 +1157,19 @@
           },
           body: JSON.stringify(data)
         });
-
+        
         if (response.ok) {
-          // Hide form sections
+          // Hide all form sections
           for (let i = 1; i <= totalSections; i++) {
             document.getElementById(`section-${i}`).classList.add('hidden');
           }
-
+          
           // Hide progress bar
           document.querySelector('.mb-8').classList.add('hidden');
-
+          
           // Show success message
           document.getElementById('successMessage').classList.remove('hidden');
-
+          
           // Scroll to top
           window.scrollTo({ top: 0, behavior: 'smooth' });
         } else {
@@ -482,14 +1179,17 @@
         console.error('Error:', error);
         alert('An error occurred while submitting your application. Please try again.');
         submitButton.disabled = false;
-        submitButton.innerHTML = '<span>Submit Application</span>';
+        submitButton.innerHTML = '<span>Submit Application</span><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>';
       }
     });
 
-    // Initialize progress
-    updateProgress();
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      initializeApplicationPeriod();
+      updateProgress();
+    });
   </script>
-
+  
   <%- include('../partials/scripts', { pageScripts: [], inlineScript: null }) %>
 </body>
 </html>

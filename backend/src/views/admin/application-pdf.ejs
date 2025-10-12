@@ -306,6 +306,275 @@
     </div>
   <% } %>
 
+  <!-- Personal Story & Achievements -->
+  <% if (application.personalStory || application.achievement1 || application.achievement2 || application.achievement3 || application.recognition) { %>
+    <div class="section">
+      <div class="section-title">📖 Your Story & Achievements</div>
+
+      <% if (application.personalStory) { %>
+        <div class="field">
+          <div class="field-label">Personal Story</div>
+          <div class="field-value"><%= application.personalStory %></div>
+        </div>
+      <% } %>
+
+      <% if (application.achievement1) { %>
+        <div class="field">
+          <div class="field-label">Achievement #1</div>
+          <div class="field-value"><%= application.achievement1 %></div>
+        </div>
+      <% } %>
+
+      <% if (application.achievement2) { %>
+        <div class="field">
+          <div class="field-label">Achievement #2</div>
+          <div class="field-value"><%= application.achievement2 %></div>
+        </div>
+      <% } %>
+
+      <% if (application.achievement3) { %>
+        <div class="field">
+          <div class="field-label">Achievement #3</div>
+          <div class="field-value"><%= application.achievement3 %></div>
+        </div>
+      <% } %>
+
+      <% if (application.recognition) { %>
+        <div class="field">
+          <div class="field-label">Awards & Recognition</div>
+          <div class="field-value"><%= application.recognition %></div>
+        </div>
+      <% } %>
+    </div>
+  <% } %>
+
+  <!-- Leadership & Impact -->
+  <% if (application.leadingChange || application.projectFromScratch || application.socialImpact) { %>
+    <div class="section">
+      <div class="section-title">⚡ Leadership & Impact</div>
+
+      <% if (application.leadingChange) { %>
+        <div class="field">
+          <div class="field-label">Leading Change</div>
+          <div class="field-value"><%= application.leadingChange %></div>
+        </div>
+      <% } %>
+
+      <% if (application.projectFromScratch) { %>
+        <div class="field">
+          <div class="field-label">Project from Scratch</div>
+          <div class="field-value"><%= application.projectFromScratch %></div>
+        </div>
+      <% } %>
+
+      <% if (application.socialImpact) { %>
+        <div class="field">
+          <div class="field-label">Social Impact Vision</div>
+          <div class="field-value"><%= application.socialImpact %></div>
+        </div>
+      <% } %>
+    </div>
+  <% } %>
+
+  <!-- Resilience & Learning -->
+  <% if (application.biggestChallenge || application.significantFailure || application.development || application.futureVision) { %>
+    <div class="section">
+      <div class="section-title">🛡️ Resilience & Learning</div>
+
+      <% if (application.biggestChallenge) { %>
+        <div class="field">
+          <div class="field-label">Biggest Challenge</div>
+          <div class="field-value"><%= application.biggestChallenge %></div>
+        </div>
+      <% } %>
+
+      <% if (application.significantFailure) { %>
+        <div class="field">
+          <div class="field-label">Significant Failure</div>
+          <div class="field-value"><%= application.significantFailure %></div>
+        </div>
+      <% } %>
+
+      <% if (application.development) { %>
+        <div class="field">
+          <div class="field-label">Personal Development (Last 2 Years)</div>
+          <div class="field-value"><%= application.development %></div>
+        </div>
+      <% } %>
+
+      <% if (application.futureVision) { %>
+        <div class="field">
+          <div class="field-label">5-Year Vision</div>
+          <div class="field-value"><%= application.futureVision %></div>
+        </div>
+      <% } %>
+    </div>
+  <% } %>
+
+  <!-- Values & Ethics -->
+  <% if (application.uniqueValue || application.ethicalDilemma || application.leadershipVsRecognition || application.value1 || application.value2 || application.value3) { %>
+    <div class="section">
+      <div class="section-title">⚖️ Values & Ethics</div>
+
+      <% if (application.uniqueValue) { %>
+        <div class="field">
+          <div class="field-label">Unique Value Proposition</div>
+          <div class="field-value"><%= application.uniqueValue %></div>
+        </div>
+      <% } %>
+
+      <% if (application.ethicalDilemma) { %>
+        <div class="field">
+          <div class="field-label">Ethical Dilemma Response</div>
+          <div class="field-value"><%= application.ethicalDilemma %></div>
+        </div>
+      <% } %>
+
+      <% if (application.leadershipVsRecognition) { %>
+        <div class="field">
+          <div class="field-label">Collaboration vs. Protagonism</div>
+          <div class="field-value"><%= application.leadershipVsRecognition %></div>
+        </div>
+      <% } %>
+
+      <% if (application.value1 || application.value2 || application.value3) { %>
+        <div class="field">
+          <div class="field-label">Top 3 Non-Negotiable Values</div>
+          <% if (application.value1) { %>
+            <div style="margin-top: 10px; padding: 10px; background: #f5f5f5; border-radius: 5px;">
+              <strong>Value #1: <%= application.value1Name || 'N/A' %></strong><br>
+              <%= application.value1 %>
+            </div>
+          <% } %>
+          <% if (application.value2) { %>
+            <div style="margin-top: 10px; padding: 10px; background: #f5f5f5; border-radius: 5px;">
+              <strong>Value #2: <%= application.value2Name || 'N/A' %></strong><br>
+              <%= application.value2 %>
+            </div>
+          <% } %>
+          <% if (application.value3) { %>
+            <div style="margin-top: 10px; padding: 10px; background: #f5f5f5; border-radius: 5px;">
+              <strong>Value #3: <%= application.value3Name || 'N/A' %></strong><br>
+              <%= application.value3 %>
+            </div>
+          <% } %>
+        </div>
+      <% } %>
+    </div>
+  <% } %>
+
+  <!-- Commitment & Availability -->
+  <% if (application.timeCommitment || application.obstacles || application.intrinsicMotivation) { %>
+    <div class="section">
+      <div class="section-title">⏰ Commitment & Availability</div>
+
+      <% if (application.timeCommitment) { %>
+        <div class="field">
+          <div class="field-label">Time Commitment (hours/week)</div>
+          <div class="field-value"><%= application.timeCommitment %></div>
+        </div>
+      <% } %>
+
+      <% if (application.obstacles) { %>
+        <div class="field">
+          <div class="field-label">Potential Obstacles</div>
+          <div class="field-value"><%= application.obstacles %></div>
+        </div>
+      <% } %>
+
+      <% if (application.intrinsicMotivation) { %>
+        <div class="field">
+          <div class="field-label">Intrinsic Motivation</div>
+          <div class="field-value"><%= application.intrinsicMotivation %></div>
+        </div>
+      <% } %>
+    </div>
+  <% } %>
+
+  <!-- Grit Scale Assessment -->
+  <% if (application.gritScore) { %>
+    <div class="section">
+      <div class="section-title">📊 Grit Scale Assessment</div>
+      <div class="field">
+        <div class="field-label">Grit Score</div>
+        <div class="field-value">
+          <strong style="font-size: 24px; color: #117dd4;"><%= parseFloat(application.gritScore).toFixed(2) %></strong> / 5.00
+          <%
+            let gritInterpretation = '';
+            const score = parseFloat(application.gritScore);
+            if (score >= 4.5) {
+              gritInterpretation = 'Extremely High Grit (Top 5%)';
+            } else if (score >= 4.0) {
+              gritInterpretation = 'High Grit (Top 20%)';
+            } else if (score >= 3.5) {
+              gritInterpretation = 'Above Average Grit';
+            } else if (score >= 3.0) {
+              gritInterpretation = 'Average Grit';
+            } else {
+              gritInterpretation = 'Below Average Grit';
+            }
+          %>
+          <br><em><%= gritInterpretation %></em>
+        </div>
+      </div>
+    </div>
+  <% } %>
+
+  <!-- Video & References -->
+  <% if (application.videoUrl || application.portfolioUrl || application.ref1Name || application.ref2Name) { %>
+    <div class="section">
+      <div class="section-title">🎥 Video & References</div>
+
+      <% if (application.videoUrl) { %>
+        <div class="field">
+          <div class="field-label">Video Presentation</div>
+          <div class="field-value"><%= application.videoUrl %></div>
+        </div>
+      <% } %>
+
+      <% if (application.portfolioUrl) { %>
+        <div class="field">
+          <div class="field-label">Portfolio / Additional Materials</div>
+          <div class="field-value"><%= application.portfolioUrl %></div>
+        </div>
+      <% } %>
+
+      <% if (application.ref1Name || application.ref2Name) { %>
+        <div class="field">
+          <div class="field-label">References</div>
+          <% if (application.ref1Name) { %>
+            <div style="margin-top: 10px; padding: 10px; background: #f5f5f5; border-radius: 5px;">
+              <strong>Reference #1</strong><br>
+              <strong>Name:</strong> <%= application.ref1Name %><br>
+              <strong>Relationship:</strong> <%= application.ref1Relationship || 'N/A' %><br>
+              <strong>Email:</strong> <%= application.ref1Email || 'N/A' %><br>
+              <strong>Phone:</strong> <%= application.ref1Phone || 'N/A' %>
+            </div>
+          <% } %>
+          <% if (application.ref2Name) { %>
+            <div style="margin-top: 10px; padding: 10px; background: #f5f5f5; border-radius: 5px;">
+              <strong>Reference #2</strong><br>
+              <strong>Name:</strong> <%= application.ref2Name %><br>
+              <strong>Relationship:</strong> <%= application.ref2Relationship || 'N/A' %><br>
+              <strong>Email:</strong> <%= application.ref2Email || 'N/A' %><br>
+              <strong>Phone:</strong> <%= application.ref2Phone || 'N/A' %>
+            </div>
+          <% } %>
+        </div>
+      <% } %>
+    </div>
+  <% } %>
+
+  <!-- Application Period -->
+  <% if (application.applicationPeriod || application.applicationYear) { %>
+    <div class="section">
+      <div class="section-title">📅 Application Period</div>
+      <div class="field">
+        <div class="field-value"><%= application.applicationPeriod || 'N/A' %> - <%= application.applicationYear || 'N/A' %></div>
+      </div>
+    </div>
+  <% } %>
+
   <!-- Review Section -->
   <% if (application.reviewNotes || application.score || application.reviewedBy) { %>
     <div class="review-section">
