@@ -140,6 +140,25 @@
     // Projetos vindos do servidor
     const projects = <%- JSON.stringify(projects) %>;
 
+    // Função para formatar números grandes
+    function formatNumber(num) {
+      if (num === null || num === undefined || isNaN(num)) {
+        return '0';
+      }
+
+      const absNum = Math.abs(num);
+
+      if (absNum >= 1000000000) {
+        return (num / 1000000000).toFixed(1).replace(/\.0$/, '') + 'B';
+      } else if (absNum >= 1000000) {
+        return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+      } else if (absNum >= 1000) {
+        return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+      } else {
+        return num.toString();
+      }
+    }
+
     function renderProjects() {
       const tbody = document.getElementById('projects-tbody');
       
@@ -186,7 +205,7 @@
               </div>
             </td>
             <td class="px-6 py-4 text-sm text-gray-600">
-              ${project.metrics?.livesImpacted || 0} lives
+              <span class="font-semibold">${formatNumber(project.metrics?.livesImpacted || 0)}</span> lives
             </td>
             <td class="px-6 py-4 text-right text-sm font-medium space-x-2">
               <a href="/admin/projects/edit/${project.id}" class="text-primary hover:text-blue-700">Edit</a>
