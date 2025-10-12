@@ -26,6 +26,7 @@ import blogRoutes from './routes/blog.js';
 import authRoutes from './routes/auth.js';
 import statsRoutes from './routes/stats.js';
 import adminRoutes from './routes/admin.js';
+import applicationsRoutes from './routes/applications.js';
 
 // Criar aplicação Express
 const app = express();
@@ -79,6 +80,7 @@ app.use('/api/projects', projectRoutes);
 app.use('/api/blog', blogRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/stats', statsRoutes);
+app.use('/api/applications', applicationsRoutes);
 
 // Rotas SSR (Server-Side Rendering) - HTML renderizado
 app.use('/blog', blogRoutes);
