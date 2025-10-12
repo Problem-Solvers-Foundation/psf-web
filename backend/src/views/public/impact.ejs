@@ -32,21 +32,21 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
               <!-- Total Projects -->
               <div class="bg-surface-light dark:bg-surface-dark rounded-xl p-8 text-center shadow-lg hover:shadow-xl transition-shadow">
-                <div class="text-6xl font-black text-primary mb-4"><%= stats.totalProjects %>+</div>
+                <div class="text-6xl font-black text-primary mb-4"><%= stats.totalProjectsFormatted %>+</div>
                 <p class="text-xl font-bold text-text-light dark:text-text-dark">Total Projects</p>
                 <p class="text-sm text-muted-light dark:text-muted-dark mt-2">Active initiatives worldwide</p>
               </div>
 
               <!-- Lives Improved -->
               <div class="bg-surface-light dark:bg-surface-dark rounded-xl p-8 text-center shadow-lg hover:shadow-xl transition-shadow">
-                <div class="text-6xl font-black text-primary mb-4"><%= (stats.totalLives / 1000).toFixed(0) %>K+</div>
+                <div class="text-6xl font-black text-primary mb-4"><%= stats.totalLivesFormatted %>+</div>
                 <p class="text-xl font-bold text-text-light dark:text-text-dark">Lives Improved</p>
                 <p class="text-sm text-muted-light dark:text-muted-dark mt-2">People directly impacted</p>
               </div>
 
               <!-- Volunteers -->
               <div class="bg-surface-light dark:bg-surface-dark rounded-xl p-8 text-center shadow-lg hover:shadow-xl transition-shadow">
-                <div class="text-6xl font-black text-primary mb-4"><%= stats.totalVolunteers %>+</div>
+                <div class="text-6xl font-black text-primary mb-4"><%= stats.totalVolunteersFormatted %>+</div>
                 <p class="text-xl font-bold text-text-light dark:text-text-dark">Volunteers</p>
                 <p class="text-sm text-muted-light dark:text-muted-dark mt-2">Dedicated team members</p>
               </div>

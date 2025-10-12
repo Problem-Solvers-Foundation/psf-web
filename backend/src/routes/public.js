@@ -5,6 +5,7 @@
 
 import express from 'express';
 import { db } from '../config/firebase.js';
+import { formatNumber } from '../utils/formatNumber.js';
 
 const router = express.Router();
 
@@ -22,10 +23,17 @@ router.get('/', async (req, res) => {
     }));
 
     // Calcular estatísticas
+    const totalProjects = projects.length;
+    const totalLives = projects.reduce((sum, p) => sum + (p.metrics?.livesImpacted || 0), 0);
+    const totalVolunteers = projects.reduce((sum, p) => sum + (p.metrics?.volunteersInvolved || 0), 0);
+
     const stats = {
-      totalProjects: projects.length,
-      totalLives: projects.reduce((sum, p) => sum + (p.metrics?.livesImpacted || 0), 0),
-      totalVolunteers: projects.reduce((sum, p) => sum + (p.metrics?.volunteersInvolved || 0), 0)
+      totalProjects: totalProjects,
+      totalProjectsFormatted: formatNumber(totalProjects),
+      totalLives: totalLives,
+      totalLivesFormatted: formatNumber(totalLives),
+      totalVolunteers: totalVolunteers,
+      totalVolunteersFormatted: formatNumber(totalVolunteers)
     };
 
     // Renderizar página
@@ -100,10 +108,17 @@ router.get('/impact', async (req, res) => {
     }));
 
     // Calcular estatísticas gerais
+    const totalProjects = projects.length;
+    const totalLives = projects.reduce((sum, p) => sum + (p.metrics?.livesImpacted || 0), 0);
+    const totalVolunteers = projects.reduce((sum, p) => sum + (p.metrics?.volunteersInvolved || 0), 0);
+
     const stats = {
-      totalProjects: projects.length,
-      totalLives: projects.reduce((sum, p) => sum + (p.metrics?.livesImpacted || 0), 0),
-      totalVolunteers: projects.reduce((sum, p) => sum + (p.metrics?.volunteersInvolved || 0), 0)
+      totalProjects: totalProjects,
+      totalProjectsFormatted: formatNumber(totalProjects),
+      totalLives: totalLives,
+      totalLivesFormatted: formatNumber(totalLives),
+      totalVolunteers: totalVolunteers,
+      totalVolunteersFormatted: formatNumber(totalVolunteers)
     };
 
     res.render('public/impact', {

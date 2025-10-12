@@ -61,15 +61,15 @@
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
               <div class="bg-background-light dark:bg-background-dark rounded-xl p-8 text-center shadow-sm">
-                <p class="text-5xl font-black text-primary"><%= stats.totalProjects %>+</p>
+                <p class="text-5xl font-black text-primary"><%= stats.totalProjectsFormatted %>+</p>
                 <p class="mt-2 text-lg font-medium">Total Projects</p>
               </div>
               <div class="bg-background-light dark:bg-background-dark rounded-xl p-8 text-center shadow-sm">
-                <p class="text-5xl font-black text-primary"><%= (stats.totalLives / 1000).toFixed(0) %>K+</p>
+                <p class="text-5xl font-black text-primary"><%= stats.totalLivesFormatted %>+</p>
                 <p class="mt-2 text-lg font-medium">Lives Improved</p>
               </div>
               <div class="bg-background-light dark:bg-background-dark rounded-xl p-8 text-center shadow-sm">
-                <p class="text-5xl font-black text-primary"><%= stats.totalVolunteers %>+</p>
+                <p class="text-5xl font-black text-primary"><%= stats.totalVolunteersFormatted %>+</p>
                 <p class="mt-2 text-lg font-medium">Volunteers</p>
               </div>
             </div>
