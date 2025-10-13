@@ -44,7 +44,31 @@ app.set('views', path.join(__dirname, 'views'));
 // ===============================
 
 // Permitir requisições de qualquer origem (CORS)
-app.use(cors());
+// Em produção, especificamos origens permitidas
+const allowedOrigins = [
+  'https://psf-backend-r6ut.onrender.com',  // Backend URL
+  'http://localhost:3000',                   // Desenvolvimento local
+  'http://localhost:5173'                    // Vite dev (se usar)
+];
+
+// Adicionar Netlify URL quando disponível
+if (process.env.NETLIFY_URL) {
+  allowedOrigins.push(process.env.NETLIFY_URL);
+}
+
+app.use(cors({
+  origin: function(origin, callback) {
+    // Permitir requisições sem origin (mobile apps, Postman, etc)
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(null, true); // Por enquanto, permitir todas (ajustar depois se necessário)
+    }
+  },
+  credentials: true
+}));
 
 // Permitir receber JSON no body das requisições
 app.use(express.json());
@@ -56,9 +80,10 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    maxAge: 24 * 60 * 60 * 1000, // 24 horas
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 dias
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production' // HTTPS apenas em produção
+    secure: process.env.NODE_ENV === 'production', // HTTPS obrigatório em produção
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax' // Permite cross-origin em produção
   }
 }));
 
