@@ -16,87 +16,24 @@
       }
     };
   </script>
+  <%- include('../partials/admin-styles') %>
 </head>
 <body class="bg-gray-50">
+  <% const currentPage = 'posts'; %>
 
-  <!-- Sidebar -->
-  <div class="fixed inset-y-0 left-0 w-64 bg-gray-900 text-white">
-    <div class="flex items-center gap-3 px-6 py-5 border-b border-gray-800">
-      <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
-        <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 48 48">
-          <path d="M12.08 24L4 19.25L9.96 8.75L18.04 13.5L18.04 4h11.91l.01 9.5L38.04 8.75L44 19.25L35.92 24L44 28.75L38.04 39.25L29.96 34.5L29.96 44H18.04l-.0 -9.5L9.96 39.25L4 28.75L12.08 24Z"/>
-        </svg>
-      </div>
-      <div>
-        <h1 class="text-lg font-bold">PSF Admin</h1>
-        <p class="text-xs text-gray-400">Control Panel</p>
-      </div>
-    </div>
-
-    <nav class="px-4 py-6 space-y-1">
-      <a href="/admin/dashboard" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800 transition-colors text-gray-300">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
-        </svg>
-        <span class="font-medium">Dashboard</span>
-      </a>
-
-      <a href="/admin/posts" class="flex items-center gap-3 px-4 py-3 rounded-lg bg-gray-800 text-white">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
-        </svg>
-        <span class="font-medium">Blog Posts</span>
-      </a>
-
-      <a href="/admin/projects" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800 transition-colors text-gray-300">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
-        </svg>
-        <span class="font-medium">Projects</span>
-      </a>
-
-      <a href="/admin/users" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800 transition-colors text-gray-300">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
-        </svg>
-        <span class="font-medium">Users</span>
-      </a>
-
-      <a href="/admin/applications" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800 transition-colors text-gray-300">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-        </svg>
-        <span class="font-medium">Applications</span>
-      </a>
-
-      <div class="pt-6 mt-6 border-t border-gray-800">
-        <a href="/blog" target="_blank" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800 transition-colors text-gray-300">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
-          </svg>
-          <span class="font-medium">View Site</span>
-        </a>
-
-        <a href="/admin/logout" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-red-900 transition-colors text-gray-300 hover:text-white">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
-          </svg>
-          <span class="font-medium">Logout</span>
-        </a>
-      </div>
-    </nav>
-  </div>
+  <%- include('../partials/admin-mobile-header') %>
+  <%- include('../partials/admin-sidebar') %>
 
   <!-- Main Content -->
-  <div class="ml-64 min-h-screen">
-    <header class="bg-white border-b border-gray-200">
-      <div class="px-8 py-4 flex justify-between items-center">
+  <div class="lg:ml-64 min-h-screen pt-14 lg:pt-0">
+    <header class="bg-white border-b border-gray-200 sticky top-14 lg:top-0 z-10">
+      <div class="px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
         <div>
-          <h2 class="text-2xl font-bold text-gray-900">Blog Posts</h2>
-          <p class="text-sm text-gray-600 mt-1">Manage all blog posts</p>
+          <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Blog Posts</h2>
+          <p class="text-xs sm:text-sm text-gray-600 mt-1">Manage all blog posts</p>
         </div>
-        <a href="/admin/posts/new" class="bg-primary text-white px-6 py-3 rounded-lg font-bold hover:bg-opacity-90 transition-all inline-flex items-center gap-2">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <a href="/admin/posts/new" class="bg-primary text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-bold hover:bg-opacity-90 transition-all inline-flex items-center justify-center gap-2 text-sm sm:text-base">
+          <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
           </svg>
           New Post
@@ -104,84 +41,86 @@
       </div>
     </header>
 
-    <main class="p-8">
+    <main class="p-4 sm:p-6 lg:p-8">
       <!-- Stats -->
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <div class="bg-white rounded-lg shadow p-6">
-          <p class="text-sm text-gray-600">Total Posts</p>
-          <p class="text-3xl font-bold text-gray-900 mt-1"><%= posts.length %></p>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8">
+        <div class="bg-white rounded-lg shadow p-4 sm:p-6">
+          <p class="text-xs sm:text-sm text-gray-600 truncate">Total Posts</p>
+          <p class="text-2xl sm:text-3xl font-bold text-gray-900 mt-1"><%= posts.length %></p>
         </div>
-        <div class="bg-white rounded-lg shadow p-6">
-          <p class="text-sm text-gray-600">Published</p>
-          <p class="text-3xl font-bold text-green-600 mt-1"><%= posts.filter(p => p.isPublished).length %></p>
+        <div class="bg-white rounded-lg shadow p-4 sm:p-6">
+          <p class="text-xs sm:text-sm text-gray-600 truncate">Published</p>
+          <p class="text-2xl sm:text-3xl font-bold text-green-600 mt-1"><%= posts.filter(p => p.isPublished).length %></p>
         </div>
-        <div class="bg-white rounded-lg shadow p-6">
-          <p class="text-sm text-gray-600">Drafts</p>
-          <p class="text-3xl font-bold text-yellow-600 mt-1"><%= posts.filter(p => !p.isPublished).length %></p>
+        <div class="bg-white rounded-lg shadow p-4 sm:p-6">
+          <p class="text-xs sm:text-sm text-gray-600 truncate">Drafts</p>
+          <p class="text-2xl sm:text-3xl font-bold text-yellow-600 mt-1"><%= posts.filter(p => !p.isPublished).length %></p>
         </div>
-        <div class="bg-white rounded-lg shadow p-6">
-          <p class="text-sm text-gray-600">Categories</p>
-          <p class="text-3xl font-bold text-purple-600 mt-1"><%= [...new Set(posts.map(p => p.category))].length %></p>
+        <div class="bg-white rounded-lg shadow p-4 sm:p-6">
+          <p class="text-xs sm:text-sm text-gray-600 truncate">Categories</p>
+          <p class="text-2xl sm:text-3xl font-bold text-purple-600 mt-1"><%= [...new Set(posts.map(p => p.category))].length %></p>
         </div>
       </div>
 
       <!-- Posts Table -->
       <div class="bg-white rounded-lg shadow overflow-hidden">
-        <table class="min-w-full divide-y divide-gray-200">
-          <thead class="bg-gray-50">
-            <tr>
-              <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Title</th>
-              <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Author</th>
-              <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Category</th>
-              <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Status</th>
-              <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Date</th>
-              <th class="px-6 py-3 text-right text-xs font-semibold text-gray-700 uppercase">Actions</th>
-            </tr>
-          </thead>
-          <tbody class="bg-white divide-y divide-gray-200">
-            <% if (posts.length === 0) { %>
+        <div class="responsive-table">
+          <table class="min-w-full divide-y divide-gray-200 mobile-cards">
+            <thead class="bg-gray-50">
               <tr>
-                <td colspan="6" class="px-6 py-12 text-center">
-                  <p class="text-gray-500">No posts yet. Create your first post!</p>
-                </td>
+                <th class="px-4 sm:px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Title</th>
+                <th class="px-4 sm:px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase hidden md:table-cell">Author</th>
+                <th class="px-4 sm:px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase hidden lg:table-cell">Category</th>
+                <th class="px-4 sm:px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Status</th>
+                <th class="px-4 sm:px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase hidden md:table-cell">Date</th>
+                <th class="px-4 sm:px-6 py-3 text-right text-xs font-semibold text-gray-700 uppercase">Actions</th>
               </tr>
-            <% } else { %>
-              <% posts.forEach(post => { %>
-                <tr class="hover:bg-gray-50">
-                  <td class="px-6 py-4">
-                    <div class="text-sm font-semibold text-gray-900"><%= post.title %></div>
-                  </td>
-                  <td class="px-6 py-4 text-sm text-gray-600"><%= post.author || 'N/A' %></td>
-                  <td class="px-6 py-4">
-                    <span class="px-3 py-1 text-xs font-semibold rounded-full bg-primary/10 text-primary"><%= post.category %></span>
-                  </td>
-                  <td class="px-6 py-4">
-                    <% if (post.isPublished) { %>
-                      <span class="px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Published</span>
-                    <% } else { %>
-                      <span class="px-3 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">Draft</span>
-                    <% } %>
-                  </td>
-                  <td class="px-6 py-4 text-sm text-gray-600">
-                    <%= new Date(post.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %>
-                  </td>
-                  <td class="px-6 py-4 text-right text-sm font-medium space-x-2">
-                    <% if (post.isPublished) { %>
-                      <a href="/blog/<%= post.slug %>" target="_blank" class="text-gray-600 hover:text-primary">View</a>
-                    <% } else { %>
-                      <a href="/admin/posts/preview/<%= post.id %>" target="_blank" class="text-gray-600 hover:text-primary">Preview</a>
-                    <% } %>
-                    <a href="/admin/posts/edit/<%= post.id %>" class="text-primary hover:text-blue-700">Edit</a>
-                    <button onclick="toggleStatus('<%= post.id %>', <%= post.isPublished %>)" class="text-purple-600 hover:text-purple-700">
-                      <%= post.isPublished ? 'Unpublish' : 'Publish' %>
-                    </button>
-                    <button onclick="deletePost('<%= post.id %>', '<%= post.title %>')" class="text-red-600 hover:text-red-700">Delete</button>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <% if (posts.length === 0) { %>
+                <tr>
+                  <td colspan="6" class="px-4 sm:px-6 py-12 text-center">
+                    <p class="text-sm sm:text-base text-gray-500">No posts yet. Create your first post!</p>
                   </td>
                 </tr>
-              <% }); %>
-            <% } %>
-          </tbody>
-        </table>
+              <% } else { %>
+                <% posts.forEach(post => { %>
+                  <tr class="hover:bg-gray-50">
+                    <td class="px-4 sm:px-6 py-4" data-label="Title">
+                      <div class="text-sm font-semibold text-gray-900 break-words"><%= post.title %></div>
+                    </td>
+                    <td class="px-4 sm:px-6 py-4 text-sm text-gray-600 hidden md:table-cell" data-label="Author"><%= post.author || 'N/A' %></td>
+                    <td class="px-4 sm:px-6 py-4 hidden lg:table-cell" data-label="Category">
+                      <span class="px-2 sm:px-3 py-1 text-xs font-semibold rounded-full bg-primary/10 text-primary whitespace-nowrap"><%= post.category %></span>
+                    </td>
+                    <td class="px-4 sm:px-6 py-4" data-label="Status">
+                      <% if (post.isPublished) { %>
+                        <span class="px-2 sm:px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800 whitespace-nowrap">Published</span>
+                      <% } else { %>
+                        <span class="px-2 sm:px-3 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800 whitespace-nowrap">Draft</span>
+                      <% } %>
+                    </td>
+                    <td class="px-4 sm:px-6 py-4 text-xs sm:text-sm text-gray-600 hidden md:table-cell" data-label="Date">
+                      <%= new Date(post.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %>
+                    </td>
+                    <td class="px-4 sm:px-6 py-4 text-right text-xs sm:text-sm font-medium space-x-1 sm:space-x-2" data-label="Actions">
+                      <% if (post.isPublished) { %>
+                        <a href="/blog/<%= post.slug %>" target="_blank" class="text-gray-600 hover:text-primary whitespace-nowrap">View</a>
+                      <% } else { %>
+                        <a href="/admin/posts/preview/<%= post.id %>" target="_blank" class="text-gray-600 hover:text-primary whitespace-nowrap">Preview</a>
+                      <% } %>
+                      <a href="/admin/posts/edit/<%= post.id %>" class="text-primary hover:text-blue-700 whitespace-nowrap">Edit</a>
+                      <button onclick="toggleStatus('<%= post.id %>', <%= post.isPublished %>)" class="text-purple-600 hover:text-purple-700 whitespace-nowrap">
+                        <%= post.isPublished ? 'Unpublish' : 'Publish' %>
+                      </button>
+                      <button onclick="deletePost('<%= post.id %>', '<%= post.title.replace(/'/g, "\\'") %>')" class="text-red-600 hover:text-red-700 whitespace-nowrap">Delete</button>
+                    </td>
+                  </tr>
+                <% }); %>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
       </div>
     </main>
   </div>
@@ -229,5 +168,6 @@
     }
   </script>
 
+  <%- include('../partials/admin-scripts') %>
 </body>
 </html>

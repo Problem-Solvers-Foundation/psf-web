@@ -16,130 +16,64 @@
       }
     };
   </script>
+  <%- include('../partials/admin-styles') %>
 </head>
 <body class="bg-gray-50">
+  <% const currentPage = 'applications'; %>
 
-  <!-- Sidebar -->
-  <div class="fixed inset-y-0 left-0 w-64 bg-gray-900 text-white">
-    <!-- Logo -->
-    <div class="flex items-center gap-3 px-6 py-5 border-b border-gray-800">
-      <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
-        <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 48 48">
-          <path d="M12.08 24L4 19.25L9.96 8.75L18.04 13.5L18.04 4h11.91l.01 9.5L38.04 8.75L44 19.25L35.92 24L44 28.75L38.04 39.25L29.96 34.5L29.96 44H18.04l-.0 -9.5L9.96 39.25L4 28.75L12.08 24Z"/>
-        </svg>
-      </div>
-      <div>
-        <h1 class="text-lg font-bold">PSF Admin</h1>
-        <p class="text-xs text-gray-400">Control Panel</p>
-      </div>
-    </div>
-
-    <!-- Navigation -->
-    <nav class="px-4 py-6 space-y-1">
-      <a href="/admin/dashboard" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800 transition-colors text-gray-300">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
-        </svg>
-        <span class="font-medium">Dashboard</span>
-      </a>
-
-      <a href="/admin/dashboard" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800 transition-colors text-gray-300">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
-        </svg>
-        <span class="font-medium">Blog Posts</span>
-      </a>
-
-      <a href="/admin/projects" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800 transition-colors text-gray-300">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
-        </svg>
-        <span class="font-medium">Projects</span>
-      </a>
-
-      <a href="/admin/users" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800 transition-colors text-gray-300">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
-        </svg>
-        <span class="font-medium">Users</span>
-      </a>
-
-      <a href="/admin/applications" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800 transition-colors bg-gray-800 text-white">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-        </svg>
-        <span class="font-medium">Applications</span>
-      </a>
-
-      <!-- Divider -->
-      <div class="pt-6 mt-6 border-t border-gray-800">
-        <a href="/" target="_blank" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800 transition-colors text-gray-300">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
-          </svg>
-          <span class="font-medium">View Site</span>
-        </a>
-
-        <a href="/admin/logout" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-red-900 transition-colors text-gray-300 hover:text-white">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
-          </svg>
-          <span class="font-medium">Logout</span>
-        </a>
-      </div>
-    </nav>
-  </div>
+  <%- include('../partials/admin-mobile-header') %>
+  <%- include('../partials/admin-sidebar') %>
 
   <!-- Main Content -->
-  <div class="ml-64 min-h-screen">
+  <div class="lg:ml-64 min-h-screen pt-14 lg:pt-0">
     <!-- Top Bar -->
-    <header class="bg-white border-b border-gray-200 sticky top-0 z-10">
-      <div class="px-8 py-4">
-        <h2 class="text-2xl font-bold text-gray-900">Applications</h2>
-        <p class="text-sm text-gray-600 mt-1">Manage candidate applications for Problem Solvers Foundation</p>
+    <header class="bg-white border-b border-gray-200 sticky top-14 lg:top-0 z-10">
+      <div class="px-4 sm:px-6 lg:px-8 py-4">
+        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Applications</h2>
+        <p class="text-xs sm:text-sm text-gray-600 mt-1">Manage candidate applications for Problem Solvers Foundation</p>
       </div>
     </header>
 
     <!-- Page Content -->
-    <main class="p-8">
+    <main class="p-4 sm:p-6 lg:p-8">
       <!-- Stats Cards -->
-      <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8">
-        <div class="bg-white rounded-lg shadow p-6">
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 mb-6 sm:mb-8">
+        <div class="bg-white rounded-lg shadow p-4 sm:p-6">
           <div class="flex items-center justify-between">
-            <div>
-              <p class="text-sm text-gray-600">Total</p>
-              <p class="text-2xl font-bold text-gray-900"><%= stats.total %></p>
+            <div class="flex-1 min-w-0">
+              <p class="text-xs sm:text-sm text-gray-600 truncate">Total</p>
+              <p class="text-xl sm:text-2xl font-bold text-gray-900"><%= stats.total %></p>
             </div>
-            <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-              <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 ml-2">
+              <svg class="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
               </svg>
             </div>
           </div>
         </div>
 
-        <div class="bg-white rounded-lg shadow p-6">
+        <div class="bg-white rounded-lg shadow p-4 sm:p-6">
           <div class="flex items-center justify-between">
-            <div>
-              <p class="text-sm text-gray-600">Pending</p>
-              <p class="text-2xl font-bold text-yellow-600"><%= stats.pending %></p>
+            <div class="flex-1 min-w-0">
+              <p class="text-xs sm:text-sm text-gray-600 truncate">Pending</p>
+              <p class="text-xl sm:text-2xl font-bold text-yellow-600"><%= stats.pending %></p>
             </div>
-            <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center">
-              <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-yellow-100 rounded-full flex items-center justify-center flex-shrink-0 ml-2">
+              <svg class="w-5 h-5 sm:w-6 sm:h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
               </svg>
             </div>
           </div>
         </div>
 
-        <div class="bg-white rounded-lg shadow p-6">
+        <div class="bg-white rounded-lg shadow p-4 sm:p-6">
           <div class="flex items-center justify-between">
-            <div>
-              <p class="text-sm text-gray-600">Reviewing</p>
-              <p class="text-2xl font-bold text-blue-600"><%= stats.reviewing %></p>
+            <div class="flex-1 min-w-0">
+              <p class="text-xs sm:text-sm text-gray-600 truncate">Reviewing</p>
+              <p class="text-xl sm:text-2xl font-bold text-blue-600"><%= stats.reviewing %></p>
             </div>
-            <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-              <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 ml-2">
+              <svg class="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
               </svg>
@@ -147,28 +81,28 @@
           </div>
         </div>
 
-        <div class="bg-white rounded-lg shadow p-6">
+        <div class="bg-white rounded-lg shadow p-4 sm:p-6">
           <div class="flex items-center justify-between">
-            <div>
-              <p class="text-sm text-gray-600">Approved</p>
-              <p class="text-2xl font-bold text-green-600"><%= stats.approved %></p>
+            <div class="flex-1 min-w-0">
+              <p class="text-xs sm:text-sm text-gray-600 truncate">Approved</p>
+              <p class="text-xl sm:text-2xl font-bold text-green-600"><%= stats.approved %></p>
             </div>
-            <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-              <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 ml-2">
+              <svg class="w-5 h-5 sm:w-6 sm:h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
               </svg>
             </div>
           </div>
         </div>
 
-        <div class="bg-white rounded-lg shadow p-6">
+        <div class="bg-white rounded-lg shadow p-4 sm:p-6">
           <div class="flex items-center justify-between">
-            <div>
-              <p class="text-sm text-gray-600">Rejected</p>
-              <p class="text-2xl font-bold text-red-600"><%= stats.rejected %></p>
+            <div class="flex-1 min-w-0">
+              <p class="text-xs sm:text-sm text-gray-600 truncate">Rejected</p>
+              <p class="text-xl sm:text-2xl font-bold text-red-600"><%= stats.rejected %></p>
             </div>
-            <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
-              <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0 ml-2">
+              <svg class="w-5 h-5 sm:w-6 sm:h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
               </svg>
             </div>
@@ -178,52 +112,52 @@
 
       <!-- Applications Table -->
       <div class="bg-white rounded-lg shadow overflow-hidden">
-        <div class="overflow-x-auto">
-          <table class="min-w-full divide-y divide-gray-200">
+        <div class="responsive-table">
+          <table class="min-w-full divide-y divide-gray-200 mobile-cards">
             <thead class="bg-gray-50">
               <tr>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Applicant</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Grit Score</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Period</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Submitted</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                <th class="px-4 sm:px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Applicant</th>
+                <th class="px-4 sm:px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase hidden md:table-cell">Email</th>
+                <th class="px-4 sm:px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase hidden lg:table-cell">Location</th>
+                <th class="px-4 sm:px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase hidden lg:table-cell">Grit Score</th>
+                <th class="px-4 sm:px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase hidden xl:table-cell">Period</th>
+                <th class="px-4 sm:px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase hidden md:table-cell">Submitted</th>
+                <th class="px-4 sm:px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Status</th>
+                <th class="px-4 sm:px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Actions</th>
               </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
               <% if (applications.length === 0) { %>
                 <tr>
-                  <td colspan="8" class="px-6 py-12 text-center text-gray-500">
-                    <svg class="mx-auto h-12 w-12 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <td colspan="8" class="px-4 sm:px-6 py-12 text-center text-gray-500">
+                    <svg class="mx-auto h-10 w-10 sm:h-12 sm:w-12 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                     </svg>
-                    <p class="text-lg font-medium">No applications yet</p>
-                    <p class="text-sm">Applications will appear here when candidates submit them</p>
+                    <p class="text-base sm:text-lg font-medium">No applications yet</p>
+                    <p class="text-xs sm:text-sm">Applications will appear here when candidates submit them</p>
                   </td>
                 </tr>
               <% } else { %>
                 <% applications.forEach(app => { %>
                   <tr class="hover:bg-gray-50">
-                    <td class="px-6 py-4 whitespace-nowrap">
+                    <td class="px-4 sm:px-6 py-4" data-label="Applicant">
                       <div class="flex items-center">
-                        <div class="flex-shrink-0 h-10 w-10 bg-primary rounded-full flex items-center justify-center">
-                          <span class="text-white font-medium text-sm"><%= app.fullName ? app.fullName.charAt(0).toUpperCase() : '?' %></span>
+                        <div class="flex-shrink-0 h-8 w-8 sm:h-10 sm:w-10 bg-primary rounded-full flex items-center justify-center">
+                          <span class="text-white font-medium text-xs sm:text-sm"><%= app.fullName ? app.fullName.charAt(0).toUpperCase() : '?' %></span>
                         </div>
-                        <div class="ml-4">
-                          <div class="text-sm font-medium text-gray-900"><%= app.fullName || 'N/A' %></div>
-                          <div class="text-sm text-gray-500">Age <%= app.age || 'N/A' %></div>
+                        <div class="ml-2 sm:ml-4 min-w-0">
+                          <div class="text-xs sm:text-sm font-medium text-gray-900 break-words"><%= app.fullName || 'N/A' %></div>
+                          <div class="text-xs text-gray-500">Age <%= app.age || 'N/A' %></div>
                         </div>
                       </div>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                      <div class="text-sm text-gray-900"><%= app.email %></div>
+                    <td class="px-4 sm:px-6 py-4 hidden md:table-cell" data-label="Email">
+                      <div class="text-xs sm:text-sm text-gray-900 truncate"><%= app.email %></div>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                      <div class="text-sm text-gray-900"><%= app.location || 'N/A' %></div>
+                    <td class="px-4 sm:px-6 py-4 hidden lg:table-cell" data-label="Location">
+                      <div class="text-xs sm:text-sm text-gray-900"><%= app.location || 'N/A' %></div>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
+                    <td class="px-4 sm:px-6 py-4 hidden lg:table-cell" data-label="Grit Score">
                       <% if (app.gritScore) { %>
                         <%
                           const gritScore = parseFloat(app.gritScore);
@@ -234,24 +168,24 @@
                           else if (gritScore >= 3.0) gritColor = 'text-gray-600';
                           else gritColor = 'text-yellow-600';
                         %>
-                        <div class="text-sm font-bold <%= gritColor %>"><%= gritScore.toFixed(2) %></div>
+                        <div class="text-xs sm:text-sm font-bold <%= gritColor %>"><%= gritScore.toFixed(2) %></div>
                         <div class="text-xs text-gray-500">/ 5.00</div>
                       <% } else { %>
-                        <div class="text-sm text-gray-400">N/A</div>
+                        <div class="text-xs sm:text-sm text-gray-400">N/A</div>
                       <% } %>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
+                    <td class="px-4 sm:px-6 py-4 hidden xl:table-cell" data-label="Period">
                       <% if (app.applicationPeriod && app.applicationYear) { %>
                         <div class="text-xs text-gray-900"><%= app.applicationPeriod %></div>
                         <div class="text-xs text-gray-500"><%= app.applicationYear %></div>
                       <% } else { %>
-                        <div class="text-sm text-gray-400">N/A</div>
+                        <div class="text-xs sm:text-sm text-gray-400">N/A</div>
                       <% } %>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td class="px-4 sm:px-6 py-4 text-xs sm:text-sm text-gray-500 hidden md:table-cell" data-label="Submitted">
                       <%= app.submittedAt ? new Date(app.submittedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'N/A' %>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
+                    <td class="px-4 sm:px-6 py-4" data-label="Status">
                       <%
                         let statusClass = 'bg-gray-100 text-gray-800';
                         let statusText = app.status || 'unknown';
@@ -260,13 +194,13 @@
                         else if (app.status === 'approved') statusClass = 'bg-green-100 text-green-800';
                         else if (app.status === 'rejected') statusClass = 'bg-red-100 text-red-800';
                       %>
-                      <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <%= statusClass %>">
+                      <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <%= statusClass %> whitespace-nowrap">
                         <%= statusText %>
                       </span>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                      <a href="/admin/applications/view/<%= app.id %>" class="text-primary hover:text-blue-900">View</a>
-                      <button onclick="deleteApplication('<%= app.id %>')" class="text-red-600 hover:text-red-900">Delete</button>
+                    <td class="px-4 sm:px-6 py-4 text-xs sm:text-sm font-medium space-x-1 sm:space-x-2" data-label="Actions">
+                      <a href="/admin/applications/view/<%= app.id %>" class="text-primary hover:text-blue-900 whitespace-nowrap">View</a>
+                      <button onclick="deleteApplication('<%= app.id %>')" class="text-red-600 hover:text-red-900 whitespace-nowrap">Delete</button>
                     </td>
                   </tr>
                 <% }); %>
@@ -306,5 +240,6 @@
     }
   </script>
 
+  <%- include('../partials/admin-scripts') %>
 </body>
 </html>
