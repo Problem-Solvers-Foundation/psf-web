@@ -83,7 +83,7 @@ app.use(session({
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 dias
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production', // HTTPS obrigatório em produção
-    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax' // Permite cross-origin em produção
+    sameSite: 'lax' // Usar 'lax' para permitir cookies em redirects no mesmo site
   }
 }));
 
