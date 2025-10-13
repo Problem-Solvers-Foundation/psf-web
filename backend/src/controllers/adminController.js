@@ -10,9 +10,8 @@ const projectsCollection = db.collection('projects');
 const usersCollection = db.collection('users');
 const applicationsCollection = db.collection('applications');
 
-// Credenciais padrão (em produção, use variáveis de ambiente e hash)
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@psf.org';
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123';
+// IMPORTANTE: ADMIN_EMAIL e ADMIN_PASSWORD não são mais utilizados
+// Todo o sistema de autenticação agora usa apenas bcrypt com senhas hashadas no banco de dados
 
 /**
  * GET /admin/login
@@ -45,24 +44,13 @@ export const processLogin = async (req, res) => {
       return res.render('admin/login', { error: 'Account is inactive. Contact administrator.' });
     }
 
-    // Comparar senha
-    let passwordMatch = false;
-
-    if (userData.password) {
-      // Se tem senha hashada, usar bcrypt
-      passwordMatch = await bcrypt.compare(password, userData.password);
-    } else {
-      // Fallback para admin padrão (sem hash) - TEMPORÁRIO
-      // Isso permite que admin@psf.org funcione até ser migrado
-      if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
-        passwordMatch = true;
-        // Criar hash da senha e atualizar
-        const hashedPassword = await bcrypt.hash(password, 10);
-        await usersCollection.doc(userDoc.id).update({
-          password: hashedPassword
-        });
-      }
+    // Comparar senha usando bcrypt
+    // SEGURANÇA: Todas as senhas devem estar hashadas no banco de dados
+    if (!userData.password) {
+      return res.render('admin/login', { error: 'Invalid email or password' });
     }
+
+    const passwordMatch = await bcrypt.compare(password, userData.password);
 
     if (!passwordMatch) {
       return res.render('admin/login', { error: 'Invalid email or password' });
