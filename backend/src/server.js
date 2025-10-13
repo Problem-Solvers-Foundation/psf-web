@@ -42,7 +42,8 @@ app.set('views', path.join(__dirname, 'views'));
 // ===============================
 // MIDDLEWARES
 // ===============================
-
+// 🔥 ADICIONE ESTA LINHA (crítica para Render.com)
+app.set('trust proxy', 1);
 // Permitir requisições de qualquer origem (CORS)
 // Em produção, especificamos origens permitidas
 const allowedOrigins = [
