@@ -5,8 +5,12 @@ yarn.lock
 
 # Variáveis de ambiente
 .env
+.env.*
 .env.local
 .env.production
+.env.development
+.env.test
+*.env
 
 # Credenciais Firebase
 serviceAccountKey.json
