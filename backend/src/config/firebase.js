@@ -1,7 +1,7 @@
 /**
- * Configuração do Firebase Admin SDK
- * Este arquivo conecta o backend ao Firebase/Firestore
- * Funciona tanto localmente quanto em produção (Render, Railway, etc)
+ * Firebase Admin SDK Configuration
+ * Connects backend to Firebase/Firestore
+ * Works in local development and production (Vercel, etc)
  */
 
 import admin from 'firebase-admin';

@@ -42,20 +42,14 @@ app.set('views', path.join(__dirname, 'views'));
 // ===============================
 // MIDDLEWARES
 // ===============================
-// 🔥 ADICIONE ESTA LINHA (crítica para Render.com)
+// Trust proxy for deployment platforms (Vercel, etc)
 app.set('trust proxy', 1);
-// Permitir requisições de qualquer origem (CORS)
-// Em produção, especificamos origens permitidas
-const allowedOrigins = [
-  'https://psf-backend-r6ut.onrender.com',  // Backend URL
-  'http://localhost:3000',                   // Desenvolvimento local
-  'http://localhost:5173'                    // Vite dev (se usar)
-];
 
-// Adicionar Netlify URL quando disponível
-if (process.env.NETLIFY_URL) {
-  allowedOrigins.push(process.env.NETLIFY_URL);
-}
+// CORS configuration - Allow requests from specific origins
+const allowedOrigins = [
+  'http://localhost:3000',                   // Local development
+  'http://localhost:5173'                    // Vite dev server (if used)
+];
 
 app.use(cors({
   origin: function(origin, callback) {
