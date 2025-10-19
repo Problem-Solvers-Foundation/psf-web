@@ -7,6 +7,7 @@ import { Router } from 'express';
 const router = Router();
 import * as adminController from '../controllers/adminController.js';
 import { requireAuth, redirectIfAuthenticated } from '../middleware/auth.js';
+import { checkLoginRateLimit } from '../middleware/loginRateLimiter.js';
 
 // ===============================
 // ROTAS PÚBLICAS (sem autenticação)
@@ -20,9 +21,9 @@ router.get('/login', redirectIfAuthenticated, adminController.showLogin);
 
 /**
  * POST /admin/login
- * Processa login
+ * Processa login com rate limiting
  */
-router.post('/login', adminController.processLogin);
+router.post('/login', checkLoginRateLimit, adminController.processLogin);
 
 /**
  * GET /admin/logout

@@ -4,6 +4,7 @@
  */
 import { db } from '../config/firebase.js';
 import bcrypt from 'bcryptjs';
+import { recordFailedLogin, clearLoginAttempts } from '../middleware/loginRateLimiter.js';
 
 const postsCollection = db.collection('posts');
 const projectsCollection = db.collection('projects');
@@ -23,7 +24,7 @@ export const showLogin = (req, res) => {
 
 /**
  * POST /admin/login
- * Processa login
+ * Processa login com rate limiting
  */
 export const processLogin = async (req, res) => {
   try {
@@ -33,7 +34,17 @@ export const processLogin = async (req, res) => {
     const snapshot = await usersCollection.where('email', '==', email).limit(1).get();
 
     if (snapshot.empty) {
-      return res.render('admin/login', { error: 'Invalid email or password' });
+      // Registrar tentativa falhada
+      const attemptInfo = recordFailedLogin(req);
+
+      let errorMessage = 'Invalid email or password';
+      if (attemptInfo.isBlocked) {
+        errorMessage = 'Too many login attempts. Please try again in 2 minutes.';
+      } else if (attemptInfo.remainingAttempts <= 1) {
+        errorMessage = `Invalid email or password. ${attemptInfo.remainingAttempts} attempt${attemptInfo.remainingAttempts === 1 ? '' : 's'} remaining before temporary block.`;
+      }
+
+      return res.render('admin/login', { error: errorMessage });
     }
 
     const userDoc = snapshot.docs[0];
@@ -41,20 +52,35 @@ export const processLogin = async (req, res) => {
 
     // Verificar se o usuário está ativo
     if (!userData.isActive) {
+      recordFailedLogin(req);
       return res.render('admin/login', { error: 'Account is inactive. Contact administrator.' });
     }
 
     // Comparar senha usando bcrypt
     // SEGURANÇA: Todas as senhas devem estar hashadas no banco de dados
     if (!userData.password) {
+      recordFailedLogin(req);
       return res.render('admin/login', { error: 'Invalid email or password' });
     }
 
     const passwordMatch = await bcrypt.compare(password, userData.password);
 
     if (!passwordMatch) {
-      return res.render('admin/login', { error: 'Invalid email or password' });
+      // Registrar tentativa falhada
+      const attemptInfo = recordFailedLogin(req);
+
+      let errorMessage = 'Invalid email or password';
+      if (attemptInfo.isBlocked) {
+        errorMessage = 'Too many login attempts. Please try again in 2 minutes.';
+      } else if (attemptInfo.remainingAttempts <= 1) {
+        errorMessage = `Invalid email or password. ${attemptInfo.remainingAttempts} attempt${attemptInfo.remainingAttempts === 1 ? '' : 's'} remaining before temporary block.`;
+      }
+
+      return res.render('admin/login', { error: errorMessage });
     }
+
+    // Login bem-sucedido - limpar tentativas
+    clearLoginAttempts(req);
 
     // Atualizar último login
     await usersCollection.doc(userDoc.id).update({
