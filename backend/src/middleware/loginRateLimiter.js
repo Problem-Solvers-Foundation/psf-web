@@ -24,6 +24,7 @@ setInterval(() => {
 
 /**
  * Middleware que verifica se o IP está bloqueado
+ * IMPORTANTE: Durante bloqueio, TODAS as requisições são rejeitadas
  */
 export const checkLoginRateLimit = (req, res, next) => {
   const ip = req.ip || req.connection.remoteAddress;
@@ -45,14 +46,17 @@ export const checkLoginRateLimit = (req, res, next) => {
       ? `${minutes} minute${minutes > 1 ? 's' : ''} and ${seconds} second${seconds !== 1 ? 's' : ''}`
       : `${seconds} second${seconds !== 1 ? 's' : ''}`;
 
+    // CRÍTICO: Retornar IMEDIATAMENTE sem chamar next()
+    // Isso impede o controller de processar qualquer tentativa
     return res.render('admin/login', {
       error: `Too many login attempts. Please try again in ${timeMessage}.`,
+      isBlocked: true,
       blockedUntil: attemptData.blockedUntil,
       remainingSeconds: remainingTime
     });
   }
 
-  // Se o bloqueio expirou, limpar dados
+  // Se o bloqueio expirou, limpar dados e permitir nova tentativa
   if (attemptData.blockedUntil && attemptData.blockedUntil <= now) {
     loginAttempts.delete(ip);
   }
