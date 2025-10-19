@@ -3,23 +3,36 @@ node_modules/
 package-lock.json
 yarn.lock
 
-# Variáveis de ambiente
+# Variáveis de ambiente (NUNCA COMMITAR!)
 .env
-.env.*
 .env.local
 .env.production
 .env.development
 .env.test
-*.env
+backend/.env
+backend/.env.local
+backend/.env.production
+backend/.env.development
+backend/.env.test
 
-# Credenciais Firebase
+# PERMITIR .env.example (templates são seguros)
+!.env.example
+!backend/.env.example
+!**/.env.example
+
+# Credenciais Firebase (NUNCA COMMITAR!)
 serviceAccountKey.json
 firebase-config.json
+backend/serviceAccountKey.json
+**/serviceAccountKey.json
+firebase-adminsdk-*.json
 
 # Logs
 *.log
 npm-debug.log*
 logs/
+server.log
+backend/server.log
 
 # Build
 dist/
@@ -47,8 +60,6 @@ temp/
 tmp/
 *.tmp
 
-node_modules/
-.env
-backend/serviceAccountKey.json
-*.log
-.DS_Store
+# Arquivos de deploy (contêm configs sensíveis)
+.vercel
+.netlify

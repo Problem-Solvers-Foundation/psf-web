@@ -1,0 +1,11 @@
+name = "problemsolverfoundation"
+compatibility_date = "2024-01-01"
+main = "backend/src/server.js"
+
+[site]
+bucket = "./frontend"
+
+[env.production]
+routes = [
+  { pattern = "problemsolverfoundation.pages.dev", zone_name = "problemsolverfoundation" }
+]

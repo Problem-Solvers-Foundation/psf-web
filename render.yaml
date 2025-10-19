@@ -1,7 +1,7 @@
 services:
-  # Backend API
+  # Full Stack Application (Backend + Frontend)
   - type: web
-    name: psf-backend
+    name: problemsolverfoundation
     env: node
     region: oregon
     plan: free
@@ -16,5 +16,7 @@ services:
         generateValue: true
       - key: JWT_SECRET
         generateValue: true
-      # Adicione FIREBASE_SERVICE_ACCOUNT manualmente no dashboard do Render
-      # Cole o conteúdo completo do serviceAccountKey.json
+      # Adicione as seguintes variáveis manualmente no dashboard do Render:
+      # FIREBASE_PROJECT_ID
+      # FIREBASE_CLIENT_EMAIL
+      # FIREBASE_PRIVATE_KEY (lembre-se de manter as quebras de linha)
