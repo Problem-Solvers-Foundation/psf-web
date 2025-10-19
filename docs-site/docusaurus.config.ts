@@ -29,10 +29,7 @@ const config: Config = {
           sidebarPath: './sidebars.ts',
           editUrl: 'https://github.com/Problem-Solvers-Foundation/psf-web/tree/main/docs-site/',
         },
-        blog: {
-          showReadingTime: true,
-          editUrl: 'https://github.com/Problem-Solvers-Foundation/psf-web/tree/main/docs-site/',
-        },
+        blog: false,
         theme: {
           customCss: './src/css/custom.css',
         },
@@ -55,7 +52,6 @@ const config: Config = {
           position: 'left',
           label: 'Documentation',
         },
-        {to: '/blog', label: 'Blog', position: 'left'},
         {
           href: 'https://github.com/Problem-Solvers-Foundation/psf-web',
           label: 'GitHub',

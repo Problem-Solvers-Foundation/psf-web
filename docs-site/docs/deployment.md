@@ -201,4 +201,4 @@ Execute o comando duas vezes e use os resultados para cada variável.
 
 **🎉 Boa sorte com o deploy!**
 
-Para dúvidas, consulte o [SECURITY.md](SECURITY.md) ou abra uma issue no repositório.
+Para dúvidas, consulte o [./security.md](./security.md) ou abra uma issue no repositório.
