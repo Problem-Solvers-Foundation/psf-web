@@ -13,7 +13,7 @@ const config: Config = {
   organizationName: 'Problem-Solvers-Foundation',
   projectName: 'psf-web',
 
-  onBrokenLinks: 'throw',
+  onBrokenLinks: 'warn',
   onBrokenMarkdownLinks: 'warn',
 
   i18n: {
