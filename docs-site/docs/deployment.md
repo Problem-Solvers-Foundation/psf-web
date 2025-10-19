@@ -155,7 +155,7 @@ Execute o comando duas vezes e use os resultados para cada variável.
 | Plataforma | Repo Privado | Build Time | Cold Start | CDN | Preço |
 |------------|--------------|------------|------------|-----|-------|
 | **Render** | ✅ Grátis | ~2min | ~30s | ❌ | $0 |
-| **Vercel** | ❌ Pago | ~1min | <100ms | ✅ | $0* |
+| **Vercel** | ❌ Pago | ~1min | `<100ms` | ✅ | $0* |
 
 \* Gratuito apenas para repositórios públicos
 
