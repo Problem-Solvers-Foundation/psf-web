@@ -20,6 +20,10 @@ backend/.env.test
 !backend/.env.example
 !**/.env.example
 
+# Arquivo de secrets do administrador (NUNCA COMMITAR!)
+.secrets
+*.secrets
+
 # Credenciais Firebase (NUNCA COMMITAR!)
 serviceAccountKey.json
 firebase-config.json
