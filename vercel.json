@@ -1,14 +1,15 @@
 {
   "version": 2,
-  "buildCommand": "cd backend && npm install && cd ../docs-site && npm install && npm run build",
+  "buildCommand": "npm install && cd docs-site && npm install && npm run build",
+  "outputDirectory": "docs-site/build",
   "rewrites": [
     {
       "source": "/docs",
-      "destination": "/docs-site/build/index.html"
+      "destination": "/index.html"
     },
     {
       "source": "/docs/:path*",
-      "destination": "/docs-site/build/:path*"
+      "destination": "/:path*"
     },
     {
       "source": "/(.*)",
