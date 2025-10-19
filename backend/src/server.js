@@ -85,6 +85,11 @@ app.use(session({
 // Servir arquivos estáticos (CSS, JS, imagens)
 app.use('/assets', express.static(path.join(__dirname, '../../frontend/assets')));
 
+// Favicon route - Serve favicon from assets directory
+app.get('/favicon.ico', (req, res) => {
+  res.sendFile(path.join(__dirname, '../../frontend/assets/favicon.ico'));
+});
+
 // Middleware para log de requisições (útil para debug)
 app.use((req, _res, next) => {
   console.log(`📥 ${req.method} ${req.path}`);
