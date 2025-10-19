@@ -7,8 +7,8 @@ const config: Config = {
   tagline: 'Impact 1 billion people by 2035 (1B2035)',
   favicon: 'img/favicon.ico',
 
-  url: 'https://docs.problemsolverfoundation.org',
-  baseUrl: '/',
+  url: 'https://problemsolverfoundation.vercel.app',
+  baseUrl: '/docs/',
 
   organizationName: 'Problem-Solvers-Foundation',
   projectName: 'psf-web',
