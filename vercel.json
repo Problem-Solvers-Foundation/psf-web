@@ -1,24 +1,18 @@
 {
   "version": 2,
   "buildCommand": "cd backend && npm install && cd ../docs-site && npm install && npm run build",
-  "builds": [
+  "rewrites": [
     {
-      "src": "api/index.js",
-      "use": "@vercel/node"
+      "source": "/docs",
+      "destination": "/docs-site/build/index.html"
     },
     {
-      "src": "docs-site/build/**",
-      "use": "@vercel/static"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/docs/(.*)",
-      "dest": "/docs-site/build/$1"
+      "source": "/docs/:path*",
+      "destination": "/docs-site/build/:path*"
     },
     {
-      "src": "/(.*)",
-      "dest": "/api/index.js"
+      "source": "/(.*)",
+      "destination": "/api"
     }
   ]
 }
