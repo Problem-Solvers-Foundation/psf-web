@@ -140,9 +140,12 @@ app.use((err, _req, res, _next) => {
 // INICIAR SERVIDOR
 // ===============================
 
-app.listen(PORT, () => {
-  console.log(`✅ Servidor rodando na porta ${PORT}`);
-  console.log(`🌐 Acesse: http://localhost:${PORT}`);
-});
+// Só inicia o servidor se NÃO estiver no Vercel (serverless)
+if (process.env.VERCEL !== '1') {
+  app.listen(PORT, () => {
+    console.log(`✅ Servidor rodando na porta ${PORT}`);
+    console.log(`🌐 Acesse: http://localhost:${PORT}`);
+  });
+}
 
 export default app;
