@@ -1,0 +1,10 @@
+node_modules
+.git
+.env
+*.log
+migration-plan.md
+README.md
+.vscode
+backend/serviceAccountKey.json
+backend/.env
+backend/server.log
