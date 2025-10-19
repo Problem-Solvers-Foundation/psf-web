@@ -9,22 +9,13 @@
       "src": "docs-site/package.json",
       "use": "@vercel/static-build",
       "config": {
-        "distDir": "build"
+        "distDir": "public"
       }
     }
   ],
   "routes": [
     {
-      "src": "/docs",
-      "headers": { "Location": "/docs/" },
-      "status": 308
-    },
-    {
       "handle": "filesystem"
-    },
-    {
-      "src": "/docs/(.*)",
-      "dest": "/docs-site/build/$1"
     },
     {
       "src": "/(.*)",
