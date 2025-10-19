@@ -42,44 +42,37 @@ Este guia mostra como fazer deploy do projeto em plataformas gratuitas que aceit
 
 ---
 
-## Opção 2: Cloudflare Pages
-
-✅ **Gratuito com repos privados**
-✅ **Performance excelente (CDN global)**
-✅ **Builds ilimitados**
-
-### Passo a passo:
-
-1. **Acesse** https://pages.cloudflare.com
-2. **Create a project → Connect to Git**
-3. **Selecione** seu repositório `psf-web`
-4. **Configure:**
-   - **Framework preset:** None
-   - **Build command:** `cd backend && npm install`
-   - **Build output directory:** `backend`
-   - **Root directory:** `/`
-
-5. **Adicione variáveis de ambiente** (mesmo que no Render)
-
-6. **Save and Deploy**
-
-**URL final:** `https://problemsolverfoundation.pages.dev`
-
----
-
-## Opção 3: Vercel (Requer repo público OU plano pago)
+## Opção 2: Vercel (Requer repo público OU plano pago)
 
 ⚠️ **Repositórios privados de organizações requerem plano Pro**
 ✅ **Gratuito se tornar o repo público**
 
-### Se tornar o repo público:
+### Passo a passo:
 
-1. **No GitHub:** Settings → Change visibility → Public
-2. **Acesse** https://vercel.com
-3. **Import Project**
-4. **Selecione** o repositório
-5. **Configure** (o arquivo `vercel.json` já está configurado)
-6. **Deploy**
+1. **Torne o repo público** (GitHub → Settings → Change visibility → Public)
+2. **Acesse** https://vercel.com e faça login com GitHub
+3. **Import Project** e selecione o repositório
+4. **Configure:**
+   - **Framework Preset:** Other
+   - **Root Directory:** `backend`
+   - **Build Command:** `npm install`
+   - **Output Directory:** (deixe vazio)
+   - **Install Command:** `npm install`
+
+5. **Adicione variáveis de ambiente:**
+   ```
+   NODE_ENV=production
+   PORT=3000
+   FIREBASE_PROJECT_ID=problem-solver-foundation
+   FIREBASE_CLIENT_EMAIL=firebase-adminsdk-fbsvc@problem-solver-foundation.iam.gserviceaccount.com
+   FIREBASE_PRIVATE_KEY=-----BEGIN PRIVATE KEY-----
+[Cole a chave privada completa aqui, com quebras de linha literais]
+-----END PRIVATE KEY-----
+   JWT_SECRET=[gere com: node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"]
+   SESSION_SECRET=[gere outro secret]
+   ```
+
+6. **Deploy!**
 
 **URL final:** `https://psf-web.vercel.app` ou `https://problemsolverfoundation.vercel.app`
 
@@ -87,12 +80,10 @@ Este guia mostra como fazer deploy do projeto em plataformas gratuitas que aceit
 
 ## ⚙️ Arquivos de Configuração Incluídos
 
-O repositório já inclui arquivos de configuração para todas as plataformas:
+O repositório já inclui arquivos de configuração:
 
 - ✅ `render.yaml` - Configuração do Render
 - ✅ `vercel.json` - Configuração do Vercel
-- ✅ `wrangler.toml` - Configuração do Cloudflare Pages
-- ✅ `netlify.toml` - Configuração do Netlify (legado)
 
 ---
 
@@ -136,11 +127,9 @@ Execute o comando duas vezes e use os resultados para cada variável.
 | Plataforma | Repo Privado | Build Time | Cold Start | CDN | Preço |
 |------------|--------------|------------|------------|-----|-------|
 | **Render** | ✅ Grátis | ~2min | ~30s | ❌ | $0 |
-| **Cloudflare** | ✅ Grátis | ~1min | <100ms | ✅ | $0 |
 | **Vercel** | ❌ Pago | ~1min | <100ms | ✅ | $0* |
-| **Netlify** | ❌ Pago | ~1min | <100ms | ✅ | $0* |
 
-\* Gratuito apenas para repositórios públicos ou contas pessoais
+\* Gratuito apenas para repositórios públicos
 
 ---
 
@@ -150,7 +139,7 @@ Execute o comando duas vezes e use os resultados para cada variável.
 👉 **Use Render** - Mais simples e totalmente gratuito
 
 ### Para repositório público:
-👉 **Use Vercel ou Cloudflare Pages** - Melhor performance
+👉 **Use Vercel** - Melhor performance e developer experience
 
 ---
 

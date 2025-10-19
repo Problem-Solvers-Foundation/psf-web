@@ -20,16 +20,36 @@ const __dirname = dirname(__filename);
 // Inicializar Firebase Admin apenas uma vez
 if (!admin.apps.length) {
   try {
-    // PRODUÇÃO: Usar variável de ambiente FIREBASE_SERVICE_ACCOUNT
-    if (process.env.FIREBASE_SERVICE_ACCOUNT) {
-      console.log('🔧 Modo: PRODUÇÃO (usando variável de ambiente)');
-      const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+    let serviceAccount;
+
+    // OPÇÃO 1: Usar variáveis de ambiente individuais (RECOMENDADO para Vercel/Render)
+    if (process.env.FIREBASE_PROJECT_ID && process.env.FIREBASE_PRIVATE_KEY && process.env.FIREBASE_CLIENT_EMAIL) {
+      console.log('🔧 Modo: PRODUÇÃO (usando variáveis de ambiente individuais)');
+
+      // Remove aspas extras e processa a chave privada
+      const privateKey = process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n');
+
+      serviceAccount = {
+        type: 'service_account',
+        project_id: process.env.FIREBASE_PROJECT_ID,
+        private_key: privateKey,
+        client_email: process.env.FIREBASE_CLIENT_EMAIL,
+      };
 
       admin.initializeApp({
         credential: admin.credential.cert(serviceAccount)
       });
     }
-    // DESENVOLVIMENTO: Usar arquivo serviceAccountKey.json
+    // OPÇÃO 2: Usar variável de ambiente com JSON completo
+    else if (process.env.FIREBASE_SERVICE_ACCOUNT) {
+      console.log('🔧 Modo: PRODUÇÃO (usando variável de ambiente JSON)');
+      serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+
+      admin.initializeApp({
+        credential: admin.credential.cert(serviceAccount)
+      });
+    }
+    // OPÇÃO 3: Usar arquivo serviceAccountKey.json (DESENVOLVIMENTO)
     else {
       console.log('🔧 Modo: DESENVOLVIMENTO (usando serviceAccountKey.json)');
       const serviceAccountPath = join(__dirname, '../../serviceAccountKey.json');
@@ -42,7 +62,7 @@ if (!admin.apps.length) {
         );
       }
 
-      const serviceAccount = JSON.parse(readFileSync(serviceAccountPath, 'utf8'));
+      serviceAccount = JSON.parse(readFileSync(serviceAccountPath, 'utf8'));
 
       admin.initializeApp({
         credential: admin.credential.cert(serviceAccount)
