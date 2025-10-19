@@ -72,20 +72,25 @@ export const recordFailedLogin = (req) => {
   const now = Date.now();
   const attemptData = loginAttempts.get(ip) || { attempts: 0, blockedUntil: null };
 
-  attemptData.attempts += 1;
+  // Incrementar tentativas apenas se não estiver bloqueado
+  if (!attemptData.blockedUntil || attemptData.blockedUntil <= now) {
+    attemptData.attempts += 1;
 
-  // Se atingiu o máximo de tentativas, bloquear
-  if (attemptData.attempts >= MAX_ATTEMPTS) {
-    attemptData.blockedUntil = now + BLOCK_DURATION_MS;
-    attemptData.attempts = 0; // Resetar contagem
+    // Se atingiu o máximo de tentativas, bloquear
+    if (attemptData.attempts >= MAX_ATTEMPTS) {
+      attemptData.blockedUntil = now + BLOCK_DURATION_MS;
+      // NÃO resetar attempts aqui - manter o contador para não permitir novas tentativas
+    }
+
+    loginAttempts.set(ip, attemptData);
   }
 
-  loginAttempts.set(ip, attemptData);
+  const isBlocked = attemptData.blockedUntil && attemptData.blockedUntil > now;
 
   return {
-    attempts: attemptData.attempts,
-    isBlocked: attemptData.blockedUntil && attemptData.blockedUntil > now,
-    remainingAttempts: MAX_ATTEMPTS - attemptData.attempts
+    attempts: isBlocked ? MAX_ATTEMPTS : attemptData.attempts,
+    isBlocked,
+    remainingAttempts: isBlocked ? 0 : Math.max(0, MAX_ATTEMPTS - attemptData.attempts)
   };
 };
 
