@@ -1,8 +1,32 @@
 # 🚀 Guia de Deploy - Problem Solver Foundation
 
-## Opções de Hosting Gratuito (com repositório privado)
+## 📖 O que é Deploy / Hosting?
 
-Este guia mostra como fazer deploy do projeto em plataformas gratuitas que aceitam repositórios privados.
+**Deploy** significa colocar sua aplicação na internet para que qualquer pessoa possa acessar 24/7.
+
+### Como funciona neste projeto:
+
+Este é um projeto **fullstack unificado** onde:
+- ✅ O **backend** (Node.js/Express) serve as páginas HTML usando EJS (Server-Side Rendering)
+- ✅ O **frontend** (HTML/CSS/JS) é renderizado pelo backend
+- ✅ **Tudo roda junto** em um único servidor
+
+**Render e Vercel** hospedam **toda a aplicação** (backend + frontend) e geram uma URL pública.
+
+### Por que usar Render E Vercel?
+
+Você pode fazer deploy nas **duas plataformas simultaneamente** para ter:
+- 🔄 **Redundância** - Se uma cair, a outra continua funcionando
+- 🌍 **Duas URLs diferentes** - Pode escolher qual usar
+- 🧪 **Ambientes de teste** - Uma para produção, outra para testes
+
+**Exemplo:**
+- Render: `https://problemsolverfoundation.onrender.com` (produção)
+- Vercel: `https://psf-web.vercel.app` (backup/teste)
+
+---
+
+## Opções de Hosting Gratuito
 
 ---
 
