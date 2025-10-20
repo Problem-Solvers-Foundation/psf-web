@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>500 - Erro Interno | Problem Solver Foundation</title>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon.png">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet"/>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#117dd4",
+          },
+          fontFamily: {
+            "display": ["Inter", "sans-serif"]
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="font-display bg-gradient-to-br from-purple-50 to-pink-100 min-h-screen flex items-center justify-center p-4">
+  <div class="max-w-2xl w-full">
+    <div class="bg-white rounded-2xl shadow-2xl p-8 md:p-12 text-center">
+      <!-- Ícone de Erro -->
+      <div class="mb-6">
+        <div class="inline-flex items-center justify-center w-24 h-24 bg-purple-100 rounded-full">
+          <svg class="w-12 h-12 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Código de Erro -->
+      <h1 class="text-6xl md:text-8xl font-black text-gray-900 mb-4">
+        500
+      </h1>
+
+      <!-- Mensagem Principal -->
+      <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-4">
+        Erro Interno do Servidor
+      </h2>
+
+      <!-- Descrição -->
+      <p class="text-gray-600 text-lg mb-8 max-w-md mx-auto">
+        Ops! Algo deu errado do nosso lado. Nossa equipe já foi notificada e está trabalhando para resolver o problema.
+      </p>
+
+      <!-- Sugestões -->
+      <div class="bg-blue-50 rounded-lg p-6 mb-8 text-left max-w-md mx-auto">
+        <h3 class="font-semibold text-gray-800 mb-3">O que você pode fazer:</h3>
+        <ul class="space-y-2 text-sm text-gray-600">
+          <li class="flex items-start">
+            <svg class="w-5 h-5 text-primary mr-2 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            Aguarde alguns minutos e tente novamente
+          </li>
+          <li class="flex items-start">
+            <svg class="w-5 h-5 text-primary mr-2 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            Recarregue a página
+          </li>
+          <li class="flex items-start">
+            <svg class="w-5 h-5 text-primary mr-2 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            Limpe o cache do seu navegador
+          </li>
+          <li class="flex items-start">
+            <svg class="w-5 h-5 text-primary mr-2 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            Se o problema persistir, entre em contato
+          </li>
+        </ul>
+      </div>
+
+      <!-- Botões de Ação -->
+      <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+        <a href="/" class="inline-flex items-center px-6 py-3 bg-primary hover:bg-blue-700 text-white font-semibold rounded-lg shadow-lg transform transition hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+          </svg>
+          Voltar ao Início
+        </a>
+
+        <button onclick="window.location.reload()" class="inline-flex items-center px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold rounded-lg shadow transform transition hover:scale-105 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2">
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+          </svg>
+          Recarregar Página
+        </button>
+      </div>
+
+      <!-- Links Úteis -->
+      <div class="mt-12 pt-8 border-t border-gray-200">
+        <p class="text-sm text-gray-500 mb-4">Precisa de suporte?</p>
+        <div class="flex flex-wrap justify-center gap-4 text-sm">
+          <a href="/contact" class="text-primary hover:underline font-medium">Contato</a>
+          <span class="text-gray-300">•</span>
+          <a href="/" class="text-primary hover:underline font-medium">Página Inicial</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Informação de Segurança (oculta para usuários) -->
+    <div class="text-center mt-6 text-xs text-gray-400">
+      Error ID: <%= errorId || 'N/A' %>
+    </div>
+  </div>
+</body>
+</html>

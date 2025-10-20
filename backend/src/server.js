@@ -28,6 +28,14 @@ import statsRoutes from './routes/stats.js';
 import adminRoutes from './routes/admin.js';
 import applicationsRoutes from './routes/applications.js';
 
+// Importar middlewares de tratamento de erros
+import {
+  handle404,
+  handle500,
+  securityHeaders,
+  sanitizeInputs
+} from './middleware/errorHandler.js';
+
 // Criar aplicação Express
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -68,6 +76,10 @@ app.use(cors({
 // Permitir receber JSON no body das requisições
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Aplicar headers de segurança e sanitização de inputs
+app.use(securityHeaders);
+app.use(sanitizeInputs);
 
 // Configurar sessões (para autenticação admin)
 app.use(session({
@@ -118,22 +130,11 @@ app.use('/', publicRoutes);
 // TRATAMENTO DE ERROS
 // ===============================
 
-// Rota não encontrada (404)
-app.use((req, res) => {
-  res.status(404).json({
-    error: 'Rota não encontrada',
-    path: req.path
-  });
-});
+// Rota não encontrada (404) - com sanitização e página personalizada
+app.use(handle404);
 
-// Erro geral do servidor
-app.use((err, _req, res, _next) => {
-  console.error('❌ Erro:', err);
-  res.status(500).json({
-    error: 'Erro interno do servidor',
-    message: process.env.NODE_ENV === 'development' ? err.message : undefined
-  });
-});
+// Erro geral do servidor (500) - com sanitização e página personalizada
+app.use(handle500);
 
 // ===============================
 // INICIAR SERVIDOR

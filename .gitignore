@@ -67,3 +67,8 @@ tmp/
 # Arquivos de deploy (contêm configs sensíveis)
 .vercel
 .netlify
+
+# Documentação sensível (NUNCA COMMITAR!)
+README.md
+SECURITY_AUDIT.md
+.secrets
