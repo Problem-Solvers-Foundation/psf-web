@@ -126,9 +126,16 @@
                 <div class="mt-3">
                   <button
                     type="submit"
-                    class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                    id="saveNotesBtn"
+                    class="inline-flex justify-center items-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all duration-300"
                   >
-                    Save Notes
+                    <span id="saveNotesText">Save Notes</span>
+                    <span id="saveNotesSuccess" class="hidden">
+                      <svg class="w-4 h-4 mr-1 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                      </svg>
+                      Notes saved successfully
+                    </span>
                   </button>
                 </div>
               </form>
@@ -198,6 +205,13 @@
     document.getElementById('notesForm').addEventListener('submit', async function(e) {
       e.preventDefault();
       const notes = document.getElementById('notes').value;
+      const btn = document.getElementById('saveNotesBtn');
+      const btnText = document.getElementById('saveNotesText');
+      const btnSuccess = document.getElementById('saveNotesSuccess');
+
+      // Disable button and show loading
+      btn.disabled = true;
+      btnText.textContent = 'Saving...';
 
       try {
         const response = await fetch(`/admin/contacts/update/${contactId}`, {
@@ -211,13 +225,50 @@
         const data = await response.json();
 
         if (data.success) {
-          alert('Notes saved successfully');
+          // Show success state
+          btn.classList.remove('bg-primary', 'hover:bg-blue-700');
+          btn.classList.add('bg-green-600', 'hover:bg-green-700');
+          btnText.classList.add('hidden');
+          btnSuccess.classList.remove('hidden');
+
+          // Reset after 3 seconds
+          setTimeout(() => {
+            btn.classList.remove('bg-green-600', 'hover:bg-green-700');
+            btn.classList.add('bg-primary', 'hover:bg-blue-700');
+            btnText.classList.remove('hidden');
+            btnSuccess.classList.add('hidden');
+            btnText.textContent = 'Save Notes';
+            btn.disabled = false;
+          }, 3000);
         } else {
-          alert('Error saving notes: ' + (data.error || 'Unknown error'));
+          // Show error state
+          btn.classList.remove('bg-primary', 'hover:bg-blue-700');
+          btn.classList.add('bg-red-600', 'hover:bg-red-700');
+          btnText.textContent = 'Error: ' + (data.error || 'Unknown error');
+
+          // Reset after 3 seconds
+          setTimeout(() => {
+            btn.classList.remove('bg-red-600', 'hover:bg-red-700');
+            btn.classList.add('bg-primary', 'hover:bg-blue-700');
+            btnText.textContent = 'Save Notes';
+            btn.disabled = false;
+          }, 3000);
         }
       } catch (error) {
         console.error('Error:', error);
-        alert('Error saving notes');
+
+        // Show error state
+        btn.classList.remove('bg-primary', 'hover:bg-blue-700');
+        btn.classList.add('bg-red-600', 'hover:bg-red-700');
+        btnText.textContent = 'Error saving notes';
+
+        // Reset after 3 seconds
+        setTimeout(() => {
+          btn.classList.remove('bg-red-600', 'hover:bg-red-700');
+          btn.classList.add('bg-primary', 'hover:bg-blue-700');
+          btnText.textContent = 'Save Notes';
+          btn.disabled = false;
+        }, 3000);
       }
     });
 
