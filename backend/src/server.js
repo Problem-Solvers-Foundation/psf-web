@@ -27,6 +27,7 @@ import authRoutes from './routes/auth.js';
 import statsRoutes from './routes/stats.js';
 import adminRoutes from './routes/admin.js';
 import applicationsRoutes from './routes/applications.js';
+import contactRoutes from './routes/contact.js';
 
 // Importar middlewares de tratamento de erros
 import {
