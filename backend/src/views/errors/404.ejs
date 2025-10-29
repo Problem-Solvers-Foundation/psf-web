@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>404 - Página Não Encontrada | Problem Solver Foundation</title>
+  <title>404 - Page Not Found | Problem Solver Foundation</title>
 
   <!-- Favicon -->
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
@@ -33,7 +33,7 @@
 <body class="font-display bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen flex items-center justify-center p-4">
   <div class="max-w-2xl w-full">
     <div class="bg-white rounded-2xl shadow-2xl p-8 md:p-12 text-center">
-      <!-- Ícone de Erro -->
+      <!-- Error Icon -->
       <div class="mb-6">
         <div class="inline-flex items-center justify-center w-24 h-24 bg-blue-100 rounded-full">
           <svg class="w-12 h-12 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -42,54 +42,54 @@
         </div>
       </div>
 
-      <!-- Código de Erro -->
+      <!-- Error Code -->
       <h1 class="text-6xl md:text-8xl font-black text-gray-900 mb-4">
         404
       </h1>
 
-      <!-- Mensagem Principal -->
+      <!-- Main Message -->
       <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-4">
-        Página Não Encontrada
+        Page Not Found
       </h2>
 
-      <!-- Descrição -->
+      <!-- Description -->
       <p class="text-gray-600 text-lg mb-8 max-w-md mx-auto">
-        Desculpe, a página que você está procurando não existe ou foi movida para outro local.
+        Sorry, the page you are looking for does not exist or has been moved to another location.
       </p>
 
-      <!-- Botões de Ação -->
+      <!-- Action Buttons -->
       <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
         <a href="/" class="inline-flex items-center px-6 py-3 bg-primary hover:bg-blue-700 text-white font-semibold rounded-lg shadow-lg transform transition hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
           <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
           </svg>
-          Voltar ao Início
+          Back to Home
         </a>
 
         <button onclick="window.history.back()" class="inline-flex items-center px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold rounded-lg shadow transform transition hover:scale-105 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2">
           <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
           </svg>
-          Voltar
+          Go Back
         </button>
       </div>
 
-      <!-- Links Úteis -->
+      <!-- Useful Links -->
       <div class="mt-12 pt-8 border-t border-gray-200">
-        <p class="text-sm text-gray-500 mb-4">Você também pode visitar:</p>
+        <p class="text-sm text-gray-500 mb-4">You can also visit:</p>
         <div class="flex flex-wrap justify-center gap-4 text-sm">
-          <a href="/about" class="text-primary hover:underline font-medium">Sobre Nós</a>
+          <a href="/about" class="text-primary hover:underline font-medium">About Us</a>
           <span class="text-gray-300">•</span>
           <a href="/blog" class="text-primary hover:underline font-medium">Blog</a>
           <span class="text-gray-300">•</span>
-          <a href="/join" class="text-primary hover:underline font-medium">Junte-se a Nós</a>
+          <a href="/join" class="text-primary hover:underline font-medium">Join Us</a>
           <span class="text-gray-300">•</span>
-          <a href="/contact" class="text-primary hover:underline font-medium">Contato</a>
+          <a href="/contact" class="text-primary hover:underline font-medium">Contact</a>
         </div>
       </div>
     </div>
 
-    <!-- Informação de Segurança (oculta para usuários) -->
+    <!-- Security Information (hidden from users) -->
     <div class="text-center mt-6 text-xs text-gray-400">
       Error ID: <%= errorId || 'N/A' %>
     </div>
