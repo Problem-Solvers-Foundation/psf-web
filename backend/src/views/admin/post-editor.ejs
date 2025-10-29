@@ -16,25 +16,44 @@
       }
     };
   </script>
-  <!-- Quill Editor -->
+  <!-- Quill Editor CSS -->
   <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
-  <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
   <style>
     /* Ensure Quill editor is clickable and editable */
-    .ql-container {
+    #editor-container {
+      border: 1px solid #e5e7eb;
+      border-radius: 0.5rem;
+      background: white;
+    }
+    .ql-toolbar.ql-snow {
+      border-top-left-radius: 0.5rem;
+      border-top-right-radius: 0.5rem;
+      border: none;
+      border-bottom: 1px solid #e5e7eb;
+      background: #f9fafb;
+    }
+    .ql-container.ql-snow {
+      border: none;
       font-size: 16px;
     }
     .ql-editor {
       min-height: 400px;
       cursor: text;
+      padding: 1rem;
     }
     .ql-editor:focus {
       outline: none;
     }
-    /* Fix for potential z-index issues */
-    .ql-toolbar {
-      position: relative;
-      z-index: 1;
+    .ql-editor.ql-blank::before {
+      color: #9ca3af;
+      font-style: normal;
+    }
+    /* Make sure toolbar buttons are visible */
+    .ql-toolbar button {
+      cursor: pointer;
+    }
+    .ql-toolbar button:hover {
+      background: #e5e7eb;
     }
   </style>
 </head>
@@ -201,50 +220,102 @@
 
   </main>
 
+  <!-- Load Quill Editor JS -->
+  <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+
   <script>
-    // Wait for DOM to be fully loaded
-    document.addEventListener('DOMContentLoaded', function() {
-      console.log('Initializing Quill editor...');
+    // Initialize Quill immediately after it's loaded
+    let quill;
 
-      // Initialize Quill editor
-      const quill = new Quill('#editor', {
-        theme: 'snow',
-        placeholder: 'Write your post content here...',
-        modules: {
-          toolbar: [
-            [{ 'header': [1, 2, 3, false] }],
-            ['bold', 'italic', 'underline', 'strike'],
-            ['blockquote', 'code-block'],
-            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-            [{ 'color': [] }, { 'background': [] }],
-            [{ 'align': [] }],
-            ['link', 'image'],
-            ['clean']
-          ]
-        }
-      });
+    function initializeQuill() {
+      console.log('DOM loaded, checking Quill...');
 
-      // Load initial content if editing
-      const initialContent = document.getElementById('initial-content').value;
-      if (initialContent && initialContent.trim() !== '') {
-        console.log('Loading initial content...');
-        quill.root.innerHTML = initialContent;
+      // Check if Quill is available
+      if (typeof Quill === 'undefined') {
+        console.error('Quill is not loaded!');
+        alert('Editor failed to load. Please refresh the page.');
+        return;
       }
 
-      // Enable editor explicitly
-      quill.enable();
+      console.log('Quill library loaded successfully');
 
-      console.log('Quill editor initialized successfully');
+      // Check if editor element exists
+      const editorElement = document.getElementById('editor');
+      if (!editorElement) {
+        console.error('Editor element not found!');
+        return;
+      }
 
-      // Before submit, get HTML from Quill
+      console.log('Editor element found, initializing Quill...');
+
+      try {
+        // Initialize Quill editor
+        quill = new Quill('#editor', {
+          theme: 'snow',
+          placeholder: 'Write your post content here...',
+          modules: {
+            toolbar: [
+              [{ 'header': [1, 2, 3, false] }],
+              ['bold', 'italic', 'underline', 'strike'],
+              ['blockquote', 'code-block'],
+              [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+              [{ 'color': [] }, { 'background': [] }],
+              [{ 'align': [] }],
+              ['link', 'image'],
+              ['clean']
+            ]
+          }
+        });
+
+        console.log('✅ Quill editor initialized successfully');
+
+        // Load initial content if editing
+        const initialContent = document.getElementById('initial-content').value;
+        if (initialContent && initialContent.trim() !== '') {
+          console.log('Loading initial content...', initialContent.substring(0, 100));
+          quill.root.innerHTML = initialContent;
+        }
+
+        // Enable editor explicitly
+        quill.enable();
+
+        // Focus on editor to show it's ready
+        setTimeout(() => {
+          quill.focus();
+        }, 100);
+
+        console.log('Editor is ready for input');
+
+        // Make quill globally accessible for debugging
+        window.quillEditor = quill;
+
+      } catch (error) {
+        console.error('Error initializing Quill:', error);
+        alert('Failed to initialize editor: ' + error.message);
+      }
+    }
+
+    // Try to initialize when DOM is ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initializeQuill);
+    } else {
+      // DOM is already ready
+      initializeQuill();
+    }
+
+    // Before submit, get HTML from Quill
+    document.addEventListener('DOMContentLoaded', function() {
       document.getElementById('post-form').addEventListener('submit', function(e) {
-        const content = quill.root.innerHTML;
-        document.getElementById('content-input').value = content;
-        console.log('Form submitted with content length:', content.length);
+        if (quill) {
+          const content = quill.root.innerHTML;
+          document.getElementById('content-input').value = content;
+          console.log('Form submitted with content length:', content.length);
+        } else {
+          console.error('Quill editor not initialized!');
+          alert('Editor is not ready. Please wait and try again.');
+          e.preventDefault();
+        }
       });
-
-      // Make quill globally accessible for debugging
-      window.quillEditor = quill;
     });
 
     // Generate slug from title
