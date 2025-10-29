@@ -783,3 +783,156 @@ export const exportApplicationPDF = async (req, res) => {
     res.status(500).send('Error generating PDF');
   }
 };
+
+// ===============================
+// CONTACT MANAGEMENT
+// ===============================
+
+const contactsCollection = db.collection('contacts');
+
+/**
+ * GET /admin/contacts
+ * Shows list of contact messages
+ */
+export const showContacts = async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = 20;
+    const status = req.query.status || 'all'; // all, new, read, archived
+
+    let query = contactsCollection.orderBy('submittedAt', 'desc');
+
+    // Filter by status if not 'all'
+    if (status !== 'all') {
+      query = query.where('status', '==', status);
+    }
+
+    const snapshot = await query.get();
+    const totalContacts = snapshot.size;
+    const totalPages = Math.ceil(totalContacts / limit);
+
+    // Paginate
+    const contacts = [];
+    snapshot.docs.slice((page - 1) * limit, page * limit).forEach(doc => {
+      contacts.push({
+        id: doc.id,
+        ...doc.data(),
+        submittedAt: doc.data().submittedAt
+      });
+    });
+
+    // Count by status
+    const allSnapshot = await contactsCollection.get();
+    const statusCounts = {
+      all: allSnapshot.size,
+      new: 0,
+      read: 0,
+      archived: 0
+    };
+
+    allSnapshot.forEach(doc => {
+      const contactStatus = doc.data().status || 'new';
+      statusCounts[contactStatus]++;
+    });
+
+    res.render('admin/contacts', {
+      contacts,
+      currentPage: page,
+      totalPages,
+      totalContacts,
+      statusCounts,
+      currentStatus: status,
+      user: req.session.user
+    });
+  } catch (error) {
+    console.error('Error fetching contacts:', error);
+    res.status(500).send('Error loading contacts');
+  }
+};
+
+/**
+ * GET /admin/contacts/view/:id
+ * Shows contact message details
+ */
+export const showContactDetail = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const doc = await contactsCollection.doc(id).get();
+
+    if (!doc.exists) {
+      return res.status(404).send('Contact message not found');
+    }
+
+    const contact = {
+      id: doc.id,
+      ...doc.data(),
+      submittedAt: doc.data().submittedAt
+    };
+
+    // Mark as read if it was new
+    if (contact.status === 'new') {
+      await contactsCollection.doc(id).update({
+        status: 'read',
+        readAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      });
+      contact.status = 'read';
+    }
+
+    res.render('admin/contact-detail', {
+      contact,
+      user: req.session.user
+    });
+  } catch (error) {
+    console.error('Error fetching contact details:', error);
+    res.status(500).send('Error loading contact details');
+  }
+};
+
+/**
+ * POST /admin/contacts/update/:id
+ * Updates contact message status or notes
+ */
+export const updateContact = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status, notes } = req.body;
+
+    const updateData = {
+      updatedAt: new Date().toISOString()
+    };
+
+    if (status) {
+      updateData.status = status;
+      if (status === 'archived') {
+        updateData.archivedAt = new Date().toISOString();
+      }
+    }
+
+    if (notes !== undefined) {
+      updateData.notes = notes;
+    }
+
+    await contactsCollection.doc(id).update(updateData);
+
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Error updating contact:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+/**
+ * POST /admin/contacts/delete/:id
+ * Deletes contact message
+ */
+export const deleteContact = async (req, res) => {
+  try {
+    const { id } = req.params;
+    await contactsCollection.doc(id).delete();
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Error deleting contact:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
