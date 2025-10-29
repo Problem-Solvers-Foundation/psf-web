@@ -36,13 +36,30 @@ router.get('/', async (req, res) => {
       totalVolunteersFormatted: formatNumber(totalVolunteers)
     };
 
+    // Buscar posts com categoria "Resonance" para "Voices from Our Community"
+    const resonanceSnapshot = await db.collection('posts')
+      .where('category', '==', 'Resonance')
+      .where('isPublished', '==', true)
+      .get();
+
+    const voicesPosts = resonanceSnapshot.docs
+      .map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+        createdAt: doc.data().createdAt?.toDate(),
+        updatedAt: doc.data().updatedAt?.toDate()
+      }))
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+      .slice(0, 3); // Limitar a 3 posts mais recentes
+
     // Renderizar página
     res.render('public/index', {
       layout: 'layouts/public',
       title: 'Problem Solver Foundation - Home',
       description: 'Impact 1 billion people by 2035',
       currentPage: 'home',
-      stats: stats
+      stats: stats,
+      voicesPosts: voicesPosts
     });
 
   } catch (error) {
@@ -121,11 +138,28 @@ router.get('/impact', async (req, res) => {
       totalVolunteersFormatted: formatNumber(totalVolunteers)
     };
 
+    // Buscar posts com categoria "Stories" para "Impact Stories"
+    const storiesSnapshot = await db.collection('posts')
+      .where('category', '==', 'Stories')
+      .where('isPublished', '==', true)
+      .get();
+
+    const impactStories = storiesSnapshot.docs
+      .map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+        createdAt: doc.data().createdAt?.toDate(),
+        updatedAt: doc.data().updatedAt?.toDate()
+      }))
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+      .slice(0, 6); // Limitar a 6 posts mais recentes
+
     res.render('public/impact', {
       title: 'Our Impact - PSF',
       description: 'See the impact we\'re making',
       currentPage: 'impact',
-      stats: stats
+      stats: stats,
+      impactStories: impactStories
     });
 
   } catch (error) {
