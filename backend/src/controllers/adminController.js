@@ -898,6 +898,8 @@ export const updateContact = async (req, res) => {
     const { id } = req.params;
     const { status, notes } = req.body;
 
+    console.log('Updating contact:', { id, status, notes }); // Debug log
+
     const updateData = {
       updatedAt: new Date().toISOString()
     };
@@ -913,11 +915,15 @@ export const updateContact = async (req, res) => {
       updateData.notes = notes;
     }
 
+    console.log('Update data:', updateData); // Debug log
+
     await contactsCollection.doc(id).update(updateData);
+
+    console.log('Contact updated successfully'); // Debug log
 
     res.json({ success: true });
   } catch (error) {
-    console.error('Error updating contact:', error);
+    console.error('❌ Error updating contact:', error);
     res.status(500).json({ success: false, error: error.message });
   }
 };
