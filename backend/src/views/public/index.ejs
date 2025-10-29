@@ -87,29 +87,34 @@
               <h2 class="text-3xl md:text-4xl font-bold tracking-tight">Voices from Our Community</h2>
               <p class="mt-4 text-lg text-muted-light dark:text-muted-dark max-w-2xl mx-auto">Hear directly from those who have experienced the impact of our work firsthand.</p>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              <div class="bg-surface-light dark:bg-surface-dark rounded-xl overflow-hidden flex flex-col shadow-sm">
-                <img alt="Sarah's community" class="w-full h-48 object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD0ZjUTlhSX6GeRa5hsWOSlAYoCUxuGKptkW9FOcaQyPXuscWO7wp29Xas4FhFwpUGA6KAXMgRrixUiYqiGFDIGue2q4bYEvfIGpmN5jty2pAMZ0W3ynjrdeT0J8FVhycN5OBHO6r6G3qtkaDLZDuJW3cURseYnJbESYACfSlAZHuoZ3kbh0BpcIJL0cSIDOwo_yfywhT4nHGjyzQkq_1q6X0tMz92_A2rwE3HSBsWr2fNKKRTLqfND8AU327a-KtXgGRtLUv50Icy4"/>
-                <div class="p-6 flex-1 flex flex-col">
-                  <h3 class="text-lg font-bold mb-2">Sarah's Story</h3>
-                  <p class="text-muted-light dark:text-muted-dark text-sm leading-relaxed">"The Problem Solver Foundation's project transformed my community. We now have access to clean water and sustainable farming practices."</p>
-                </div>
+            <% if (voicesPosts && voicesPosts.length > 0) { %>
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <% voicesPosts.forEach(post => { %>
+                  <div class="bg-surface-light dark:bg-surface-dark rounded-xl overflow-hidden flex flex-col shadow-sm hover:shadow-lg transition-shadow cursor-pointer" onclick="location.href='/blog/<%= post.slug %>'">
+                    <% if (post.imageUrl) { %>
+                      <img alt="<%= post.title %>" class="w-full h-48 object-cover" src="<%= post.imageUrl %>" onerror="this.src='https://via.placeholder.com/400x300?text=Voices+from+Our+Community'"/>
+                    <% } else { %>
+                      <div class="w-full h-48 bg-primary/10 flex items-center justify-center">
+                        <span class="text-primary text-4xl">💬</span>
+                      </div>
+                    <% } %>
+                    <div class="p-6 flex-1 flex flex-col">
+                      <h3 class="text-lg font-bold mb-2"><%= post.title %></h3>
+                      <% if (post.excerpt) { %>
+                        <p class="text-muted-light dark:text-muted-dark text-sm leading-relaxed line-clamp-3"><%= post.excerpt %></p>
+                      <% } %>
+                      <% if (post.author) { %>
+                        <p class="mt-auto pt-4 text-xs text-muted-light dark:text-muted-dark font-medium">— <%= post.author %></p>
+                      <% } %>
+                    </div>
+                  </div>
+                <% }); %>
               </div>
-              <div class="bg-surface-light dark:bg-surface-dark rounded-xl overflow-hidden flex flex-col shadow-sm">
-                <img alt="Community volunteers" class="w-full h-48 object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD1DjX_pbu3kKAjHVlcXWZpLB5ylZlq9Rie2Y1sNpfMJ1J3TIKaP7xmNPn3HWCks8WDPSWZ0GmJFpo0kADtx9apa79JXkVfU5hADYG6urT5_P0lhNel9IaUBfQGOOBQLrrPREE8ue9UIqmq_-WUkO-AbOpA4OWeSG8-DLtxlHBHTxB2wKcigQxd8l4FWFxbFstYm6xacASBQKG_U6A00OMpB53PR8i6DaRNCWDSTYeUmD_mSAX3aSiO1eWYTEH3B4e00KMYAW2cdjcJ"/>
-                <div class="p-6 flex-1 flex flex-col">
-                  <h3 class="text-lg font-bold mb-2">Community Impact</h3>
-                  <p class="text-muted-light dark:text-muted-dark text-sm leading-relaxed">"Volunteering with the foundation was an incredible experience. Seeing the direct impact of our work was truly rewarding."</p>
-                </div>
+            <% } else { %>
+              <div class="text-center py-12">
+                <p class="text-muted-light dark:text-muted-dark">No community voices available yet. Check back soon!</p>
               </div>
-              <div class="bg-surface-light dark:bg-surface-dark rounded-xl overflow-hidden flex flex-col shadow-sm">
-                <img alt="Children in a classroom" class="w-full h-48 object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAjb1U4zqRviVBXSD2j9BqubHJKNjInywz7rUoPcKzpP28DBVfblGU_zyWJA4aH5JRKOWGRzkKf2To5yLcXxVn0S-UC4Ky9zT420h2ZgAw_fJTmhYHo3Yz7heTN51uUFwt72PirNHs06l6qRSILLi89rIAyBCSBl3I-yl8Dgtm04c0TCu5r_6dd-qIuCIAzTNCrR1Mj7F17k4W2vBU9G0v4oNnDVIbYYqY-U0HpKwxtOT9qK1YV6V_UNaBamNC7Mh-KVY9Z7i8sX3sD"/>
-                <div class="p-6 flex-1 flex flex-col">
-                  <h3 class="text-lg font-bold mb-2">Empowering Education</h3>
-                  <p class="text-muted-light dark:text-muted-dark text-sm leading-relaxed">"The educational programs provided by the foundation have given my children a brighter future. They now have access to resources we never thought possible."</p>
-                </div>
-              </div>
-            </div>
+            <% } %>
           </div>
         </section>
         <section class="bg-primary/10 dark:bg-primary/20">
