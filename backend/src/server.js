@@ -119,6 +119,7 @@ app.use('/api/blog', blogRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/stats', statsRoutes);
 app.use('/api/applications', applicationsRoutes);
+app.use('/api/contact', contactRoutes);
 
 // Rotas SSR (Server-Side Rendering) - HTML renderizado
 app.use('/blog', blogRoutes);
