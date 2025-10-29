@@ -199,6 +199,9 @@ export const createPost = async (req, res) => {
   try {
     const { title, slug, excerpt, content, category, author, imageUrl, tags, isPublished } = req.body;
 
+    console.log('📝 Creating post - Content length:', content ? content.length : 0);
+    console.log('Content preview:', content ? content.substring(0, 100) + '...' : 'NO CONTENT');
+
     const postData = {
       title,
       slug,
@@ -213,10 +216,12 @@ export const createPost = async (req, res) => {
       updatedAt: new Date()
     };
 
-    await postsCollection.add(postData);
+    const docRef = await postsCollection.add(postData);
+    console.log('✅ Post created successfully with ID:', docRef.id);
+
     res.redirect('/admin/dashboard');
   } catch (error) {
-    console.error('Error creating post:', error);
+    console.error('❌ Error creating post:', error);
     res.status(500).send('Error creating post');
   }
 };
@@ -257,6 +262,9 @@ export const updatePost = async (req, res) => {
     const { id } = req.params;
     const { title, slug, excerpt, content, category, author, imageUrl, tags, isPublished } = req.body;
 
+    console.log('📝 Updating post', id, '- Content length:', content ? content.length : 0);
+    console.log('Content preview:', content ? content.substring(0, 100) + '...' : 'NO CONTENT');
+
     const updateData = {
       title,
       slug,
@@ -271,9 +279,11 @@ export const updatePost = async (req, res) => {
     };
 
     await postsCollection.doc(id).update(updateData);
+    console.log('✅ Post updated successfully');
+
     res.redirect('/admin/dashboard');
   } catch (error) {
-    console.error('Error updating post:', error);
+    console.error('❌ Error updating post:', error);
     res.status(500).send('Error updating post');
   }
 };

@@ -303,6 +303,24 @@
         // Make quill globally accessible for debugging
         window.quillEditor = quill;
 
+        // Setup form submit handler HERE (inside initializeQuill where quill is available)
+        const form = document.getElementById('post-form');
+        if (form) {
+          form.addEventListener('submit', function(e) {
+            console.log('📤 Form submitting...');
+            const content = quill.root.innerHTML;
+            const hiddenInput = document.getElementById('content-input');
+            hiddenInput.value = content;
+            console.log('✅ Content saved to hidden input');
+            console.log('   Length:', content.length);
+            console.log('   Preview:', content.substring(0, 150) + '...');
+            // Let the form submit normally
+          });
+          console.log('✅ Form submit handler attached');
+        } else {
+          console.error('❌ Form not found!');
+        }
+
       } catch (error) {
         console.error('Error initializing Quill:', error);
         alert('Failed to initialize editor: ' + error.message);
@@ -316,21 +334,6 @@
       // DOM is already ready
       initializeQuill();
     }
-
-    // Before submit, get HTML from Quill
-    document.addEventListener('DOMContentLoaded', function() {
-      document.getElementById('post-form').addEventListener('submit', function(e) {
-        if (quill) {
-          const content = quill.root.innerHTML;
-          document.getElementById('content-input').value = content;
-          console.log('Form submitted with content length:', content.length);
-        } else {
-          console.error('Quill editor not initialized!');
-          alert('Editor is not ready. Please wait and try again.');
-          e.preventDefault();
-        }
-      });
-    });
 
     // Generate slug from title
     function generateSlug() {
@@ -346,12 +349,30 @@
 
     // Save as draft
     function saveAsDraft() {
+      console.log('💾 Saving as draft...');
+      // Save content from Quill to hidden input FIRST
+      if (window.quillEditor) {
+        const content = window.quillEditor.root.innerHTML;
+        document.getElementById('content-input').value = content;
+        console.log('Content saved before draft submit. Length:', content.length);
+      } else {
+        console.warn('⚠️ Quill editor not found!');
+      }
       document.getElementById('isPublished').value = 'false';
       document.getElementById('post-form').submit();
     }
 
     // Publish post
     function publishPost() {
+      console.log('🚀 Publishing post...');
+      // Save content from Quill to hidden input FIRST
+      if (window.quillEditor) {
+        const content = window.quillEditor.root.innerHTML;
+        document.getElementById('content-input').value = content;
+        console.log('Content saved before publish. Length:', content.length);
+      } else {
+        console.warn('⚠️ Quill editor not found!');
+      }
       document.getElementById('isPublished').value = 'true';
       document.getElementById('post-form').submit();
     }
