@@ -70,31 +70,34 @@
               </p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              <div class="bg-background-light dark:bg-background-dark rounded-xl overflow-hidden shadow-sm">
-                <img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=400&h=300&fit=crop" alt="Education" class="w-full h-48 object-cover"/>
-                <div class="p-6">
-                  <h3 class="text-xl font-bold mb-2">Education Access</h3>
-                  <p class="text-muted-light dark:text-muted-dark">Providing quality education to underserved communities worldwide.</p>
-                </div>
+            <% if (impactStories && impactStories.length > 0) { %>
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <% impactStories.forEach(story => { %>
+                  <div class="bg-background-light dark:bg-background-dark rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow cursor-pointer" onclick="location.href='/blog/<%= story.slug %>'">
+                    <% if (story.imageUrl) { %>
+                      <img src="<%= story.imageUrl %>" alt="<%= story.title %>" class="w-full h-48 object-cover" onerror="this.src='https://via.placeholder.com/400x300?text=Impact+Story'"/>
+                    <% } else { %>
+                      <div class="w-full h-48 bg-primary/10 flex items-center justify-center">
+                        <span class="text-primary text-4xl">📖</span>
+                      </div>
+                    <% } %>
+                    <div class="p-6">
+                      <h3 class="text-xl font-bold mb-2"><%= story.title %></h3>
+                      <% if (story.excerpt) { %>
+                        <p class="text-muted-light dark:text-muted-dark line-clamp-3"><%= story.excerpt %></p>
+                      <% } %>
+                      <% if (story.author) { %>
+                        <p class="mt-4 text-sm text-muted-light dark:text-muted-dark font-medium">By <%= story.author %></p>
+                      <% } %>
+                    </div>
+                  </div>
+                <% }); %>
               </div>
-
-              <div class="bg-background-light dark:bg-background-dark rounded-xl overflow-hidden shadow-sm">
-                <img src="https://images.unsplash.com/photo-1576765608535-5f04d1e3f289?w=400&h=300&fit=crop" alt="Healthcare" class="w-full h-48 object-cover"/>
-                <div class="p-6">
-                  <h3 class="text-xl font-bold mb-2">Healthcare Initiatives</h3>
-                  <p class="text-muted-light dark:text-muted-dark">Delivering essential healthcare services to remote areas.</p>
-                </div>
+            <% } else { %>
+              <div class="text-center py-12">
+                <p class="text-muted-light dark:text-muted-dark">No impact stories available yet. Check back soon!</p>
               </div>
-
-              <div class="bg-background-light dark:bg-background-dark rounded-xl overflow-hidden shadow-sm">
-                <img src="https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?w=400&h=300&fit=crop" alt="Technology" class="w-full h-48 object-cover"/>
-                <div class="p-6">
-                  <h3 class="text-xl font-bold mb-2">Tech Innovation</h3>
-                  <p class="text-muted-light dark:text-muted-dark">Empowering communities through technology and innovation.</p>
-                </div>
-              </div>
-            </div>
+            <% } %>
           </div>
         </section>
 
