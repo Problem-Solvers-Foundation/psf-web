@@ -226,18 +226,32 @@
   <script>
     // Initialize Quill immediately after it's loaded
     let quill;
+    let retryCount = 0;
+    const maxRetries = 5;
 
     function initializeQuill() {
-      console.log('DOM loaded, checking Quill...');
+      console.log('DOM loaded, checking Quill... (attempt', retryCount + 1, '/', maxRetries, ')');
 
       // Check if Quill is available
       if (typeof Quill === 'undefined') {
-        console.error('Quill is not loaded!');
-        alert('Editor failed to load. Please refresh the page.');
-        return;
+        retryCount++;
+        if (retryCount < maxRetries) {
+          console.warn('⚠️ Quill is not loaded! Retrying in 500ms...');
+          // Retry after a short delay in case the script is still loading
+          setTimeout(initializeQuill, 500);
+          return;
+        } else {
+          console.error('❌ Failed to load Quill after', maxRetries, 'attempts');
+          // Show error message in the editor area
+          const editorElement = document.getElementById('editor');
+          if (editorElement) {
+            editorElement.innerHTML = '<div style="padding: 20px; text-align: center; color: #dc2626; border: 2px solid #dc2626; border-radius: 8px; background: #fef2f2;"><h3 style="margin: 0 0 10px 0;">❌ Editor Failed to Load</h3><p style="margin: 0;">The text editor could not be loaded due to Content Security Policy restrictions.</p><p style="margin: 10px 0 0 0; font-size: 14px;">Please check the browser console for details or contact support.</p></div>';
+          }
+          return;
+        }
       }
 
-      console.log('Quill library loaded successfully');
+      console.log('✅ Quill library loaded successfully');
 
       // Check if editor element exists
       const editorElement = document.getElementById('editor');
