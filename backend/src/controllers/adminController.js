@@ -800,29 +800,12 @@ export const showContacts = async (req, res) => {
     const limit = 20;
     const status = req.query.status || 'all'; // all, new, read, archived
 
-    let query = contactsCollection.orderBy('submittedAt', 'desc');
+    console.log('📋 Fetching contacts - Status filter:', status); // Debug log
 
-    // Filter by status if not 'all'
-    if (status !== 'all') {
-      query = query.where('status', '==', status);
-    }
-
-    const snapshot = await query.get();
-    const totalContacts = snapshot.size;
-    const totalPages = Math.ceil(totalContacts / limit);
-
-    // Paginate
-    const contacts = [];
-    snapshot.docs.slice((page - 1) * limit, page * limit).forEach(doc => {
-      contacts.push({
-        id: doc.id,
-        ...doc.data(),
-        submittedAt: doc.data().submittedAt
-      });
-    });
+    // Get all contacts first (Firestore limitation workaround)
+    const allSnapshot = await contactsCollection.get();
 
     // Count by status
-    const allSnapshot = await contactsCollection.get();
     const statusCounts = {
       all: allSnapshot.size,
       new: 0,
@@ -830,10 +813,46 @@ export const showContacts = async (req, res) => {
       archived: 0
     };
 
+    // Filter and count
+    let filteredDocs = [];
     allSnapshot.forEach(doc => {
-      const contactStatus = doc.data().status || 'new';
+      const contactData = doc.data();
+      const contactStatus = contactData.status || 'new';
+
+      // Count
       statusCounts[contactStatus]++;
+
+      // Filter
+      if (status === 'all' || contactStatus === status) {
+        filteredDocs.push({
+          id: doc.id,
+          ...contactData,
+          submittedAt: contactData.submittedAt
+        });
+      }
     });
+
+    // Sort by submittedAt (descending - newest first)
+    filteredDocs.sort((a, b) => {
+      const dateA = new Date(a.submittedAt);
+      const dateB = new Date(b.submittedAt);
+      return dateB - dateA;
+    });
+
+    // Paginate
+    const totalContacts = filteredDocs.length;
+    const totalPages = Math.ceil(totalContacts / limit);
+    const startIndex = (page - 1) * limit;
+    const endIndex = startIndex + limit;
+    const contacts = filteredDocs.slice(startIndex, endIndex);
+
+    console.log('✅ Contacts fetched:', {
+      status,
+      totalContacts,
+      currentPage: page,
+      totalPages,
+      statusCounts
+    }); // Debug log
 
     res.render('admin/contacts', {
       contacts,
@@ -845,7 +864,7 @@ export const showContacts = async (req, res) => {
       user: req.session.user
     });
   } catch (error) {
-    console.error('Error fetching contacts:', error);
+    console.error('❌ Error fetching contacts:', error);
     res.status(500).send('Error loading contacts');
   }
 };
