@@ -208,4 +208,32 @@ router.post('/applications/delete/:id', requireAuth, adminController.deleteAppli
  */
 router.get('/applications/export/:id/pdf', requireAuth, adminController.exportApplicationPDF);
 
+// ===============================
+// GERENCIAMENTO DE CONTACTS
+// ===============================
+
+/**
+ * GET /admin/contacts
+ * Listagem de mensagens de contato
+ */
+router.get('/contacts', requireAuth, adminController.showContacts);
+
+/**
+ * GET /admin/contacts/view/:id
+ * Visualizar mensagem de contato específica
+ */
+router.get('/contacts/view/:id', requireAuth, adminController.showContactDetail);
+
+/**
+ * POST /admin/contacts/update/:id
+ * Atualiza status da mensagem de contato
+ */
+router.post('/contacts/update/:id', requireAuth, adminController.updateContact);
+
+/**
+ * POST /admin/contacts/delete/:id
+ * Deleta mensagem de contato
+ */
+router.post('/contacts/delete/:id', requireAuth, adminController.deleteContact);
+
 export default router;
