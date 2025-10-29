@@ -33,13 +33,15 @@ export const renderBlogList = async (req, res) => {
     // Buscar posts
     const snapshot = await query.get();
 
-    // Formatar posts
-    let posts = snapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data(),
-      createdAt: doc.data().createdAt?.toDate(),
-      updatedAt: doc.data().updatedAt?.toDate()
-    }));
+    // Formatar posts e filtrar categorias especiais (Resonance para Home, Stories para Impact)
+    let posts = snapshot.docs
+      .map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+        createdAt: doc.data().createdAt?.toDate(),
+        updatedAt: doc.data().updatedAt?.toDate()
+      }))
+      .filter(post => post.category !== 'Resonance' && post.category !== 'Stories');
 
     // Filtrar por tag (client-side, já que Firestore não suporta array-contains + outras queries)
     if (tag && posts.length > 0) {
