@@ -156,11 +156,12 @@
             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
           >
             <option value="">Select category...</option>
-            <option value="Announcements" <%= post && post.category === 'Announcements' ? 'selected' : '' %>>Announcements</option>
-            <option value="Technology" <%= post && post.category === 'Technology' ? 'selected' : '' %>>Technology</option>
-            <option value="Impact" <%= post && post.category === 'Impact' ? 'selected' : '' %>>Impact</option>
-            <option value="Stories" <%= post && post.category === 'Stories' ? 'selected' : '' %>>Stories</option>
-            <option value="Updates" <%= post && post.category === 'Updates' ? 'selected' : '' %>>Updates</option>
+            <option value="Announcements" <%= post && post.category === 'Announcements' ? 'selected' : '' %>>Announcements (Blog)</option>
+            <option value="Technology" <%= post && post.category === 'Technology' ? 'selected' : '' %>>Technology (Blog)</option>
+            <option value="Impact" <%= post && post.category === 'Impact' ? 'selected' : '' %>>Impact (Blog)</option>
+            <option value="Updates" <%= post && post.category === 'Updates' ? 'selected' : '' %>>Updates (Blog)</option>
+            <option value="Stories" <%= post && post.category === 'Stories' ? 'selected' : '' %>>Stories (Impact Page)</option>
+            <option value="Resonance" <%= post && post.category === 'Resonance' ? 'selected' : '' %>>Resonance (Home - Voices)</option>
           </select>
         </div>
 
