@@ -971,3 +971,85 @@ export const deleteContact = async (req, res) => {
     res.status(500).json({ success: false, error: error.message });
   }
 };
+
+// ===============================
+// PROFILE MANAGEMENT
+// ===============================
+
+/**
+ * GET /admin/profile
+ * Shows profile edit form
+ */
+export const showProfile = async (req, res) => {
+  try {
+    const userId = req.session.user.id;
+    const userDoc = await usersCollection.doc(userId).get();
+
+    if (!userDoc.exists) {
+      return res.redirect('/admin/logout');
+    }
+
+    const userData = userDoc.data();
+
+    res.render('admin/profile', {
+      title: 'Edit Profile',
+      currentPage: 'profile',
+      pageTitle: 'Edit Profile',
+      pageDescription: 'Update your name and bio',
+      user: {
+        id: userDoc.id,
+        name: userData.name,
+        email: userData.email,
+        bio: userData.bio || '',
+        role: userData.role
+      },
+      success: req.query.success,
+      error: req.query.error
+    });
+  } catch (error) {
+    console.error('Error loading profile:', error);
+    res.status(500).render('admin/dashboard', {
+      title: 'Error',
+      currentPage: 'dashboard',
+      pageTitle: 'Error',
+      error: 'Unable to load profile'
+    });
+  }
+};
+
+/**
+ * POST /admin/profile
+ * Updates user profile
+ */
+export const updateProfile = async (req, res) => {
+  try {
+    const { name, bio } = req.body;
+    const userId = req.session.user.id;
+
+    // Validation
+    if (!name || name.trim().length < 2) {
+      return res.redirect('/admin/profile?error=' + encodeURIComponent('Name must be at least 2 characters long'));
+    }
+
+    if (bio && bio.length > 500) {
+      return res.redirect('/admin/profile?error=' + encodeURIComponent('Bio must be less than 500 characters'));
+    }
+
+    // Update user in database
+    const updateData = {
+      name: name.trim(),
+      bio: bio ? bio.trim() : '',
+      updatedAt: new Date()
+    };
+
+    await usersCollection.doc(userId).update(updateData);
+
+    // Update session data
+    req.session.user.name = updateData.name;
+
+    res.redirect('/admin/profile?success=' + encodeURIComponent('Profile updated successfully'));
+  } catch (error) {
+    console.error('Error updating profile:', error);
+    res.redirect('/admin/profile?error=' + encodeURIComponent('An error occurred while updating your profile'));
+  }
+};

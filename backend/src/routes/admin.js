@@ -236,4 +236,20 @@ router.post('/contacts/update/:id', requireAuth, adminController.updateContact);
  */
 router.post('/contacts/delete/:id', requireAuth, adminController.deleteContact);
 
+// ===============================
+// GERENCIAMENTO DE PERFIL
+// ===============================
+
+/**
+ * GET /admin/profile
+ * Página de edição do próprio perfil
+ */
+router.get('/profile', requireAuth, adminController.showProfile);
+
+/**
+ * POST /admin/profile
+ * Atualiza próprio perfil
+ */
+router.post('/profile', requireAuth, adminController.updateProfile);
+
 export default router;
