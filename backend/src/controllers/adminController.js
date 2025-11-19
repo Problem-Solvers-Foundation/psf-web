@@ -535,7 +535,10 @@ export const showUsers = async (req, res) => {
     // Ordenar por data de criação
     users.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
-    res.render('admin/users', { users });
+    res.render('admin/users', {
+      users,
+      user: req.session.user // Pass current user for permission checks
+    });
   } catch (error) {
     console.error('Error loading users:', error);
     res.status(500).send('Error loading users');
@@ -549,6 +552,28 @@ export const showUsers = async (req, res) => {
 export const createUser = async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
+    const currentUserRole = req.session.user.role;
+
+    // Import permission check
+    const { canCreateRole } = await import('../middleware/rolePermissions.js');
+
+    // Check if current user can create this role
+    const permissionCheck = canCreateRole(currentUserRole, role);
+    if (!permissionCheck.canCreate) {
+      return res.status(403).json({
+        success: false,
+        error: `Permission denied: ${permissionCheck.reason}`
+      });
+    }
+
+    // Check if email already exists
+    const existingUser = await usersCollection.where('email', '==', email).limit(1).get();
+    if (!existingUser.empty) {
+      return res.status(400).json({
+        success: false,
+        error: 'A user with this email already exists'
+      });
+    }
 
     // Hash da senha
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -590,7 +615,10 @@ export const showEditUserForm = async (req, res) => {
       createdAt: doc.data().createdAt?.toDate()
     };
 
-    res.render('admin/user-editor', { user });
+    res.render('admin/user-editor', {
+      user,
+      currentUser: req.session.user // Pass current user for permission checks
+    });
   } catch (error) {
     console.error('Error loading user:', error);
     res.status(500).send('Error loading user');
@@ -605,6 +633,29 @@ export const updateUser = async (req, res) => {
   try {
     const { id } = req.params;
     const { name, email, role, password, isActive } = req.body;
+    const currentUserRole = req.session.user.role;
+    const currentUserId = req.session.user.id;
+
+    // Import permission checks
+    const { canManageUser, canCreateRole } = await import('../middleware/rolePermissions.js');
+
+    // Check if current user can edit this user
+    const permissionCheck = await canManageUser(id, currentUserRole, currentUserId, usersCollection);
+    if (!permissionCheck.canManage) {
+      return res.status(403).json({
+        success: false,
+        error: `Permission denied: ${permissionCheck.reason}`
+      });
+    }
+
+    // Check if current user can assign this role
+    const roleCheck = canCreateRole(currentUserRole, role);
+    if (!roleCheck.canCreate) {
+      return res.status(403).json({
+        success: false,
+        error: `Permission denied: ${roleCheck.reason}`
+      });
+    }
 
     const updateData = {
       name,
@@ -634,6 +685,21 @@ export const updateUser = async (req, res) => {
 export const deleteUser = async (req, res) => {
   try {
     const { id } = req.params;
+    const currentUserRole = req.session.user.role;
+    const currentUserId = req.session.user.id;
+
+    // Import permission check
+    const { canManageUser } = await import('../middleware/rolePermissions.js');
+
+    // Check if current user can delete this user
+    const permissionCheck = await canManageUser(id, currentUserRole, currentUserId, usersCollection);
+    if (!permissionCheck.canManage) {
+      return res.status(403).json({
+        success: false,
+        error: `Permission denied: ${permissionCheck.reason}`
+      });
+    }
+
     await usersCollection.doc(id).delete();
     res.json({ success: true });
   } catch (error) {
