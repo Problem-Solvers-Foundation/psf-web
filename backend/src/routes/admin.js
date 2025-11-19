@@ -7,6 +7,7 @@ import { Router } from 'express';
 const router = Router();
 import * as adminController from '../controllers/adminController.js';
 import { requireAuth, redirectIfAuthenticated } from '../middleware/auth.js';
+import { requireAdminFeatures } from '../middleware/rolePermissions.js';
 import { checkLoginRateLimit } from '../middleware/loginRateLimiter.js';
 
 // ===============================
@@ -37,57 +38,63 @@ router.get('/logout', adminController.logout);
 
 /**
  * GET /admin/dashboard
- * Dashboard principal
+ * Dashboard principal (apenas para admins/superusers)
  */
-router.get('/dashboard', requireAuth, adminController.showDashboard);
+router.get('/dashboard', requireAuth, requireAdminFeatures, adminController.showDashboard);
+
+/**
+ * GET /admin/community-dashboard
+ * Dashboard para community users
+ */
+router.get('/community-dashboard', requireAuth, adminController.showCommunityDashboard);
 
 /**
  * GET /admin/posts
- * Listagem de posts
+ * Listagem de posts (apenas para admins/superusers)
  */
-router.get('/posts', requireAuth, adminController.showPosts);
+router.get('/posts', requireAuth, requireAdminFeatures, adminController.showPosts);
 
 /**
  * GET /admin/posts/new
- * Formulário para criar novo post
+ * Formulário para criar novo post (apenas para admins/superusers)
  */
-router.get('/posts/new', requireAuth, adminController.showNewPostForm);
+router.get('/posts/new', requireAuth, requireAdminFeatures, adminController.showNewPostForm);
 
 /**
  * POST /admin/posts/create
- * Cria novo post
+ * Cria novo post (apenas para admins/superusers)
  */
-router.post('/posts/create', requireAuth, adminController.createPost);
+router.post('/posts/create', requireAuth, requireAdminFeatures, adminController.createPost);
 
 /**
  * GET /admin/posts/edit/:id
- * Formulário para editar post
+ * Formulário para editar post (apenas para admins/superusers)
  */
-router.get('/posts/edit/:id', requireAuth, adminController.showEditPostForm);
+router.get('/posts/edit/:id', requireAuth, requireAdminFeatures, adminController.showEditPostForm);
 
 /**
  * POST /admin/posts/edit/:id
- * Atualiza post
+ * Atualiza post (apenas para admins/superusers)
  */
-router.post('/posts/edit/:id', requireAuth, adminController.updatePost);
+router.post('/posts/edit/:id', requireAuth, requireAdminFeatures, adminController.updatePost);
 
 /**
  * POST /admin/posts/delete/:id
- * Deleta post
+ * Deleta post (apenas para admins/superusers)
  */
-router.post('/posts/delete/:id', requireAuth, adminController.deletePost);
+router.post('/posts/delete/:id', requireAuth, requireAdminFeatures, adminController.deletePost);
 
 /**
  * POST /admin/posts/toggle/:id
- * Alterna status de publicação do post
+ * Alterna status de publicação do post (apenas para admins/superusers)
  */
-router.post('/posts/toggle/:id', requireAuth, adminController.togglePostStatus);
+router.post('/posts/toggle/:id', requireAuth, requireAdminFeatures, adminController.togglePostStatus);
 
 /**
  * GET /admin/posts/preview/:id
- * Pré-visualiza post (rascunho ou publicado)
+ * Pré-visualiza post (apenas para admins/superusers)
  */
-router.get('/posts/preview/:id', requireAuth, adminController.previewPost);
+router.get('/posts/preview/:id', requireAuth, requireAdminFeatures, adminController.previewPost);
 
 /**
  * GET /admin (redireciona para dashboard)
@@ -108,37 +115,37 @@ router.get('/', (req, res) => {
  * GET /admin/projects
  * Listagem de projetos
  */
-router.get('/projects', requireAuth, adminController.showProjects);
+router.get('/projects', requireAuth, requireAdminFeatures, adminController.showProjects);
 
 /**
  * GET /admin/projects/new
  * Formulário para criar novo projeto
  */
-router.get('/projects/new', requireAuth, adminController.showNewProjectForm);
+router.get('/projects/new', requireAuth, requireAdminFeatures, adminController.showNewProjectForm);
 
 /**
  * POST /admin/projects/create
  * Cria novo projeto
  */
-router.post('/projects/create', requireAuth, adminController.createProject);
+router.post('/projects/create', requireAuth, requireAdminFeatures, adminController.createProject);
 
 /**
  * GET /admin/projects/edit/:id
  * Formulário para editar projeto
  */
-router.get('/projects/edit/:id', requireAuth, adminController.showEditProjectForm);
+router.get('/projects/edit/:id', requireAuth, requireAdminFeatures, adminController.showEditProjectForm);
 
 /**
  * POST /admin/projects/edit/:id
  * Atualiza projeto
  */
-router.post('/projects/edit/:id', requireAuth, adminController.updateProject);
+router.post('/projects/edit/:id', requireAuth, requireAdminFeatures, adminController.updateProject);
 
 /**
  * POST /admin/projects/delete/:id
  * Deleta projeto
  */
-router.post('/projects/delete/:id', requireAuth, adminController.deleteProject);
+router.post('/projects/delete/:id', requireAuth, requireAdminFeatures, adminController.deleteProject);
 
 // ===============================
 // GERENCIAMENTO DE USUÁRIOS
@@ -148,31 +155,31 @@ router.post('/projects/delete/:id', requireAuth, adminController.deleteProject);
  * GET /admin/users
  * Listagem de usuários
  */
-router.get('/users', requireAuth, adminController.showUsers);
+router.get('/users', requireAuth, requireAdminFeatures, adminController.showUsers);
 
 /**
  * POST /admin/users/create
  * Cria novo usuário
  */
-router.post('/users/create', requireAuth, adminController.createUser);
+router.post('/users/create', requireAuth, requireAdminFeatures, adminController.createUser);
 
 /**
  * GET /admin/users/edit/:id
  * Formulário para editar usuário
  */
-router.get('/users/edit/:id', requireAuth, adminController.showEditUserForm);
+router.get('/users/edit/:id', requireAuth, requireAdminFeatures, adminController.showEditUserForm);
 
 /**
  * POST /admin/users/edit/:id
  * Atualiza usuário
  */
-router.post('/users/edit/:id', requireAuth, adminController.updateUser);
+router.post('/users/edit/:id', requireAuth, requireAdminFeatures, adminController.updateUser);
 
 /**
  * POST /admin/users/delete/:id
  * Deleta usuário
  */
-router.post('/users/delete/:id', requireAuth, adminController.deleteUser);
+router.post('/users/delete/:id', requireAuth, requireAdminFeatures, adminController.deleteUser);
 
 // ===============================
 // GERENCIAMENTO DE APPLICATIONS
@@ -182,31 +189,31 @@ router.post('/users/delete/:id', requireAuth, adminController.deleteUser);
  * GET /admin/applications
  * Listagem de candidaturas
  */
-router.get('/applications', requireAuth, adminController.showApplications);
+router.get('/applications', requireAuth, requireAdminFeatures, adminController.showApplications);
 
 /**
  * GET /admin/applications/view/:id
  * Visualizar candidatura específica
  */
-router.get('/applications/view/:id', requireAuth, adminController.showApplicationDetail);
+router.get('/applications/view/:id', requireAuth, requireAdminFeatures, adminController.showApplicationDetail);
 
 /**
  * POST /admin/applications/update/:id
  * Atualiza candidatura
  */
-router.post('/applications/update/:id', requireAuth, adminController.updateApplication);
+router.post('/applications/update/:id', requireAuth, requireAdminFeatures, adminController.updateApplication);
 
 /**
  * POST /admin/applications/delete/:id
  * Deleta candidatura
  */
-router.post('/applications/delete/:id', requireAuth, adminController.deleteApplication);
+router.post('/applications/delete/:id', requireAuth, requireAdminFeatures, adminController.deleteApplication);
 
 /**
  * GET /admin/applications/export/:id/pdf
  * Exporta candidatura para PDF
  */
-router.get('/applications/export/:id/pdf', requireAuth, adminController.exportApplicationPDF);
+router.get('/applications/export/:id/pdf', requireAuth, requireAdminFeatures, adminController.exportApplicationPDF);
 
 // ===============================
 // GERENCIAMENTO DE CONTACTS
@@ -216,25 +223,25 @@ router.get('/applications/export/:id/pdf', requireAuth, adminController.exportAp
  * GET /admin/contacts
  * Listagem de mensagens de contato
  */
-router.get('/contacts', requireAuth, adminController.showContacts);
+router.get('/contacts', requireAuth, requireAdminFeatures, adminController.showContacts);
 
 /**
  * GET /admin/contacts/view/:id
  * Visualizar mensagem de contato específica
  */
-router.get('/contacts/view/:id', requireAuth, adminController.showContactDetail);
+router.get('/contacts/view/:id', requireAuth, requireAdminFeatures, adminController.showContactDetail);
 
 /**
  * POST /admin/contacts/update/:id
  * Atualiza status da mensagem de contato
  */
-router.post('/contacts/update/:id', requireAuth, adminController.updateContact);
+router.post('/contacts/update/:id', requireAuth, requireAdminFeatures, adminController.updateContact);
 
 /**
  * POST /admin/contacts/delete/:id
  * Deleta mensagem de contato
  */
-router.post('/contacts/delete/:id', requireAuth, adminController.deleteContact);
+router.post('/contacts/delete/:id', requireAuth, requireAdminFeatures, adminController.deleteContact);
 
 // ===============================
 // GERENCIAMENTO DE PERFIL

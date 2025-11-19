@@ -1119,3 +1119,24 @@ export const updateProfile = async (req, res) => {
     res.redirect('/admin/profile?error=' + encodeURIComponent('An error occurred while updating your profile'));
   }
 };
+
+// ===============================
+// COMMUNITY DASHBOARD
+// ===============================
+
+/**
+ * GET /admin/community-dashboard
+ * Shows community dashboard for regular users
+ */
+export const showCommunityDashboard = async (req, res) => {
+  try {
+    res.render('admin/community-dashboard', {
+      title: 'Community Dashboard',
+      currentPage: 'community-dashboard',
+      user: req.session.user
+    });
+  } catch (error) {
+    console.error('Error loading community dashboard:', error);
+    res.status(500).send('Error loading dashboard');
+  }
+};

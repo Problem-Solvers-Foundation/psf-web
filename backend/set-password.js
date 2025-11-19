@@ -2,7 +2,7 @@
  * Script para definir senha para um usuário específico
  *
  * Uso:
- * TARGET_EMAIL=haniel@psf.org NEW_PASSWORD=novaSenha123 node set-password.js
+ * TARGET_EMAIL=user@example.com NEW_PASSWORD=newPassword123 node set-password.js
  */
 
 import { db } from './src/config/firebase.js';

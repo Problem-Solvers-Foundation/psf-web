@@ -2,7 +2,7 @@
  * Script para promover um usuário para superuser
  *
  * Uso:
- * TARGET_EMAIL=haniel@psf.org node promote-superuser.js
+ * TARGET_EMAIL=user@example.com node promote-superuser.js
  */
 
 import { db } from './src/config/firebase.js';

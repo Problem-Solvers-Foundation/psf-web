@@ -24,9 +24,35 @@ export const requireAdminAccess = (req, res, next) => {
     return next();
   }
 
-  // User role cannot access admin panel
+  // Community users get redirected to their own dashboard
+  if (userRole === 'user') {
+    return res.redirect('/admin/community-dashboard');
+  }
+
+  // Unknown role - deny access
   return res.status(403).render('admin/login', {
     error: 'Access denied. Admin privileges required.'
+  });
+};
+
+/**
+ * Check if user can access admin features (not community users)
+ */
+export const requireAdminFeatures = (req, res, next) => {
+  if (!req.session?.user) {
+    return res.redirect('/admin/login');
+  }
+
+  const userRole = req.session.user.role;
+
+  if (userRole === 'superuser' || userRole === 'admin') {
+    return next();
+  }
+
+  // Community users cannot access admin features
+  return res.status(403).json({
+    success: false,
+    error: 'Access denied. Administrative privileges required.'
   });
 };
 
