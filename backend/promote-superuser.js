@@ -1,12 +1,15 @@
 /**
  * Script para promover um usuário para superuser
+ *
+ * Uso:
+ * TARGET_EMAIL=haniel@psf.org node promote-superuser.js
  */
 
 import { db } from './src/config/firebase.js';
 
 const promoteToSuperuser = async () => {
   try {
-    const email = 'hanielrolemberg-admin@psf.org';
+    const email = process.env.TARGET_EMAIL || 'admin@example.com';
     console.log(`🔍 Procurando usuário: ${email}`);
 
     const usersCollection = db.collection('users');

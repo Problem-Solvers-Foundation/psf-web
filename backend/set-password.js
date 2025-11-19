@@ -1,5 +1,8 @@
 /**
  * Script para definir senha para um usuário específico
+ *
+ * Uso:
+ * TARGET_EMAIL=haniel@psf.org NEW_PASSWORD=novaSenha123 node set-password.js
  */
 
 import { db } from './src/config/firebase.js';
@@ -7,8 +10,8 @@ import bcrypt from 'bcryptjs';
 
 const setUserPassword = async () => {
   try {
-    const email = 'hanielrolemberg-admin@psf.org';
-    const newPassword = 'admin123'; // Você pode alterar esta senha
+    const email = process.env.TARGET_EMAIL || 'admin@example.com';
+    const newPassword = process.env.NEW_PASSWORD || 'temporaryPassword123';
 
     console.log(`🔍 Procurando usuário: ${email}`);
 
