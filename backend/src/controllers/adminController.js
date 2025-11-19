@@ -15,23 +15,41 @@ const applicationsCollection = db.collection('applications');
 // Todo o sistema de autenticação agora usa apenas bcrypt com senhas hashadas no banco de dados
 
 /**
- * GET /admin/login
- * Renderiza página de login
+ * GET /signin
+ * Renderiza página de login pública
  */
 export const showLogin = (req, res) => {
-  res.render('admin/login', { error: null });
+  res.render('public/signin', { error: null });
 };
 
 /**
- * POST /admin/login
- * Processa login com rate limiting
+ * POST /signin
+ * Processa login público com rate limiting
  */
 export const processLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
 
+    // SEGURANÇA: Validação de input
+    if (!email || !password) {
+      return res.render('public/signin', {
+        error: 'Email and password are required.'
+      });
+    }
+
+    // SEGURANÇA: Validar formato de email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.render('public/signin', {
+        error: 'Please enter a valid email address.'
+      });
+    }
+
+    // SEGURANÇA: Sanitizar email
+    const sanitizedEmail = email.toLowerCase().trim();
+
     // Buscar usuário no banco de dados pelo email
-    const snapshot = await usersCollection.where('email', '==', email).limit(1).get();
+    const snapshot = await usersCollection.where('email', '==', sanitizedEmail).limit(1).get();
 
     if (snapshot.empty) {
       // Registrar tentativa falhada
@@ -44,7 +62,7 @@ export const processLogin = async (req, res) => {
         errorMessage = `Invalid email or password. ${attemptInfo.remainingAttempts} attempt${attemptInfo.remainingAttempts === 1 ? '' : 's'} remaining before temporary block.`;
       }
 
-      return res.render('admin/login', { error: errorMessage });
+      return res.render('public/signin', { error: errorMessage });
     }
 
     const userDoc = snapshot.docs[0];
@@ -53,14 +71,14 @@ export const processLogin = async (req, res) => {
     // Verificar se o usuário está ativo
     if (!userData.isActive) {
       recordFailedLogin(req);
-      return res.render('admin/login', { error: 'Account is inactive. Contact administrator.' });
+      return res.render('public/signin', { error: 'Account is inactive. Contact administrator.' });
     }
 
     // Comparar senha usando bcrypt
     // SEGURANÇA: Todas as senhas devem estar hashadas no banco de dados
     if (!userData.password) {
       recordFailedLogin(req);
-      return res.render('admin/login', { error: 'Invalid email or password' });
+      return res.render('public/signin', { error: 'Invalid email or password' });
     }
 
     const passwordMatch = await bcrypt.compare(password, userData.password);
@@ -76,7 +94,7 @@ export const processLogin = async (req, res) => {
         errorMessage = `Invalid email or password. ${attemptInfo.remainingAttempts} attempt${attemptInfo.remainingAttempts === 1 ? '' : 's'} remaining before temporary block.`;
       }
 
-      return res.render('admin/login', { error: errorMessage });
+      return res.render('public/signin', { error: errorMessage });
     }
 
     // Login bem-sucedido - limpar tentativas
@@ -100,7 +118,7 @@ export const processLogin = async (req, res) => {
     req.session.save((err) => {
       if (err) {
         console.error('Session save error:', err);
-        return res.render('admin/login', { error: 'Session error. Please try again.' });
+        return res.render('public/signin', { error: 'Session error. Please try again.' });
       }
 
       // Redirecionar baseado no role do usuário
@@ -112,7 +130,7 @@ export const processLogin = async (req, res) => {
     });
   } catch (error) {
     console.error('Error during login:', error);
-    res.render('admin/login', { error: 'An error occurred. Please try again.' });
+    res.render('public/signin', { error: 'An error occurred. Please try again.' });
   }
 };
 
@@ -122,7 +140,7 @@ export const processLogin = async (req, res) => {
  */
 export const logout = (req, res) => {
   req.session.destroy();
-  res.redirect('/admin/login');
+  res.redirect('/signin');
 };
 
 /**
@@ -130,7 +148,7 @@ export const logout = (req, res) => {
  * Renderiza página de cadastro para community users
  */
 export const showSignup = (req, res) => {
-  res.render('admin/signup', { error: null, success: null, formData: null });
+  res.render('public/signup', { error: null, success: null, formData: null });
 };
 
 /**
@@ -141,17 +159,37 @@ export const processSignup = async (req, res) => {
   try {
     const { name, email, password, confirmPassword } = req.body;
 
-    // Validação básica
+    // SEGURANÇA: Validação robusta de input
     if (!name || !email || !password || !confirmPassword) {
-      return res.render('admin/signup', {
+      return res.render('public/signup', {
         error: 'All fields are required.',
         success: null,
         formData: { name, email }
       });
     }
 
+    // SEGURANÇA: Validação de formato de email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.render('public/signup', {
+        error: 'Please enter a valid email address.',
+        success: null,
+        formData: { name, email }
+      });
+    }
+
+    // SEGURANÇA: Sanitizar e validar nome
+    const sanitizedName = name.trim().replace(/[<>\"'&]/g, '');
+    if (sanitizedName.length < 2 || sanitizedName.length > 50) {
+      return res.render('public/signup', {
+        error: 'Name must be between 2 and 50 characters.',
+        success: null,
+        formData: { name, email }
+      });
+    }
+
     if (password !== confirmPassword) {
-      return res.render('admin/signup', {
+      return res.render('public/signup', {
         error: 'Passwords do not match.',
         success: null,
         formData: { name, email }
@@ -159,7 +197,7 @@ export const processSignup = async (req, res) => {
     }
 
     if (password.length < 6) {
-      return res.render('admin/signup', {
+      return res.render('public/signup', {
         error: 'Password must be at least 6 characters long.',
         success: null,
         formData: { name, email }
@@ -170,7 +208,7 @@ export const processSignup = async (req, res) => {
     const existingUserSnapshot = await usersCollection.where('email', '==', email.toLowerCase().trim()).limit(1).get();
 
     if (!existingUserSnapshot.empty) {
-      return res.render('admin/signup', {
+      return res.render('public/signup', {
         error: 'An account with this email already exists.',
         success: null,
         formData: { name, email }
@@ -181,7 +219,7 @@ export const processSignup = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = {
-      name: name.trim(),
+      name: sanitizedName, // SEGURANÇA: Usar nome sanitizado
       email: email.toLowerCase().trim(),
       password: hashedPassword,
       role: 'user', // Community user
@@ -192,7 +230,7 @@ export const processSignup = async (req, res) => {
 
     await usersCollection.add(newUser);
 
-    res.render('admin/signup', {
+    res.render('public/signup', {
       error: null,
       success: 'Account created successfully! You can now sign in.',
       formData: null
@@ -200,7 +238,7 @@ export const processSignup = async (req, res) => {
 
   } catch (error) {
     console.error('Error during signup:', error);
-    res.render('admin/signup', {
+    res.render('public/signup', {
       error: 'An error occurred while creating your account. Please try again.',
       success: null,
       formData: req.body

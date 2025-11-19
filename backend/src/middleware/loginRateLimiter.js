@@ -48,7 +48,7 @@ export const checkLoginRateLimit = (req, res, next) => {
 
     // CRÍTICO: Retornar IMEDIATAMENTE sem chamar next()
     // Isso impede o controller de processar qualquer tentativa
-    return res.render('admin/login', {
+    return res.render('public/signin', {
       error: `Too many login attempts. Please try again in ${timeMessage}.`,
       isBlocked: true,
       blockedUntil: attemptData.blockedUntil,

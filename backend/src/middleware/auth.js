@@ -6,16 +6,46 @@
 import { requireAdminAccess } from './rolePermissions.js';
 
 /**
+ * SEGURANÇA: Valida integridade da sessão
+ * Verifica se dados essenciais estão presentes e válidos
+ */
+export const validateSession = (req, res, next) => {
+  if (req.session && req.session.isAuthenticated) {
+    // Verificar se user object existe e tem campos obrigatórios
+    const user = req.session.user;
+
+    if (!user || !user.id || !user.email || !user.role) {
+      console.warn(`[SECURITY] Invalid session data for IP: ${req.ip}`);
+      req.session.destroy();
+      return res.redirect('/signin');
+    }
+
+    // Verificar se role é válido
+    const validRoles = ['user', 'admin', 'superuser'];
+    if (!validRoles.includes(user.role)) {
+      console.warn(`[SECURITY] Invalid role "${user.role}" for user ${user.email}`);
+      req.session.destroy();
+      return res.redirect('/signin');
+    }
+  }
+
+  next();
+};
+
+/**
  * Verifica se o usuário está autenticado (para rotas básicas)
  */
 export const requireAuth = (req, res, next) => {
-  // Verificar se existe sessão
-  if (req.session && req.session.isAuthenticated) {
-    return next();
-  }
+  // SEGURANÇA: Primeiro validar integridade da sessão
+  validateSession(req, res, () => {
+    // Verificar se existe sessão
+    if (req.session && req.session.isAuthenticated) {
+      return next();
+    }
 
-  // Redirecionar para login
-  res.redirect('/admin/login');
+    // Redirecionar para login
+    res.redirect('/signin');
+  });
 };
 
 /**
@@ -25,7 +55,7 @@ export const requireAuth = (req, res, next) => {
 export const requireAdminAuth = (req, res, next) => {
   // First check if authenticated
   if (!req.session || !req.session.isAuthenticated) {
-    return res.redirect('/admin/login');
+    return res.redirect('/signin');
   }
 
   // Then check admin access (role-based)
@@ -38,7 +68,18 @@ export const requireAdminAuth = (req, res, next) => {
  */
 export const redirectIfAuthenticated = (req, res, next) => {
   if (req.session && req.session.isAuthenticated) {
-    return res.redirect('/admin/dashboard');
+    // SEGURANÇA: Redirecionar baseado no role do usuário
+    const userRole = req.session.user?.role;
+
+    if (userRole === 'user') {
+      return res.redirect('/admin/community-dashboard');
+    } else if (userRole === 'admin' || userRole === 'superuser') {
+      return res.redirect('/admin/dashboard');
+    } else {
+      // Role inválido - força logout por segurança
+      req.session.destroy();
+      return res.redirect('/signin');
+    }
   }
   next();
 };

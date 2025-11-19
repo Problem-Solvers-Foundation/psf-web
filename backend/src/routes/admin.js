@@ -15,18 +15,6 @@ import { checkLoginRateLimit } from '../middleware/loginRateLimiter.js';
 // ===============================
 
 /**
- * GET /admin/login
- * Página de login
- */
-router.get('/login', redirectIfAuthenticated, adminController.showLogin);
-
-/**
- * POST /admin/login
- * Processa login com rate limiting
- */
-router.post('/login', checkLoginRateLimit, adminController.processLogin);
-
-/**
  * GET /admin/logout
  * Faz logout
  */
@@ -108,7 +96,7 @@ router.get('/', (req, res) => {
       res.redirect('/admin/dashboard');
     }
   } else {
-    res.redirect('/admin/login');
+    res.redirect('/signin');
   }
 });
 

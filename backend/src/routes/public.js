@@ -7,6 +7,11 @@ import express from 'express';
 import { db } from '../config/firebase.js';
 import { formatNumber } from '../utils/formatNumber.js';
 
+// Auth imports
+import * as adminController from '../controllers/adminController.js';
+import { redirectIfAuthenticated } from '../middleware/auth.js';
+import { checkLoginRateLimit } from '../middleware/loginRateLimiter.js';
+
 const router = express.Router();
 
 /**
@@ -210,11 +215,6 @@ router.get('/join/options', (req, res) => {
 // ===============================
 // AUTH ROUTES
 // ===============================
-
-// Importar funções do adminController
-import * as adminController from '../controllers/adminController.js';
-import { redirectIfAuthenticated } from '../middleware/auth.js';
-import { checkLoginRateLimit } from '../middleware/loginRateLimiter.js';
 
 /**
  * GET /signin

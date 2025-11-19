@@ -15,7 +15,7 @@
  */
 export const requireAdminAccess = (req, res, next) => {
   if (!req.session?.user) {
-    return res.redirect('/admin/login');
+    return res.redirect('/signin');
   }
 
   const userRole = req.session.user.role;
@@ -30,7 +30,7 @@ export const requireAdminAccess = (req, res, next) => {
   }
 
   // Unknown role - deny access
-  return res.status(403).render('admin/login', {
+  return res.status(403).render('public/signin', {
     error: 'Access denied. Admin privileges required.'
   });
 };
@@ -40,7 +40,7 @@ export const requireAdminAccess = (req, res, next) => {
  */
 export const requireAdminFeatures = (req, res, next) => {
   if (!req.session?.user) {
-    return res.redirect('/admin/login');
+    return res.redirect('/signin');
   }
 
   const userRole = req.session.user.role;
@@ -55,7 +55,7 @@ export const requireAdminFeatures = (req, res, next) => {
   }
 
   // Unknown role - deny access
-  return res.status(403).render('admin/login', {
+  return res.status(403).render('public/signin', {
     error: 'Access denied. Administrative privileges required.'
   });
 };

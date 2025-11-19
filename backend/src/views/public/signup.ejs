@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sign Up - Problem Solver Foundation</title>
+  <meta name="description" content="Create your PSF account">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon.png">
+
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#117dd4",
+            "background-light": "#f6f7f8",
+            "background-dark": "#101a22",
+            "text-light": "#101a22",
+            "text-dark": "#f6f7f8",
+            "surface-light": "#ffffff",
+            "surface-dark": "#1b2733",
+            "border-light": "#e7eef3",
+            "border-dark": "#2a3b4c",
+            "muted-light": "#4c779a",
+            "muted-dark": "#a0b3c4"
+          },
+          fontFamily: { "display": ["Inter", "sans-serif"] },
+          borderRadius: { "DEFAULT": "0.5rem", "lg": "0.75rem", "xl": "1rem", "full": "9999px" }
+        }
+      }
+    }
+  </script>
+  <link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet"/>
+</head>
+<body class="font-display bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen flex items-center justify-center p-4">
+  <div class="max-w-md w-full">
+    <div class="bg-white rounded-2xl shadow-2xl p-8">
+      <!-- Logo -->
+      <div class="text-center mb-8">
+        <div class="text-primary size-12 mx-auto mb-4">
+          <svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+            <path clip-rule="evenodd" d="M12.0799 24L4 19.2479L9.95537 8.75216L18.04 13.4961L18.0446 4H29.9554L29.96 13.4961L38.0446 8.75216L44 19.2479L35.92 24L44 28.7521L38.0446 39.2479L29.96 34.5039L29.9554 44H18.0446L18.04 34.5039L9.95537 39.2479L4 28.7521L12.0799 24Z" fill="currentColor" fill-rule="evenodd"></path>
+          </svg>
+        </div>
+        <h2 class="text-2xl font-bold text-gray-900">Join Our Community</h2>
+        <p class="text-gray-600 mt-2">Create your PSF account</p>
+      </div>
+
+      <!-- Error Message -->
+      <% if (locals.error) { %>
+        <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+          <p class="text-red-800 text-sm font-semibold"><%= error %></p>
+        </div>
+      <% } %>
+
+      <!-- Success Message -->
+      <% if (locals.success) { %>
+        <div class="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+          <p class="text-green-800 text-sm font-semibold"><%= success %></p>
+        </div>
+      <% } %>
+
+      <!-- Sign Up Form -->
+      <form action="/signup" method="POST" class="space-y-4">
+        <div>
+          <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            required
+            minlength="2"
+            maxlength="50"
+            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+            placeholder="Your full name"
+            value="<%= locals.formData?.name || '' %>"
+          >
+        </div>
+
+        <div>
+          <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            required
+            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+            placeholder="your@email.com"
+            value="<%= locals.formData?.email || '' %>"
+          >
+        </div>
+
+        <div>
+          <label for="password" class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            required
+            minlength="6"
+            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+            placeholder="Enter your password"
+          >
+          <p class="text-xs text-gray-500 mt-1">Minimum 6 characters</p>
+        </div>
+
+        <div>
+          <label for="confirmPassword" class="block text-sm font-medium text-gray-700 mb-2">Confirm Password</label>
+          <input
+            type="password"
+            id="confirmPassword"
+            name="confirmPassword"
+            required
+            minlength="6"
+            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+            placeholder="Confirm your password"
+          >
+        </div>
+
+        <button
+          type="submit"
+          class="w-full bg-primary hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg shadow-lg transform transition hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 mt-6"
+        >
+          Create Account
+        </button>
+      </form>
+
+      <!-- Links -->
+      <div class="mt-6 text-center space-y-4">
+        <p class="text-sm text-gray-600">
+          Already have an account?
+          <a href="/signin" class="text-primary font-medium hover:underline">Sign in here</a>
+        </p>
+
+        <div class="border-t border-gray-200 pt-4">
+          <a href="/" class="text-sm text-gray-500 hover:text-primary transition-colors">
+            ← Back to Home
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Password validation
+    document.getElementById('confirmPassword').addEventListener('input', function() {
+      const password = document.getElementById('password').value;
+      const confirmPassword = this.value;
+
+      if (confirmPassword && password !== confirmPassword) {
+        this.setCustomValidity('Passwords do not match');
+      } else {
+        this.setCustomValidity('');
+      }
+    });
+  </script>
+</body>
+</html>
