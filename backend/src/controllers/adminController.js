@@ -126,6 +126,89 @@ export const logout = (req, res) => {
 };
 
 /**
+ * GET /signup
+ * Renderiza página de cadastro para community users
+ */
+export const showSignup = (req, res) => {
+  res.render('admin/signup', { error: null, success: null, formData: null });
+};
+
+/**
+ * POST /signup
+ * Processa cadastro de community user
+ */
+export const processSignup = async (req, res) => {
+  try {
+    const { name, email, password, confirmPassword } = req.body;
+
+    // Validação básica
+    if (!name || !email || !password || !confirmPassword) {
+      return res.render('admin/signup', {
+        error: 'All fields are required.',
+        success: null,
+        formData: { name, email }
+      });
+    }
+
+    if (password !== confirmPassword) {
+      return res.render('admin/signup', {
+        error: 'Passwords do not match.',
+        success: null,
+        formData: { name, email }
+      });
+    }
+
+    if (password.length < 6) {
+      return res.render('admin/signup', {
+        error: 'Password must be at least 6 characters long.',
+        success: null,
+        formData: { name, email }
+      });
+    }
+
+    // Verificar se email já existe
+    const existingUserSnapshot = await usersCollection.where('email', '==', email.toLowerCase().trim()).limit(1).get();
+
+    if (!existingUserSnapshot.empty) {
+      return res.render('admin/signup', {
+        error: 'An account with this email already exists.',
+        success: null,
+        formData: { name, email }
+      });
+    }
+
+    // Criar novo user
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newUser = {
+      name: name.trim(),
+      email: email.toLowerCase().trim(),
+      password: hashedPassword,
+      role: 'user', // Community user
+      isActive: true,
+      createdAt: new Date(),
+      lastLogin: null
+    };
+
+    await usersCollection.add(newUser);
+
+    res.render('admin/signup', {
+      error: null,
+      success: 'Account created successfully! You can now sign in.',
+      formData: null
+    });
+
+  } catch (error) {
+    console.error('Error during signup:', error);
+    res.render('admin/signup', {
+      error: 'An error occurred while creating your account. Please try again.',
+      success: null,
+      formData: req.body
+    });
+  }
+};
+
+/**
  * GET /admin/dashboard
  * Dashboard principal com estatísticas gerais
  */

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Login - PSF Blog</title>
+  <title>Sign In - Problem Solver Foundation</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -27,8 +27,8 @@
           <path d="M12.08 24L4 19.25L9.96 8.75L18.04 13.5L18.04 4h11.91l.01 9.5L38.04 8.75L44 19.25L35.92 24L44 28.75L38.04 39.25L29.96 34.5L29.96 44H18.04l-.0 -9.5L9.96 39.25L4 28.75L12.08 24Z" fill="currentColor"/>
         </svg>
       </div>
-      <h1 class="text-3xl font-bold text-gray-900">Admin Panel</h1>
-      <p class="text-gray-600 mt-2">Problem Solver Foundation Blog</p>
+      <h1 class="text-3xl font-bold text-gray-900">Welcome Back</h1>
+      <p class="text-gray-600 mt-2">Problem Solver Foundation</p>
     </div>
 
     <!-- Login Form -->
@@ -62,7 +62,7 @@
             name="email"
             required
             class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-            placeholder="admin@psf.org"
+            placeholder="your@email.com"
           />
         </div>
 
@@ -99,18 +99,19 @@
         </button>
       </form>
 
-      <!-- Info -->
-      <div class="mt-6 p-4 bg-blue-50 rounded-lg">
-        <p class="text-xs text-gray-600">
-          <strong>Note:</strong> Use the credentials provided by your administrator. If you don't have access, please contact the system administrator.
+      <!-- Sign Up Link -->
+      <div class="mt-6 text-center">
+        <p class="text-sm text-gray-600">
+          Don't have an account?
+          <a href="/signup" class="text-primary hover:underline font-semibold">Sign up here</a>
         </p>
       </div>
     </div>
 
-    <!-- Back to Blog -->
+    <!-- Back to Site -->
     <div class="text-center mt-6">
-      <a href="/blog" class="text-sm text-gray-600 hover:text-primary">
-        ← Back to Blog
+      <a href="/" class="text-sm text-gray-600 hover:text-primary">
+        ← Back to Website
       </a>
     </div>
   </div>

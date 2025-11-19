@@ -207,4 +207,43 @@ router.get('/join/options', (req, res) => {
   });
 });
 
+// ===============================
+// AUTH ROUTES
+// ===============================
+
+// Importar funções do adminController
+import * as adminController from '../controllers/adminController.js';
+import { redirectIfAuthenticated } from '../middleware/auth.js';
+import { checkLoginRateLimit } from '../middleware/loginRateLimiter.js';
+
+/**
+ * GET /signin
+ * Página de login (todos os usuários)
+ */
+router.get('/signin', redirectIfAuthenticated, adminController.showLogin);
+
+/**
+ * POST /signin
+ * Processa login (todos os usuários)
+ */
+router.post('/signin', checkLoginRateLimit, adminController.processLogin);
+
+/**
+ * GET /signup
+ * Página de cadastro (community users)
+ */
+router.get('/signup', redirectIfAuthenticated, adminController.showSignup);
+
+/**
+ * POST /signup
+ * Processa cadastro (community users)
+ */
+router.post('/signup', adminController.processSignup);
+
+/**
+ * GET /logout
+ * Faz logout
+ */
+router.get('/logout', adminController.logout);
+
 export default router;
