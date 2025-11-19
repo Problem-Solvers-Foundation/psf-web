@@ -23,6 +23,111 @@
     .char-counter.error { color: #ef4444; }
     .char-counter.success { color: #10b981; }
     .word-counter { font-size: 0.75rem; color: #6b7280; margin-top: 0.25rem; }
+
+    /* Timeline specific styles */
+    .timeline-period-card {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .timeline-period-card:hover {
+      transform: scale(1.02);
+    }
+
+    .timeline-period-card:active {
+      transform: scale(0.98);
+    }
+
+    .timeline-phase {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .timeline-phase:hover {
+      transform: translateX(4px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    @keyframes pulseRing {
+      0% {
+        transform: scale(0.33);
+      }
+      40%, 50% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+        transform: scale(1.33);
+      }
+    }
+
+    .pulse-ring {
+      animation: pulseRing 1.25s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+    }
+
+    /* Card gradient enhancements */
+    .timeline-period-card .bg-gradient-to-br {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .timeline-period-card .bg-gradient-to-br::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
+      transform: translateX(-100%);
+      transition: transform 0.6s;
+    }
+
+    .timeline-period-card:hover .bg-gradient-to-br::before {
+      transform: translateX(100%);
+    }
+
+    /* Modal styles */
+    .modal-open {
+      opacity: 1 !important;
+      pointer-events: auto !important;
+    }
+
+    .modal-open #modalContent {
+      transform: scale(1) !important;
+    }
+
+    #periodModal {
+      backdrop-filter: blur(8px);
+    }
+
+    /* Modal timeline item styles */
+    .modal-timeline-item {
+      display: flex;
+      align-items: center;
+      padding: 12px;
+      border-radius: 8px;
+      transition: background-color 0.2s;
+    }
+
+    .modal-timeline-item:hover {
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+
+    .dark .modal-timeline-item:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+
+    .modal-timeline-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 12px;
+      font-size: 12px;
+      font-weight: bold;
+      color: white;
+    }
   </style>
 </head>
 <body class="font-display bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark">
@@ -40,27 +145,159 @@
                 We're looking for curious, committed, and courageous minds to tackle real-world problems through action, collaboration, and innovation.
               </p>
               
-              <!-- Application Period Info -->
-              <div class="bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-500 rounded-xl p-4 mb-6">
-                <p class="text-sm font-bold text-blue-700 dark:text-blue-400 mb-2">
-                  <span id="applicationPeriod"></span> Application Period
-                </p>
-                <p class="text-sm text-gray-700 dark:text-gray-300">
-                  <strong>20 spots available</strong> - 10 spots per selection process<br>
-                  Applications close in <strong><span id="daysRemaining"></span> days</strong>
-                </p>
-              </div>
+              <!-- Timeline Component -->
+              <div class="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border-2 border-blue-500 rounded-xl p-6 mb-6">
+                <!-- Current Period Info -->
+                <div class="text-center mb-6">
+                  <p class="text-lg font-bold text-blue-700 dark:text-blue-400 mb-1">
+                    <span id="currentPeriodName"></span> Application Period
+                  </p>
+                  <p class="text-sm text-gray-700 dark:text-gray-300">
+                    <strong>20 spots available</strong> - 10 spots per selection process
+                  </p>
+                  <p class="text-sm text-blue-600 dark:text-blue-400 font-medium">
+                    Applications close in <strong><span id="daysRemaining"></span> days</strong>
+                  </p>
+                </div>
 
-              <!-- Process Overview -->
-              <div class="bg-gray-50 dark:bg-gray-800 rounded-xl p-4 mb-6 text-left">
-                <h3 class="font-bold text-sm mb-2">Selection Process Timeline:</h3>
-                <ul class="text-xs space-y-1 text-gray-600 dark:text-gray-400">
-                  <li>✓ <strong>Weeks 1-4:</strong> Complete this application (all sections + video)</li>
-                  <li>✓ <strong>Week 5:</strong> Committee review (30-40 finalists selected)</li>
-                  <li>✓ <strong>Week 8:</strong> Interview Panel (60 min, 15-20 advance)</li>
-                  <li>✓ <strong>Weekend 9:</strong> Final Hackathon (2 days online)</li>
-                  <li>✓ <strong>Week 10:</strong> Results & Onboarding (10 selected)</li>
-                </ul>
+                <!-- Annual Timeline -->
+                <div class="mb-8">
+                  <h3 class="text-center font-bold text-gray-800 dark:text-gray-200 mb-6">Yearly Application Cycles</h3>
+
+                  <!-- Improved Timeline Design -->
+                  <div class="grid md:grid-cols-2 gap-6">
+                    <!-- 1st Period Card -->
+                    <div id="period1" class="timeline-period-card cursor-pointer transition-all duration-300 hover:scale-105">
+                      <div class="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-2 border-green-500 rounded-xl p-6 shadow-lg hover:shadow-xl">
+                        <div class="flex items-center justify-between mb-4">
+                          <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center shadow-lg">
+                            <span class="text-white font-bold text-lg">1</span>
+                          </div>
+                          <div class="text-right">
+                            <div class="text-xs text-green-600 dark:text-green-400 font-medium">JAN - JUL</div>
+                            <div class="text-xs text-gray-500 dark:text-gray-400">6 months</div>
+                          </div>
+                        </div>
+                        <div class="mb-3">
+                          <h4 class="text-lg font-bold text-green-700 dark:text-green-400 mb-1">1ST CYCLE</h4>
+                          <p class="text-sm text-gray-600 dark:text-gray-300">Applications open in January</p>
+                        </div>
+                        <div class="space-y-2">
+                          <div class="flex justify-between text-xs">
+                            <span class="text-gray-500 dark:text-gray-400">Application Period:</span>
+                            <span class="font-medium">Jan - Apr</span>
+                          </div>
+                          <div class="flex justify-between text-xs">
+                            <span class="text-gray-500 dark:text-gray-400">Selection Process:</span>
+                            <span class="font-medium">May - Jul</span>
+                          </div>
+                          <div class="flex justify-between text-xs">
+                            <span class="text-gray-500 dark:text-gray-400">Results:</span>
+                            <span class="font-medium text-green-600 dark:text-green-400">July</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- 2nd Period Card -->
+                    <div id="period2" class="timeline-period-card cursor-pointer transition-all duration-300 hover:scale-105">
+                      <div class="bg-gradient-to-br from-purple-50 to-violet-50 dark:from-purple-900/20 dark:to-violet-900/20 border-2 border-purple-500 rounded-xl p-6 shadow-lg hover:shadow-xl">
+                        <div class="flex items-center justify-between mb-4">
+                          <div class="w-12 h-12 bg-purple-500 rounded-full flex items-center justify-center shadow-lg">
+                            <span class="text-white font-bold text-lg">2</span>
+                          </div>
+                          <div class="text-right">
+                            <div class="text-xs text-purple-600 dark:text-purple-400 font-medium">DEC - JUN</div>
+                            <div class="text-xs text-gray-500 dark:text-gray-400">7 months</div>
+                          </div>
+                        </div>
+                        <div class="mb-3">
+                          <h4 class="text-lg font-bold text-purple-700 dark:text-purple-400 mb-1">2ND CYCLE</h4>
+                          <p class="text-sm text-gray-600 dark:text-gray-300">Applications open in December</p>
+                        </div>
+                        <div class="space-y-2">
+                          <div class="flex justify-between text-xs">
+                            <span class="text-gray-500 dark:text-gray-400">Application Period:</span>
+                            <span class="font-medium">Dec - Mar</span>
+                          </div>
+                          <div class="flex justify-between text-xs">
+                            <span class="text-gray-500 dark:text-gray-400">Selection Process:</span>
+                            <span class="font-medium">Apr - Jun</span>
+                          </div>
+                          <div class="flex justify-between text-xs">
+                            <span class="text-gray-500 dark:text-gray-400">Results:</span>
+                            <span class="font-medium text-purple-600 dark:text-purple-400">June</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Period Indicator -->
+                  <div class="text-center mt-6">
+                    <div id="currentPeriodIndicator" class="inline-flex items-center gap-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full px-6 py-3 shadow-md">
+                      <div class="w-3 h-3 bg-blue-500 rounded-full animate-pulse"></div>
+                      <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                        Currently in: <span id="activePeriodName" class="font-bold text-blue-600 dark:text-blue-400"></span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Current Period Phase Timeline -->
+                <div id="phaseTimeline">
+                  <h4 class="text-center font-bold text-gray-800 dark:text-gray-200 mb-4">
+                    <span id="currentPeriodPhases"></span> Selection Process
+                  </h4>
+
+                  <!-- Phase Steps -->
+                  <div class="space-y-3">
+                    <div id="phase1" class="timeline-phase flex items-center p-3 rounded-lg transition-all duration-300">
+                      <div class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm mr-4">1</div>
+                      <div class="flex-grow">
+                        <div class="font-semibold text-sm">Application Submission</div>
+                        <div class="text-xs text-gray-600 dark:text-gray-400">Weeks 1-4: Complete application (all sections + video)</div>
+                      </div>
+                      <div class="phase-status text-xs px-2 py-1 rounded-full font-medium"></div>
+                    </div>
+
+                    <div id="phase2" class="timeline-phase flex items-center p-3 rounded-lg transition-all duration-300">
+                      <div class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm mr-4">2</div>
+                      <div class="flex-grow">
+                        <div class="font-semibold text-sm">Committee Review</div>
+                        <div class="text-xs text-gray-600 dark:text-gray-400">Week 5: Review process (30-40 finalists selected)</div>
+                      </div>
+                      <div class="phase-status text-xs px-2 py-1 rounded-full font-medium"></div>
+                    </div>
+
+                    <div id="phase3" class="timeline-phase flex items-center p-3 rounded-lg transition-all duration-300">
+                      <div class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm mr-4">3</div>
+                      <div class="flex-grow">
+                        <div class="font-semibold text-sm">Interview Panel</div>
+                        <div class="text-xs text-gray-600 dark:text-gray-400">Week 8: 60-minute interviews (15-20 advance)</div>
+                      </div>
+                      <div class="phase-status text-xs px-2 py-1 rounded-full font-medium"></div>
+                    </div>
+
+                    <div id="phase4" class="timeline-phase flex items-center p-3 rounded-lg transition-all duration-300">
+                      <div class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm mr-4">4</div>
+                      <div class="flex-grow">
+                        <div class="font-semibold text-sm">Final Hackathon</div>
+                        <div class="text-xs text-gray-600 dark:text-gray-400">Weekend 9: 2-day online hackathon</div>
+                      </div>
+                      <div class="phase-status text-xs px-2 py-1 rounded-full font-medium"></div>
+                    </div>
+
+                    <div id="phase5" class="timeline-phase flex items-center p-3 rounded-lg transition-all duration-300">
+                      <div class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm mr-4">5</div>
+                      <div class="flex-grow">
+                        <div class="font-semibold text-sm">Results & Onboarding</div>
+                        <div class="text-xs text-gray-600 dark:text-gray-400">Week 10: Final results (10 selected)</div>
+                      </div>
+                      <div class="phase-status text-xs px-2 py-1 rounded-full font-medium"></div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -808,7 +1045,7 @@
                         <li>✓ <strong>Title Format:</strong> "Problem Solvers Foundation - Admission Proposal <span id="videoYear"></span> <span id="videoMoment"></span>"</li>
                       </ul>
                       <p class="text-xs text-gray-600 dark:text-gray-400 mt-2">
-                        Example: "Problem Solvers Foundation - Admission Proposal 2025 1st moment"
+                        Example: "Problem Solvers Foundation - Admission Proposal 2025 1st cycle"
                       </p>
                     </div>
                     <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-300 dark:border-blue-700 rounded-lg p-4 mb-3">
@@ -951,6 +1188,52 @@
             </form>
           </div>
         </div>
+
+        <!-- Period Info Modal -->
+        <div id="periodModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300">
+          <div id="modalContent" class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-lg w-full mx-4 transform scale-95 transition-all duration-300">
+            <!-- Modal Header -->
+            <div id="modalHeader" class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div id="modalIcon" class="w-10 h-10 rounded-full flex items-center justify-center"></div>
+                <h3 id="modalTitle" class="text-xl font-bold"></h3>
+              </div>
+              <button id="closeModal" class="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 flex items-center justify-center transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+              </button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="px-6 py-6">
+              <div id="modalDescription" class="text-gray-600 dark:text-gray-300 mb-6"></div>
+
+              <!-- Timeline -->
+              <div class="space-y-4">
+                <h4 class="font-semibold text-gray-800 dark:text-gray-200 mb-3">Timeline Details:</h4>
+                <div id="modalTimeline" class="space-y-3"></div>
+              </div>
+
+              <!-- Key Features -->
+              <div class="mt-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-xl">
+                <h5 class="font-semibold text-gray-800 dark:text-gray-200 mb-2">Key Features:</h5>
+                <ul id="modalFeatures" class="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                </ul>
+              </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="px-6 py-4 bg-gray-50 dark:bg-gray-700 rounded-b-2xl flex justify-end gap-3">
+              <button id="modalCloseBtn" class="px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 transition-colors">
+                Close
+              </button>
+              <button id="modalApplyBtn" class="px-6 py-2 bg-primary text-white rounded-lg hover:bg-opacity-90 transition-all font-medium">
+                Apply Now
+              </button>
+            </div>
+          </div>
+        </div>
       </main>
       <%- include('../partials/footer') %>
     </div>
@@ -961,28 +1244,231 @@
     const totalSections = 10;
     let gritScoreValue = 0;
 
-    // Initialize application period
+    // Initialize application period and timeline
     function initializeApplicationPeriod() {
       const now = new Date();
       const month = now.getMonth() + 1; // 1-12
       const year = now.getFullYear();
-      
-      let moment, periodText;
+
+      let moment, periodText, currentPeriod;
       if (month >= 1 && month <= 6) {
-        moment = '1st moment';
+        moment = '1st cycle';
         periodText = 'July';
+        currentPeriod = 1;
       } else {
-        moment = '2nd moment';
+        moment = '2nd cycle';
         periodText = 'December';
+        currentPeriod = 2;
       }
-      
-      document.getElementById('applicationPeriod').textContent = periodText;
+
+      // Update timeline elements
+      document.getElementById('currentPeriodName').textContent = periodText;
+      document.getElementById('currentPeriodPhases').textContent = periodText;
       document.getElementById('videoYear').textContent = year;
       document.getElementById('videoMoment').textContent = moment;
-      
+
       // Calculate days remaining (mock - adjust based on actual dates)
       const daysRemaining = month <= 6 ? 30 - (now.getDate() % 30) : 30 - (now.getDate() % 30);
       document.getElementById('daysRemaining').textContent = daysRemaining;
+
+      // Update timeline visual states
+      updateTimelineVisuals(currentPeriod, 1); // Start at phase 1 (Application Submission)
+    }
+
+    // Update timeline visual states
+    function updateTimelineVisuals(activePeriod, currentPhase) {
+      // Update period highlights
+      const period1 = document.getElementById('period1');
+      const period2 = document.getElementById('period2');
+      const activePeriodName = document.getElementById('activePeriodName');
+
+      // Reset all styles
+      period1.classList.remove('scale-110', 'opacity-60');
+      period2.classList.remove('scale-110', 'opacity-60');
+
+      if (activePeriod === 1) {
+        // Highlight first period
+        period1.classList.add('scale-105');
+        period1.querySelector('.border-2').classList.add('border-4', 'shadow-2xl');
+        period1.querySelector('.w-12').classList.add('ring-4', 'ring-green-300', 'animate-pulse');
+        period2.classList.add('opacity-70');
+        activePeriodName.textContent = '1st Cycle (January - July)';
+      } else {
+        // Highlight second period
+        period2.classList.add('scale-105');
+        period2.querySelector('.border-2').classList.add('border-4', 'shadow-2xl');
+        period2.querySelector('.w-12').classList.add('ring-4', 'ring-purple-300', 'animate-pulse');
+        period1.classList.add('opacity-70');
+        activePeriodName.textContent = '2nd Cycle (December - June)';
+      }
+
+      // Update phase states
+      const phaseColors = ['bg-blue-500', 'bg-green-500', 'bg-yellow-500', 'bg-orange-500', 'bg-purple-500'];
+      const phaseStates = ['Open', 'Upcoming', 'Upcoming', 'Upcoming', 'Upcoming'];
+
+      // Mock current phase logic - adjust based on actual dates/logic
+      const phases = [
+        { id: 'phase1', status: 'current', statusText: 'Open Now' },
+        { id: 'phase2', status: 'upcoming', statusText: 'Week 5' },
+        { id: 'phase3', status: 'upcoming', statusText: 'Week 8' },
+        { id: 'phase4', status: 'upcoming', statusText: 'Weekend 9' },
+        { id: 'phase5', status: 'upcoming', statusText: 'Week 10' }
+      ];
+
+      phases.forEach((phase, index) => {
+        const phaseElement = document.getElementById(phase.id);
+        const circle = phaseElement.querySelector('.w-8');
+        const statusElement = phaseElement.querySelector('.phase-status');
+
+        if (index < currentPhase) {
+          // Completed phases
+          circle.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm mr-4 bg-green-500';
+          phaseElement.className = 'timeline-phase flex items-center p-3 rounded-lg transition-all duration-300 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700';
+          statusElement.textContent = 'Completed';
+          statusElement.className = 'phase-status text-xs px-2 py-1 rounded-full font-medium bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-300';
+        } else if (index === currentPhase - 1) {
+          // Current phase
+          circle.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm mr-4 bg-blue-500 ring-4 ring-blue-300 animate-pulse';
+          phaseElement.className = 'timeline-phase flex items-center p-3 rounded-lg transition-all duration-300 bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-500 shadow-lg';
+          statusElement.textContent = phase.statusText;
+          statusElement.className = 'phase-status text-xs px-2 py-1 rounded-full font-medium bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300';
+        } else {
+          // Future phases
+          circle.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm mr-4 bg-gray-400';
+          phaseElement.className = 'timeline-phase flex items-center p-3 rounded-lg transition-all duration-300 bg-gray-50 dark:bg-gray-800 opacity-70';
+          statusElement.textContent = phase.statusText;
+          statusElement.className = 'phase-status text-xs px-2 py-1 rounded-full font-medium bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400';
+        }
+      });
+    }
+
+    // Add timeline interactivity
+    function initializeTimelineInteractivity() {
+      // Add click handlers for periods (optional - for demonstration)
+      document.getElementById('period1').addEventListener('click', () => {
+        showPeriodInfo(1);
+      });
+
+      document.getElementById('period2').addEventListener('click', () => {
+        showPeriodInfo(2);
+      });
+    }
+
+    function showPeriodInfo(period) {
+      // Enhanced card interaction with visual feedback
+      const card = period === 1 ? document.getElementById('period1') : document.getElementById('period2');
+
+      // Add temporary highlight effect
+      card.style.transform = 'scale(1.02)';
+      card.style.transition = 'transform 0.2s ease';
+
+      setTimeout(() => {
+        card.style.transform = '';
+      }, 200);
+
+      // Show beautiful modal instead of ugly alert
+      openPeriodModal(period);
+    }
+
+    function openPeriodModal(period) {
+      const modal = document.getElementById('periodModal');
+      const modalIcon = document.getElementById('modalIcon');
+      const modalTitle = document.getElementById('modalTitle');
+      const modalDescription = document.getElementById('modalDescription');
+      const modalTimeline = document.getElementById('modalTimeline');
+      const modalFeatures = document.getElementById('modalFeatures');
+      const modalApplyBtn = document.getElementById('modalApplyBtn');
+
+      // Configure modal content based on period
+      if (period === 1) {
+        modalIcon.className = 'w-10 h-10 rounded-full flex items-center justify-center bg-green-500 text-white';
+        modalIcon.innerHTML = '1';
+        modalTitle.textContent = '1st Cycle';
+        modalTitle.className = 'text-xl font-bold text-green-700 dark:text-green-400';
+        modalDescription.innerHTML = `
+          <p class="text-lg font-medium text-green-600 dark:text-green-400 mb-2">January - July Cycle</p>
+          <p>This is our first annual application period. Applications open in January with a comprehensive 6-month process culminating in July results.</p>
+        `;
+
+        modalTimeline.innerHTML = `
+          <div class="modal-timeline-item">
+            <div class="modal-timeline-icon bg-blue-500">📝</div>
+            <div>
+              <div class="font-medium">Application Period</div>
+              <div class="text-sm text-gray-500">January - April</div>
+            </div>
+          </div>
+          <div class="modal-timeline-item">
+            <div class="modal-timeline-icon bg-green-500">🔍</div>
+            <div>
+              <div class="font-medium">Selection Process</div>
+              <div class="text-sm text-gray-500">May - July</div>
+            </div>
+          </div>
+          <div class="modal-timeline-item">
+            <div class="modal-timeline-icon bg-purple-500">🎉</div>
+            <div>
+              <div class="font-medium">Results Announced</div>
+              <div class="text-sm text-gray-500">End of July</div>
+            </div>
+          </div>
+        `;
+
+        modalFeatures.innerHTML = `
+          <li>• 6-month comprehensive process</li>
+          <li>• Mid-year cohort selection</li>
+          <li>• Summer onboarding program</li>
+          <li>• 10 spots available</li>
+        `;
+      } else {
+        modalIcon.className = 'w-10 h-10 rounded-full flex items-center justify-center bg-purple-500 text-white';
+        modalIcon.innerHTML = '2';
+        modalTitle.textContent = '2nd Cycle';
+        modalTitle.className = 'text-xl font-bold text-purple-700 dark:text-purple-400';
+        modalDescription.innerHTML = `
+          <p class="text-lg font-medium text-purple-600 dark:text-purple-400 mb-2">December - June Cycle</p>
+          <p>This is our second annual application period. Applications open in December with a 7-month process extending into the following year.</p>
+        `;
+
+        modalTimeline.innerHTML = `
+          <div class="modal-timeline-item">
+            <div class="modal-timeline-icon bg-blue-500">📝</div>
+            <div>
+              <div class="font-medium">Application Period</div>
+              <div class="text-sm text-gray-500">December - March</div>
+            </div>
+          </div>
+          <div class="modal-timeline-item">
+            <div class="modal-timeline-icon bg-green-500">🔍</div>
+            <div>
+              <div class="font-medium">Selection Process</div>
+              <div class="text-sm text-gray-500">April - June</div>
+            </div>
+          </div>
+          <div class="modal-timeline-item">
+            <div class="modal-timeline-icon bg-purple-500">🎉</div>
+            <div>
+              <div class="font-medium">Results Announced</div>
+              <div class="text-sm text-gray-500">End of June</div>
+            </div>
+          </div>
+        `;
+
+        modalFeatures.innerHTML = `
+          <li>• Extended 7-month process</li>
+          <li>• Cross-year application cycle</li>
+          <li>• Summer preparation period</li>
+          <li>• 10 spots available</li>
+        `;
+      }
+
+      // Show modal with animation
+      modal.classList.add('modal-open');
+    }
+
+    function closePeriodModal() {
+      const modal = document.getElementById('periodModal');
+      modal.classList.remove('modal-open');
     }
 
     function updateProgress() {
@@ -1152,7 +1638,7 @@
       // Determine application period
       const now = new Date();
       const month = now.getMonth() + 1;
-      data.applicationPeriod = month <= 6 ? '1st moment' : '2nd moment';
+      data.applicationPeriod = month <= 6 ? '1st cycle' : '2nd cycle';
       data.applicationYear = now.getFullYear();
       
       try {
@@ -1189,9 +1675,47 @@
       }
     });
 
+    // Initialize modal functionality
+    function initializeModalFunctionality() {
+      const modal = document.getElementById('periodModal');
+      const closeModalBtn = document.getElementById('closeModal');
+      const modalCloseBtn = document.getElementById('modalCloseBtn');
+      const modalApplyBtn = document.getElementById('modalApplyBtn');
+
+      // Close modal when clicking outside
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          closePeriodModal();
+        }
+      });
+
+      // Close modal when clicking close buttons
+      closeModalBtn.addEventListener('click', closePeriodModal);
+      modalCloseBtn.addEventListener('click', closePeriodModal);
+
+      // Apply button scrolls to form
+      modalApplyBtn.addEventListener('click', () => {
+        closePeriodModal();
+        // Scroll to first section of the form
+        document.getElementById('section-1').scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      });
+
+      // Close modal with Escape key
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('modal-open')) {
+          closePeriodModal();
+        }
+      });
+    }
+
     // Initialize on page load
     document.addEventListener('DOMContentLoaded', () => {
       initializeApplicationPeriod();
+      initializeTimelineInteractivity();
+      initializeModalFunctionality();
       updateProgress();
     });
   </script>
