@@ -102,7 +102,13 @@ export const processLogin = async (req, res) => {
         console.error('Session save error:', err);
         return res.render('admin/login', { error: 'Session error. Please try again.' });
       }
-      res.redirect('/admin/dashboard');
+
+      // Redirecionar baseado no role do usuário
+      if (userData.role === 'user') {
+        res.redirect('/admin/community-dashboard');
+      } else {
+        res.redirect('/admin/dashboard');
+      }
     });
   } catch (error) {
     console.error('Error during login:', error);

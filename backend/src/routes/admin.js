@@ -101,7 +101,12 @@ router.get('/posts/preview/:id', requireAuth, requireAdminFeatures, adminControl
  */
 router.get('/', (req, res) => {
   if (req.session && req.session.isAuthenticated) {
-    res.redirect('/admin/dashboard');
+    // Redirecionar baseado no role do usuário
+    if (req.session.user && req.session.user.role === 'user') {
+      res.redirect('/admin/community-dashboard');
+    } else {
+      res.redirect('/admin/dashboard');
+    }
   } else {
     res.redirect('/admin/login');
   }

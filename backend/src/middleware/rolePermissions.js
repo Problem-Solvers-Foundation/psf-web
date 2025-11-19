@@ -49,9 +49,13 @@ export const requireAdminFeatures = (req, res, next) => {
     return next();
   }
 
-  // Community users cannot access admin features
-  return res.status(403).json({
-    success: false,
+  // Community users get redirected to their own dashboard
+  if (userRole === 'user') {
+    return res.redirect('/admin/community-dashboard');
+  }
+
+  // Unknown role - deny access
+  return res.status(403).render('admin/login', {
     error: 'Access denied. Administrative privileges required.'
   });
 };
