@@ -22,6 +22,9 @@ const projectsCollection = db.collection('projects');
 const usersCollection = db.collection('users');
 const applicationsCollection = db.collection('applications');
 const projectInterestsCollection = db.collection('projectInterests');
+const forumsCollection = db.collection('forums');
+const discussionsCollection = db.collection('discussions');
+const repliesCollection = db.collection('replies');
 
 // IMPORTANTE: ADMIN_EMAIL e ADMIN_PASSWORD não são mais utilizados
 // Todo o sistema de autenticação agora usa apenas bcrypt com senhas hashadas no banco de dados
@@ -1213,6 +1216,7 @@ export const showProfile = async (req, res) => {
 
     const userData = userDoc.data();
 
+
     res.render('admin/profile', {
       title: 'Edit Profile',
       currentPage: 'profile',
@@ -1223,7 +1227,42 @@ export const showProfile = async (req, res) => {
         name: userData.name,
         email: userData.email,
         bio: userData.bio || '',
-        role: userData.role
+        role: userData.role,
+        // Basic Information
+        firstName: userData.firstName || '',
+        lastName: userData.lastName || '',
+        linkedinUrl: userData.linkedinUrl || '',
+        twitterUrl: userData.twitterUrl || '',
+        instagramUrl: userData.instagramUrl || '',
+        country: userData.country || '',
+        state: userData.state || '',
+        city: userData.city || '',
+        introduction: userData.introduction || '',
+        introVideoUrl: userData.introVideoUrl || '',
+        accomplishment: userData.accomplishment || '',
+        education: userData.education || '',
+        employmentHistory: userData.employmentHistory || '',
+        isTechnical: userData.isTechnical || false,
+        // Personal Background
+        birthdate: userData.birthdate || '',
+        gender: userData.gender || '',
+        hearAboutPsf: userData.hearAboutPsf || '',
+        // Projects and Initiatives
+        hasProject: userData.hasProject || '',
+        projectName: userData.projectName || '',
+        projectDescription: userData.projectDescription || '',
+        projectProgress: userData.projectProgress || '',
+        projectSupport: userData.projectSupport || '',
+        hasCollaborators: userData.hasCollaborators || false,
+        fullTimeReadiness: userData.fullTimeReadiness || '',
+        responsibilityAreas: userData.responsibilityAreas || [],
+        interestedTopics: userData.interestedTopics || [],
+        collaborationExpectations: userData.collaborationExpectations || '',
+        schedulingUrl: userData.schedulingUrl || '',
+        // Motivation and Values
+        hobbies: userData.hobbies || '',
+        lifePath: userData.lifePath || '',
+        additionalInfo: userData.additionalInfo || ''
       },
       from: req.query.from,
       success: req.query.success,
@@ -1549,9 +1588,45 @@ export const showCommunity = async (req, res) => {
       ...doc.data()
     }));
 
+    // Get forum discussions for the forums tab
+    const discussionsSnapshot = await discussionsCollection
+      .orderBy('createdAt', 'desc')
+      .limit(10)
+      .get();
+
+    const discussions = await Promise.all(
+      discussionsSnapshot.docs.map(async (doc) => {
+        const discussionData = doc.data();
+
+        // Get author information
+        const authorDoc = await usersCollection.doc(discussionData.authorId).get();
+        const authorData = authorDoc.exists ? authorDoc.data() : null;
+
+        // Get replies count
+        const repliesSnapshot = await repliesCollection
+          .where('discussionId', '==', doc.id)
+          .get();
+
+        return {
+          id: doc.id,
+          ...discussionData,
+          author: authorData ? {
+            id: authorDoc.id,
+            name: authorData.firstName && authorData.lastName
+              ? `${authorData.firstName} ${authorData.lastName}`
+              : authorData.name,
+            email: authorData.email
+          } : { name: 'Unknown User', email: '' },
+          repliesCount: repliesSnapshot.docs.length,
+          createdAt: discussionData.createdAt
+        };
+      })
+    );
+
     res.render('admin/community', {
       user: req.session.user,
       users: users,
+      discussions: discussions,
       search: search || '',
       location: location || '',
       currentPage: parseInt(page),
@@ -1574,6 +1649,269 @@ export const showCommunity = async (req, res) => {
       error: 'An error occurred while loading the community page',
       success: null
     });
+  }
+};
+
+/**
+ * POST /admin/community-dashboard/create-discussion
+ * Creates a new discussion in the community forums
+ */
+export const createDiscussion = async (req, res) => {
+  try {
+    const { title, content, category } = req.body;
+    const userId = req.session.user.id;
+
+    // Validation
+    if (!title || title.trim().length < 5) {
+      return res.redirect('/admin/community-dashboard/community?error=' +
+        encodeURIComponent('Title must be at least 5 characters long'));
+    }
+
+    if (!content || content.trim().length < 10) {
+      return res.redirect('/admin/community-dashboard/community?error=' +
+        encodeURIComponent('Content must be at least 10 characters long'));
+    }
+
+    if (title.length > 200) {
+      return res.redirect('/admin/community-dashboard/community?error=' +
+        encodeURIComponent('Title must be less than 200 characters'));
+    }
+
+    if (content.length > 5000) {
+      return res.redirect('/admin/community-dashboard/community?error=' +
+        encodeURIComponent('Content must be less than 5000 characters'));
+    }
+
+    // Create discussion
+    const discussionData = {
+      title: sanitizeText(title, 200),
+      content: sanitizeText(content, 5000),
+      category: sanitizeText(category || 'General', 50),
+      authorId: userId,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      isLocked: false,
+      isPinned: false,
+      views: 0
+    };
+
+    await discussionsCollection.add(discussionData);
+
+    res.redirect('/admin/community-dashboard/community?success=' +
+      encodeURIComponent('Discussion created successfully!') + '#forums-tab');
+
+  } catch (error) {
+    console.error('Error creating discussion:', error);
+    res.redirect('/admin/community-dashboard/community?error=' +
+      encodeURIComponent('An error occurred while creating the discussion'));
+  }
+};
+
+/**
+ * POST /admin/community-dashboard/reply-discussion
+ * Adds a reply to a discussion
+ */
+export const replyDiscussion = async (req, res) => {
+  try {
+    const { discussionId, content } = req.body;
+    const userId = req.session.user.id;
+
+    // Validation
+    if (!content || content.trim().length < 5) {
+      return res.redirect('/admin/community-dashboard/community?error=' +
+        encodeURIComponent('Reply must be at least 5 characters long') + '#forums-tab');
+    }
+
+    if (content.length > 2000) {
+      return res.redirect('/admin/community-dashboard/community?error=' +
+        encodeURIComponent('Reply must be less than 2000 characters') + '#forums-tab');
+    }
+
+    // Check if discussion exists
+    const discussionDoc = await discussionsCollection.doc(discussionId).get();
+    if (!discussionDoc.exists) {
+      return res.redirect('/admin/community-dashboard/community?error=' +
+        encodeURIComponent('Discussion not found') + '#forums-tab');
+    }
+
+    const discussionData = discussionDoc.data();
+    if (discussionData.isLocked) {
+      return res.redirect('/admin/community-dashboard/community?error=' +
+        encodeURIComponent('This discussion is locked') + '#forums-tab');
+    }
+
+    // Create reply
+    const replyData = {
+      discussionId: discussionId,
+      content: sanitizeText(content, 2000),
+      authorId: userId,
+      createdAt: new Date()
+    };
+
+    await repliesCollection.add(replyData);
+
+    // Update discussion's updatedAt
+    await discussionsCollection.doc(discussionId).update({
+      updatedAt: new Date()
+    });
+
+    res.redirect('/admin/community-dashboard/community?success=' +
+      encodeURIComponent('Reply posted successfully!') + '#forums-tab');
+
+  } catch (error) {
+    console.error('Error posting reply:', error);
+    res.redirect('/admin/community-dashboard/community?error=' +
+      encodeURIComponent('An error occurred while posting the reply') + '#forums-tab');
+  }
+};
+
+/**
+ * DELETE /admin/community-dashboard/discussion/:id
+ * Delete a discussion (only author can delete)
+ */
+export const deleteDiscussion = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const currentUserId = req.session.user.id;
+
+    // Get discussion
+    const discussionDoc = await discussionsCollection.doc(id).get();
+    if (!discussionDoc.exists) {
+      return res.status(404).json({
+        success: false,
+        error: 'Discussion not found'
+      });
+    }
+
+    const discussionData = discussionDoc.data();
+
+    // Check if current user is the author
+    if (discussionData.authorId !== currentUserId) {
+      return res.status(403).json({
+        success: false,
+        error: 'You can only delete your own discussions'
+      });
+    }
+
+    // Delete all replies first
+    const repliesSnapshot = await repliesCollection
+      .where('discussionId', '==', id)
+      .get();
+
+    const batch = db.batch();
+
+    // Add all replies to batch delete
+    repliesSnapshot.docs.forEach(replyDoc => {
+      batch.delete(repliesCollection.doc(replyDoc.id));
+    });
+
+    // Add discussion to batch delete
+    batch.delete(discussionsCollection.doc(id));
+
+    // Execute batch delete
+    await batch.commit();
+
+    console.log('✅ Discussion and replies deleted successfully:', {
+      discussionId: id,
+      discussionTitle: discussionData.title,
+      deletedBy: req.session.user.name,
+      repliesDeleted: repliesSnapshot.docs.length
+    });
+
+    res.status(200).json({
+      success: true,
+      message: 'Discussion deleted successfully'
+    });
+
+  } catch (error) {
+    console.error('Error deleting discussion:', error);
+    res.status(500).json({
+      success: false,
+      error: 'An error occurred while deleting the discussion'
+    });
+  }
+};
+
+/**
+ * GET /admin/community-dashboard/discussion/:id
+ * View a specific discussion with replies
+ */
+export const viewDiscussion = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Get discussion
+    const discussionDoc = await discussionsCollection.doc(id).get();
+    if (!discussionDoc.exists) {
+      return res.redirect('/admin/community-dashboard/community?error=' +
+        encodeURIComponent('Discussion not found'));
+    }
+
+    const discussionData = discussionDoc.data();
+
+    // Get author
+    const authorDoc = await usersCollection.doc(discussionData.authorId).get();
+    const authorData = authorDoc.exists ? authorDoc.data() : null;
+
+    // Increment view count
+    await discussionsCollection.doc(id).update({
+      views: (discussionData.views || 0) + 1
+    });
+
+    // Get replies
+    const repliesSnapshot = await repliesCollection
+      .where('discussionId', '==', id)
+      .orderBy('createdAt', 'asc')
+      .get();
+
+    const replies = await Promise.all(
+      repliesSnapshot.docs.map(async (doc) => {
+        const replyData = doc.data();
+        const replyAuthorDoc = await usersCollection.doc(replyData.authorId).get();
+        const replyAuthorData = replyAuthorDoc.exists ? replyAuthorDoc.data() : null;
+
+        return {
+          id: doc.id,
+          ...replyData,
+          createdAt: replyData.createdAt?.toDate ? replyData.createdAt.toDate() : replyData.createdAt,
+          author: replyAuthorData ? {
+            id: replyAuthorDoc.id,
+            name: replyAuthorData.firstName && replyAuthorData.lastName
+              ? `${replyAuthorData.firstName} ${replyAuthorData.lastName}`
+              : replyAuthorData.name,
+            email: replyAuthorData.email
+          } : { name: 'Unknown User', email: '' }
+        };
+      })
+    );
+
+
+    const discussion = {
+      id: discussionDoc.id,
+      ...discussionData,
+      createdAt: discussionData.createdAt?.toDate ? discussionData.createdAt.toDate() : discussionData.createdAt,
+      updatedAt: discussionData.updatedAt?.toDate ? discussionData.updatedAt.toDate() : discussionData.updatedAt,
+      author: authorData ? {
+        id: authorDoc.id,
+        name: authorData.firstName && authorData.lastName
+          ? `${authorData.firstName} ${authorData.lastName}`
+          : authorData.name,
+        email: authorData.email
+      } : { name: 'Unknown User', email: '' }
+    };
+
+    res.render('admin/discussion-detail', {
+      user: req.session.user,
+      discussion: discussion,
+      replies: replies,
+      error: req.query.error || null,
+      success: req.query.success || null
+    });
+
+  } catch (error) {
+    console.error('Error viewing discussion:', error);
+    res.redirect('/admin/community-dashboard/community?error=' +
+      encodeURIComponent('An error occurred while loading the discussion'));
   }
 };
 

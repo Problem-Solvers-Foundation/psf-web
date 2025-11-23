@@ -306,6 +306,30 @@ router.get('/community-dashboard/solutions', requireAuth, problemController.getC
 router.get('/community-dashboard/community', requireAuth, adminController.showCommunity);
 
 /**
+ * POST /admin/community-dashboard/create-discussion
+ * Cria uma nova discussão nos fóruns
+ */
+router.post('/community-dashboard/create-discussion', requireAuth, adminController.createDiscussion);
+
+/**
+ * POST /admin/community-dashboard/reply-discussion
+ * Adiciona uma resposta a uma discussão
+ */
+router.post('/community-dashboard/reply-discussion', requireAuth, adminController.replyDiscussion);
+
+/**
+ * GET /admin/community-dashboard/discussion/:id
+ * Visualiza uma discussão específica com respostas
+ */
+router.get('/community-dashboard/discussion/:id', requireAuth, adminController.viewDiscussion);
+
+/**
+ * DELETE /admin/community-dashboard/discussion/:id
+ * Deleta uma discussão (apenas o autor pode deletar)
+ */
+router.delete('/community-dashboard/discussion/:id', requireAuth, adminController.deleteDiscussion);
+
+/**
  * POST /admin/community-dashboard/join-project
  * Manifesta interesse em participar de um projeto
  */
