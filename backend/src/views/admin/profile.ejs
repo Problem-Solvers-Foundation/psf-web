@@ -112,6 +112,58 @@
             <span id="bioCounter">0</span>/500 characters
           </p>
         </div>
+
+        <!-- Password Change Section -->
+        <div class="border-t border-gray-200 pt-6 mt-8">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">Change Password</h3>
+          <p class="text-sm text-gray-600 mb-6">Leave blank to keep your current password</p>
+
+          <div class="space-y-4">
+            <!-- Current Password -->
+            <div>
+              <label for="currentPassword" class="block text-sm font-medium text-gray-700 mb-2">
+                Current Password
+              </label>
+              <input
+                type="password"
+                id="currentPassword"
+                name="currentPassword"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+                placeholder="Enter your current password"
+              >
+            </div>
+
+            <!-- New Password -->
+            <div>
+              <label for="newPassword" class="block text-sm font-medium text-gray-700 mb-2">
+                New Password
+              </label>
+              <input
+                type="password"
+                id="newPassword"
+                name="newPassword"
+                minlength="6"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+                placeholder="Enter new password (minimum 6 characters)"
+              >
+            </div>
+
+            <!-- Confirm New Password -->
+            <div>
+              <label for="confirmNewPassword" class="block text-sm font-medium text-gray-700 mb-2">
+                Confirm New Password
+              </label>
+              <input
+                type="password"
+                id="confirmNewPassword"
+                name="confirmNewPassword"
+                minlength="6"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+                placeholder="Confirm your new password"
+              >
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Action Buttons -->
@@ -171,6 +223,56 @@
 
     // Update on input
     bioTextarea.addEventListener('input', updateCounter);
+
+    // Password validation
+    const currentPassword = document.getElementById('currentPassword');
+    const newPassword = document.getElementById('newPassword');
+    const confirmNewPassword = document.getElementById('confirmNewPassword');
+    const form = document.querySelector('form');
+
+    function validatePasswords() {
+      const current = currentPassword.value;
+      const newPass = newPassword.value;
+      const confirmPass = confirmNewPassword.value;
+
+      // Reset custom validity
+      currentPassword.setCustomValidity('');
+      newPassword.setCustomValidity('');
+      confirmNewPassword.setCustomValidity('');
+
+      // If any password field is filled, all password fields are required
+      if (current || newPass || confirmPass) {
+        if (!current) {
+          currentPassword.setCustomValidity('Current password is required when changing password');
+        }
+        if (!newPass) {
+          newPassword.setCustomValidity('New password is required');
+        }
+        if (!confirmPass) {
+          confirmNewPassword.setCustomValidity('Password confirmation is required');
+        }
+        if (newPass && confirmPass && newPass !== confirmPass) {
+          confirmNewPassword.setCustomValidity('Passwords do not match');
+        }
+        if (newPass && newPass.length < 6) {
+          newPassword.setCustomValidity('Password must be at least 6 characters long');
+        }
+      }
+    }
+
+    // Add event listeners for password validation
+    [currentPassword, newPassword, confirmNewPassword].forEach(field => {
+      field.addEventListener('input', validatePasswords);
+      field.addEventListener('blur', validatePasswords);
+    });
+
+    // Validate on form submit
+    form.addEventListener('submit', function(e) {
+      validatePasswords();
+      if (!form.checkValidity()) {
+        e.preventDefault();
+      }
+    });
   });
 </script>
 

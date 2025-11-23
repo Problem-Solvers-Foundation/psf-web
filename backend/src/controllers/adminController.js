@@ -1216,7 +1216,7 @@ export const showProfile = async (req, res) => {
  */
 export const updateProfile = async (req, res) => {
   try {
-    const { name, bio } = req.body;
+    const { name, bio, currentPassword, newPassword, confirmNewPassword } = req.body;
     const userId = req.session.user.id;
 
     // Validation
@@ -1228,6 +1228,35 @@ export const updateProfile = async (req, res) => {
       return res.redirect('/admin/profile?error=' + encodeURIComponent('Bio must be less than 500 characters'));
     }
 
+    // Password change validation
+    if (currentPassword || newPassword || confirmNewPassword) {
+      // If any password field is filled, all are required
+      if (!currentPassword || !newPassword || !confirmNewPassword) {
+        return res.redirect('/admin/profile?error=' + encodeURIComponent('All password fields are required when changing password'));
+      }
+
+      if (newPassword !== confirmNewPassword) {
+        return res.redirect('/admin/profile?error=' + encodeURIComponent('New passwords do not match'));
+      }
+
+      if (newPassword.length < 6) {
+        return res.redirect('/admin/profile?error=' + encodeURIComponent('New password must be at least 6 characters long'));
+      }
+
+      // Verify current password
+      const userDoc = await usersCollection.doc(userId).get();
+      if (!userDoc.exists) {
+        return res.redirect('/admin/profile?error=' + encodeURIComponent('User not found'));
+      }
+
+      const userData = userDoc.data();
+      const isCurrentPasswordValid = await bcrypt.compare(currentPassword, userData.password);
+
+      if (!isCurrentPasswordValid) {
+        return res.redirect('/admin/profile?error=' + encodeURIComponent('Current password is incorrect'));
+      }
+    }
+
     // Update user in database
     const updateData = {
       name: name.trim(),
@@ -1235,12 +1264,22 @@ export const updateProfile = async (req, res) => {
       updatedAt: new Date()
     };
 
+    // If password is being changed, hash and add to update data
+    if (newPassword) {
+      const hashedPassword = await bcrypt.hash(newPassword, 12);
+      updateData.password = hashedPassword;
+    }
+
     await usersCollection.doc(userId).update(updateData);
 
     // Update session data
     req.session.user.name = updateData.name;
 
-    res.redirect('/admin/profile?success=' + encodeURIComponent('Profile updated successfully'));
+    const successMessage = newPassword
+      ? 'Profile and password updated successfully'
+      : 'Profile updated successfully';
+
+    res.redirect('/admin/profile?success=' + encodeURIComponent(successMessage));
   } catch (error) {
     console.error('Error updating profile:', error);
     res.redirect('/admin/profile?error=' + encodeURIComponent('An error occurred while updating your profile'));
