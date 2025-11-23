@@ -5,6 +5,17 @@
 import { db } from '../config/firebase.js';
 import bcrypt from 'bcryptjs';
 import { recordFailedLogin, clearLoginAttempts } from '../middleware/loginRateLimiter.js';
+import {
+  sanitizeText,
+  sanitizeEmail,
+  validateLinkedInUrl,
+  validateTwitterUrl,
+  validateInstagramUrl,
+  sanitizeUrl,
+  sanitizeArray,
+  sanitizeDate,
+  checkProfileUpdateRateLimit
+} from '../utils/security.js';
 
 const postsCollection = db.collection('posts');
 const projectsCollection = db.collection('projects');
@@ -1235,17 +1246,90 @@ export const showProfile = async (req, res) => {
  */
 export const updateProfile = async (req, res) => {
   try {
-    const { name, bio, currentPassword, newPassword, confirmNewPassword } = req.body;
+    const {
+      name,
+      bio,
+      currentPassword,
+      newPassword,
+      confirmNewPassword,
+      // Basic Information
+      firstName,
+      lastName,
+      linkedinUrl,
+      country,
+      state,
+      city,
+      introduction,
+      introVideoUrl,
+      accomplishment,
+      education,
+      employmentHistory,
+      isTechnical,
+      gender,
+      birthdate,
+      schedulingUrl,
+      twitterUrl,
+      instagramUrl,
+      hearAboutPsf,
+      // Projects and Initiatives
+      hasProject,
+      projectName,
+      projectDescription,
+      projectProgress,
+      projectSupport,
+      hasCollaborators,
+      fullTimeReadiness,
+      responsibilityAreas,
+      interestedTopics,
+      collaborationExpectations,
+      // Motivation and Values
+      hobbies,
+      lifePath,
+      additionalInfo
+    } = req.body;
     const userId = req.session.user.id;
     const fromParam = req.query.from === 'community' ? '&from=community' : '';
 
-    // Validation
-    if (!name || name.trim().length < 2) {
-      return res.redirect('/admin/profile?error=' + encodeURIComponent('Name must be at least 2 characters long') + fromParam);
+    // SECURITY: Rate limiting check
+    const rateLimit = checkProfileUpdateRateLimit(userId);
+    if (!rateLimit.allowed) {
+      const resetTime = new Date(rateLimit.resetTime).toLocaleTimeString();
+      return res.redirect('/admin/profile?error=' + encodeURIComponent(`Too many profile updates. Try again after ${resetTime}`) + fromParam);
     }
 
+    // SECURITY: Enhanced validation and sanitization
+    const sanitizedName = sanitizeText(name, 100);
+    if (!sanitizedName || sanitizedName.length < 2) {
+      return res.redirect('/admin/profile?error=' + encodeURIComponent('Name must be at least 2 characters long and contain valid characters') + fromParam);
+    }
+
+    const sanitizedBio = sanitizeText(bio, 500);
     if (bio && bio.length > 500) {
       return res.redirect('/admin/profile?error=' + encodeURIComponent('Bio must be less than 500 characters') + fromParam);
+    }
+
+    // SECURITY: URL validations
+    const validatedLinkedIn = linkedinUrl ? validateLinkedInUrl(linkedinUrl) : '';
+    const validatedTwitter = twitterUrl ? validateTwitterUrl(twitterUrl) : '';
+    const validatedInstagram = instagramUrl ? validateInstagramUrl(instagramUrl) : '';
+    const validatedScheduling = schedulingUrl ? sanitizeUrl(schedulingUrl) : '';
+    const validatedIntroVideo = introVideoUrl ? sanitizeUrl(introVideoUrl) : '';
+
+    // Check if any URL validation failed
+    if (linkedinUrl && !validatedLinkedIn) {
+      return res.redirect('/admin/profile?error=' + encodeURIComponent('Invalid LinkedIn URL. Please use a valid LinkedIn profile URL') + fromParam);
+    }
+    if (twitterUrl && !validatedTwitter) {
+      return res.redirect('/admin/profile?error=' + encodeURIComponent('Invalid Twitter URL. Please use a valid Twitter profile URL') + fromParam);
+    }
+    if (instagramUrl && !validatedInstagram) {
+      return res.redirect('/admin/profile?error=' + encodeURIComponent('Invalid Instagram URL. Please use a valid Instagram profile URL') + fromParam);
+    }
+    if (schedulingUrl && !validatedScheduling) {
+      return res.redirect('/admin/profile?error=' + encodeURIComponent('Invalid scheduling URL. Please use a valid URL') + fromParam);
+    }
+    if (introVideoUrl && !validatedIntroVideo) {
+      return res.redirect('/admin/profile?error=' + encodeURIComponent('Invalid video URL. Please use a valid URL') + fromParam);
     }
 
     // Password change validation
@@ -1277,10 +1361,44 @@ export const updateProfile = async (req, res) => {
       }
     }
 
-    // Update user in database
+    // SECURITY: Sanitize and validate all inputs before database update
     const updateData = {
-      name: name.trim(),
-      bio: bio ? bio.trim() : '',
+      name: sanitizedName,
+      bio: sanitizedBio,
+      // Basic Information
+      firstName: sanitizeText(firstName, 50),
+      lastName: sanitizeText(lastName, 50),
+      linkedinUrl: validatedLinkedIn,
+      country: sanitizeText(country, 50),
+      state: sanitizeText(state, 50),
+      city: sanitizeText(city, 50),
+      introduction: sanitizeText(introduction, 1000),
+      introVideoUrl: validatedIntroVideo,
+      accomplishment: sanitizeText(accomplishment, 200),
+      education: sanitizeText(education, 1000),
+      employmentHistory: sanitizeText(employmentHistory, 1000),
+      isTechnical: isTechnical === 'true' || isTechnical === true,
+      gender: sanitizeText(gender, 20),
+      birthdate: sanitizeDate(birthdate),
+      schedulingUrl: validatedScheduling,
+      twitterUrl: validatedTwitter,
+      instagramUrl: validatedInstagram,
+      hearAboutPsf: sanitizeText(hearAboutPsf, 200),
+      // Projects and Initiatives
+      hasProject: ['committed', 'ideas', 'none'].includes(hasProject) ? hasProject : '',
+      projectName: sanitizeText(projectName, 100),
+      projectDescription: sanitizeText(projectDescription, 1000),
+      projectProgress: sanitizeText(projectProgress, 500),
+      projectSupport: sanitizeText(projectSupport, 500),
+      hasCollaborators: hasCollaborators === 'true' || hasCollaborators === true,
+      fullTimeReadiness: ['already', 'ready', 'within_year', 'no_plans'].includes(fullTimeReadiness) ? fullTimeReadiness : '',
+      responsibilityAreas: sanitizeArray(responsibilityAreas, 10, 50),
+      interestedTopics: sanitizeArray(interestedTopics, 10, 50),
+      collaborationExpectations: sanitizeText(collaborationExpectations, 1000),
+      // Motivation and Values
+      hobbies: sanitizeText(hobbies, 500),
+      lifePath: sanitizeText(lifePath, 2000),
+      additionalInfo: sanitizeText(additionalInfo, 1000),
       updatedAt: new Date()
     };
 
@@ -1290,7 +1408,55 @@ export const updateProfile = async (req, res) => {
       updateData.password = hashedPassword;
     }
 
+    // SECURITY: Get original data for audit logging
+    const originalUserDoc = await usersCollection.doc(userId).get();
+    const originalData = originalUserDoc.data();
+
     await usersCollection.doc(userId).update(updateData);
+
+    // SECURITY: Audit logging
+    const auditLog = {
+      userId: userId,
+      userEmail: originalData.email,
+      action: 'profile_update',
+      timestamp: new Date(),
+      changes: {},
+      ip: req.ip || req.connection.remoteAddress,
+      userAgent: req.get('User-Agent')
+    };
+
+    // Track which fields were changed (excluding sensitive ones)
+    const fieldsToTrack = [
+      'name', 'bio', 'firstName', 'lastName', 'linkedinUrl', 'country',
+      'state', 'city', 'introduction', 'accomplishment', 'education',
+      'employmentHistory', 'isTechnical', 'gender', 'twitterUrl',
+      'instagramUrl', 'hearAboutPsf', 'hasProject', 'projectName'
+    ];
+
+    fieldsToTrack.forEach(field => {
+      if (originalData[field] !== updateData[field]) {
+        auditLog.changes[field] = {
+          from: originalData[field] || null,
+          to: updateData[field] || null
+        };
+      }
+    });
+
+    // Special handling for password changes
+    if (newPassword) {
+      auditLog.changes.password = 'changed';
+    }
+
+    // Only log if there were actual changes
+    if (Object.keys(auditLog.changes).length > 0) {
+      try {
+        await db.collection('auditLogs').add(auditLog);
+        console.log(`📋 Audit log created for user ${originalData.email}: ${Object.keys(auditLog.changes).join(', ')} updated`);
+      } catch (auditError) {
+        console.error('❌ Failed to create audit log:', auditError);
+        // Don't fail the update if audit logging fails
+      }
+    }
 
     // Update session data
     req.session.user.name = updateData.name;

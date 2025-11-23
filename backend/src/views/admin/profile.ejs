@@ -113,6 +113,225 @@
           </p>
         </div>
 
+        <!-- PSF Profile Section -->
+        <div class="border-t border-gray-200 pt-6 mt-8">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">PSF Profile Information</h3>
+
+          <!-- Basic Information -->
+          <div class="mb-6">
+            <h4 class="text-md font-medium text-gray-800 mb-4">Basic Information</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label for="firstName" class="block text-sm font-medium text-gray-700 mb-2">First Name</label>
+                <input type="text" id="firstName" name="firstName" value="<%= user.firstName || '' %>" maxlength="50" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors">
+              </div>
+              <div>
+                <label for="lastName" class="block text-sm font-medium text-gray-700 mb-2">Last Name</label>
+                <input type="text" id="lastName" name="lastName" value="<%= user.lastName || '' %>" maxlength="50" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors">
+              </div>
+              <div>
+                <label for="linkedinUrl" class="block text-sm font-medium text-gray-700 mb-2">LinkedIn URL</label>
+                <input type="url" id="linkedinUrl" name="linkedinUrl" value="<%= user.linkedinUrl || '' %>" placeholder="https://linkedin.com/in/yourprofile" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors">
+                <p class="mt-1 text-xs text-gray-500">Must be a valid LinkedIn profile URL</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-6">
+            <h5 class="text-sm font-medium text-gray-800 mb-3">Location</h5>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label for="country" class="block text-sm font-medium text-gray-700 mb-2">Country</label>
+                <input type="text" id="country" name="country" value="<%= user.country || '' %>" maxlength="50" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors" placeholder="e.g., United States">
+              </div>
+              <div>
+                <label for="state" class="block text-sm font-medium text-gray-700 mb-2">State</label>
+                <input type="text" id="state" name="state" value="<%= user.state || '' %>" maxlength="50" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors" placeholder="e.g., California">
+              </div>
+              <div>
+                <label for="city" class="block text-sm font-medium text-gray-700 mb-2">City</label>
+                <input type="text" id="city" name="city" value="<%= user.city || '' %>" maxlength="50" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors" placeholder="e.g., San Francisco">
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-6">
+            <label for="introduction" class="block text-sm font-medium text-gray-700 mb-2">Introduce Yourself</label>
+            <textarea id="introduction" name="introduction" rows="3" maxlength="1000" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors" placeholder="Share your background, key experiences, and what motivates you as a problem solver"><%= user.introduction || '' %></textarea>
+            <p class="mt-1 text-xs text-gray-500">Maximum 1000 characters</p>
+          </div>
+
+          <div class="mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label for="introVideoUrl" class="block text-sm font-medium text-gray-700 mb-2">Introduction Video URL (Optional)</label>
+                <input type="url" id="introVideoUrl" name="introVideoUrl" value="<%= user.introVideoUrl || '' %>" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors">
+              </div>
+              <div>
+                <label for="accomplishment" class="block text-sm font-medium text-gray-700 mb-2">Most Impressive Accomplishment</label>
+                <input type="text" id="accomplishment" name="accomplishment" value="<%= user.accomplishment || '' %>" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors">
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label for="education" class="block text-sm font-medium text-gray-700 mb-2">Education</label>
+                <textarea id="education" name="education" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors" placeholder="Schools, degrees, fields of study, and graduation years"><%= user.education || '' %></textarea>
+              </div>
+              <div>
+                <label for="employmentHistory" class="block text-sm font-medium text-gray-700 mb-2">Employment History</label>
+                <textarea id="employmentHistory" name="employmentHistory" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors" placeholder="Organizations, roles/titles, and dates"><%= user.employmentHistory || '' %></textarea>
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Are you technical?</label>
+                <select id="isTechnical" name="isTechnical" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors">
+                  <option value="">Select...</option>
+                  <option value="true" <%= (user.isTechnical === true) ? 'selected' : '' %>>Yes</option>
+                  <option value="false" <%= (user.isTechnical === false) ? 'selected' : '' %>>No</option>
+                </select>
+              </div>
+              <div>
+                <label for="gender" class="block text-sm font-medium text-gray-700 mb-2">Gender</label>
+                <input type="text" id="gender" name="gender" value="<%= user.gender || '' %>" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors">
+              </div>
+              <div>
+                <label for="birthdate" class="block text-sm font-medium text-gray-700 mb-2">Birthdate</label>
+                <input type="date" id="birthdate" name="birthdate" value="<%= user.birthdate ? new Date(user.birthdate.seconds * 1000 || user.birthdate).toISOString().split('T')[0] : '' %>" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors">
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label for="schedulingUrl" class="block text-sm font-medium text-gray-700 mb-2">Scheduling URL (Optional)</label>
+                <input type="url" id="schedulingUrl" name="schedulingUrl" value="<%= user.schedulingUrl || '' %>" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors">
+              </div>
+              <div>
+                <label for="twitterUrl" class="block text-sm font-medium text-gray-700 mb-2">Twitter URL (Optional)</label>
+                <input type="url" id="twitterUrl" name="twitterUrl" value="<%= user.twitterUrl || '' %>" placeholder="https://twitter.com/username" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors">
+                <p class="mt-1 text-xs text-gray-500">Must be a valid Twitter/X profile URL</p>
+              </div>
+              <div>
+                <label for="instagramUrl" class="block text-sm font-medium text-gray-700 mb-2">Instagram URL (Optional)</label>
+                <input type="url" id="instagramUrl" name="instagramUrl" value="<%= user.instagramUrl || '' %>" placeholder="https://instagram.com/username" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors">
+                <p class="mt-1 text-xs text-gray-500">Must be a valid Instagram profile URL</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-6">
+            <label for="hearAboutPsf" class="block text-sm font-medium text-gray-700 mb-2">How did you hear about the Problem Solver Foundation?</label>
+            <input type="text" id="hearAboutPsf" name="hearAboutPsf" value="<%= user.hearAboutPsf || '' %>" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors">
+          </div>
+        </div>
+
+        <!-- Projects and Initiatives -->
+        <div class="border-t border-gray-200 pt-6 mt-8">
+          <h4 class="text-md font-medium text-gray-800 mb-4">Projects and Initiatives</h4>
+
+          <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Do you already have a challenge, initiative, or project you are committed to?</label>
+            <select id="hasProject" name="hasProject" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors">
+              <option value="">Select...</option>
+              <option value="committed" <%= (user.hasProject === 'committed') ? 'selected' : '' %>>Yes, I'm fully committed and looking for collaborators</option>
+              <option value="ideas" <%= (user.hasProject === 'ideas') ? 'selected' : '' %>>I have ideas but I'm open to co-creating</option>
+              <option value="none" <%= (user.hasProject === 'none') ? 'selected' : '' %>>Not yet — I prefer joining an existing challenge or team</option>
+            </select>
+          </div>
+
+          <div class="mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label for="projectName" class="block text-sm font-medium text-gray-700 mb-2">Project or Initiative Name</label>
+                <input type="text" id="projectName" name="projectName" value="<%= user.projectName || '' %>" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Do you already have collaborators or co-founders?</label>
+                <select id="hasCollaborators" name="hasCollaborators" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors">
+                  <option value="">Select...</option>
+                  <option value="true" <%= (user.hasCollaborators === true) ? 'selected' : '' %>>Yes</option>
+                  <option value="false" <%= (user.hasCollaborators === false) ? 'selected' : '' %>>No</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-6">
+            <label for="projectDescription" class="block text-sm font-medium text-gray-700 mb-2">Describe your project in a few sentences</label>
+            <textarea id="projectDescription" name="projectDescription" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"><%= user.projectDescription || '' %></textarea>
+          </div>
+
+          <div class="mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label for="projectProgress" class="block text-sm font-medium text-gray-700 mb-2">Project Progress (Optional)</label>
+                <textarea id="projectProgress" name="projectProgress" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors" placeholder="How long have you been working on this, and what progress have you made?"><%= user.projectProgress || '' %></textarea>
+              </div>
+              <div>
+                <label for="projectSupport" class="block text-sm font-medium text-gray-700 mb-2">Project Support (Optional)</label>
+                <textarea id="projectSupport" name="projectSupport" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors" placeholder="If you've received support or resources, who contributed and what was provided?"><%= user.projectSupport || '' %></textarea>
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">When are you ready to work full-time on this initiative?</label>
+            <select id="fullTimeReadiness" name="fullTimeReadiness" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors">
+              <option value="">Select...</option>
+              <option value="already" <%= (user.fullTimeReadiness === 'already') ? 'selected' : '' %>>I'm already full-time</option>
+              <option value="ready" <%= (user.fullTimeReadiness === 'ready') ? 'selected' : '' %>>I'm ready as soon as I meet the right collaborator</option>
+              <option value="within_year" <%= (user.fullTimeReadiness === 'within_year') ? 'selected' : '' %>>I plan to go full-time within the next year</option>
+              <option value="no_plans" <%= (user.fullTimeReadiness === 'no_plans') ? 'selected' : '' %>>I don't have specific plans yet</option>
+            </select>
+          </div>
+
+          <div class="mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label for="responsibilityAreas" class="block text-sm font-medium text-gray-700 mb-2">Areas You're Willing to Take Responsibility For</label>
+                <textarea id="responsibilityAreas" name="responsibilityAreas" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors" placeholder="Separate multiple areas with commas"><%= Array.isArray(user.responsibilityAreas) ? user.responsibilityAreas.join(', ') : (user.responsibilityAreas || '') %></textarea>
+              </div>
+              <div>
+                <label for="interestedTopics" class="block text-sm font-medium text-gray-700 mb-2">Topics or Impact Sectors You're Most Interested In</label>
+                <textarea id="interestedTopics" name="interestedTopics" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors" placeholder="Separate multiple topics with commas"><%= Array.isArray(user.interestedTopics) ? user.interestedTopics.join(', ') : (user.interestedTopics || '') %></textarea>
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-6">
+            <label for="collaborationExpectations" class="block text-sm font-medium text-gray-700 mb-2">Expectations for Sharing Responsibilities and Impact Ownership</label>
+            <textarea id="collaborationExpectations" name="collaborationExpectations" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors" placeholder="What would you offer and what would you expect in return?"><%= user.collaborationExpectations || '' %></textarea>
+          </div>
+        </div>
+
+        <!-- Motivation, Values, and Personal Background -->
+        <div class="border-t border-gray-200 pt-6 mt-8">
+          <h4 class="text-md font-medium text-gray-800 mb-4">Motivation, Values, and Personal Background</h4>
+
+          <div class="mb-6">
+            <label for="hobbies" class="block text-sm font-medium text-gray-700 mb-2">What do you do in your free time? What are your hobbies and interests?</label>
+            <textarea id="hobbies" name="hobbies" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"><%= user.hobbies || '' %></textarea>
+          </div>
+
+          <div class="mb-6">
+            <label for="lifePath" class="block text-sm font-medium text-gray-700 mb-2">How did your life path lead you to where you are now? How have your experiences shaped your values?</label>
+            <textarea id="lifePath" name="lifePath" rows="4" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"><%= user.lifePath || '' %></textarea>
+          </div>
+
+          <div class="mb-6">
+            <label for="additionalInfo" class="block text-sm font-medium text-gray-700 mb-2">Is there anything else you would like potential collaborators or the PSF community to know about you?</label>
+            <textarea id="additionalInfo" name="additionalInfo" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"><%= user.additionalInfo || '' %></textarea>
+          </div>
+        </div>
+
         <!-- Password Change Section -->
         <div class="border-t border-gray-200 pt-6 mt-8">
           <h3 class="text-lg font-semibold text-gray-900 mb-4">Change Password</h3>
