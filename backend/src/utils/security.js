@@ -239,5 +239,7 @@ export const cleanupRateLimitStore = () => {
   }
 };
 
-// Clean up every 10 minutes
-setInterval(cleanupRateLimitStore, 10 * 60 * 1000);
+// Clean up every 10 minutes (only in non-serverless environments)
+if (typeof process !== 'undefined' && process.env.VERCEL !== '1') {
+  setInterval(cleanupRateLimitStore, 10 * 60 * 1000);
+}
