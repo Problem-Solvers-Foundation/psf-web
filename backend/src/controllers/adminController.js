@@ -10,6 +10,7 @@ const postsCollection = db.collection('posts');
 const projectsCollection = db.collection('projects');
 const usersCollection = db.collection('users');
 const applicationsCollection = db.collection('applications');
+const projectInterestsCollection = db.collection('projectInterests');
 
 // IMPORTANTE: ADMIN_EMAIL e ADMIN_PASSWORD não são mais utilizados
 // Todo o sistema de autenticação agora usa apenas bcrypt com senhas hashadas no banco de dados
@@ -582,7 +583,24 @@ export const showEditProjectForm = async (req, res) => {
       updatedAt: doc.data().updatedAt?.toDate()
     };
 
-    res.render('admin/project-editor', { project });
+    // Get project interests/candidaturas
+    const interestsSnapshot = await projectInterestsCollection
+      .where('projectId', '==', id)
+      .get();
+
+    const interests = interestsSnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
+      submittedAt: doc.data().submittedAt?.toDate()
+    }));
+
+    // Sort by submission date (most recent first)
+    interests.sort((a, b) => new Date(b.submittedAt) - new Date(a.submittedAt));
+
+    res.render('admin/project-editor', {
+      project,
+      projectInterests: interests
+    });
   } catch (error) {
     console.error('Error loading project:', error);
     res.status(500).send('Error loading project');
@@ -1196,6 +1214,7 @@ export const showProfile = async (req, res) => {
         bio: userData.bio || '',
         role: userData.role
       },
+      from: req.query.from,
       success: req.query.success,
       error: req.query.error
     });
@@ -1218,42 +1237,43 @@ export const updateProfile = async (req, res) => {
   try {
     const { name, bio, currentPassword, newPassword, confirmNewPassword } = req.body;
     const userId = req.session.user.id;
+    const fromParam = req.query.from === 'community' ? '&from=community' : '';
 
     // Validation
     if (!name || name.trim().length < 2) {
-      return res.redirect('/admin/profile?error=' + encodeURIComponent('Name must be at least 2 characters long'));
+      return res.redirect('/admin/profile?error=' + encodeURIComponent('Name must be at least 2 characters long') + fromParam);
     }
 
     if (bio && bio.length > 500) {
-      return res.redirect('/admin/profile?error=' + encodeURIComponent('Bio must be less than 500 characters'));
+      return res.redirect('/admin/profile?error=' + encodeURIComponent('Bio must be less than 500 characters') + fromParam);
     }
 
     // Password change validation
     if (currentPassword || newPassword || confirmNewPassword) {
       // If any password field is filled, all are required
       if (!currentPassword || !newPassword || !confirmNewPassword) {
-        return res.redirect('/admin/profile?error=' + encodeURIComponent('All password fields are required when changing password'));
+        return res.redirect('/admin/profile?error=' + encodeURIComponent('All password fields are required when changing password') + fromParam);
       }
 
       if (newPassword !== confirmNewPassword) {
-        return res.redirect('/admin/profile?error=' + encodeURIComponent('New passwords do not match'));
+        return res.redirect('/admin/profile?error=' + encodeURIComponent('New passwords do not match') + fromParam);
       }
 
       if (newPassword.length < 6) {
-        return res.redirect('/admin/profile?error=' + encodeURIComponent('New password must be at least 6 characters long'));
+        return res.redirect('/admin/profile?error=' + encodeURIComponent('New password must be at least 6 characters long') + fromParam);
       }
 
       // Verify current password
       const userDoc = await usersCollection.doc(userId).get();
       if (!userDoc.exists) {
-        return res.redirect('/admin/profile?error=' + encodeURIComponent('User not found'));
+        return res.redirect('/admin/profile?error=' + encodeURIComponent('User not found') + fromParam);
       }
 
       const userData = userDoc.data();
       const isCurrentPasswordValid = await bcrypt.compare(currentPassword, userData.password);
 
       if (!isCurrentPasswordValid) {
-        return res.redirect('/admin/profile?error=' + encodeURIComponent('Current password is incorrect'));
+        return res.redirect('/admin/profile?error=' + encodeURIComponent('Current password is incorrect') + fromParam);
       }
     }
 
@@ -1279,10 +1299,112 @@ export const updateProfile = async (req, res) => {
       ? 'Profile and password updated successfully'
       : 'Profile updated successfully';
 
-    res.redirect('/admin/profile?success=' + encodeURIComponent(successMessage));
+    res.redirect('/admin/profile?success=' + encodeURIComponent(successMessage) + fromParam);
   } catch (error) {
     console.error('Error updating profile:', error);
-    res.redirect('/admin/profile?error=' + encodeURIComponent('An error occurred while updating your profile'));
+    res.redirect('/admin/profile?error=' + encodeURIComponent('An error occurred while updating your profile') + fromParam);
+  }
+};
+
+/**
+ * POST /admin/projects/interests/approve/:id
+ * Aprova interesse de usuário em projeto
+ */
+export const approveProjectInterest = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Check if interest exists
+    const interestDoc = await projectInterestsCollection.doc(id).get();
+    if (!interestDoc.exists) {
+      return res.status(404).json({ error: 'Interest not found' });
+    }
+
+    // Update interest status
+    await projectInterestsCollection.doc(id).update({
+      status: 'approved',
+      approvedAt: new Date(),
+      approvedBy: req.session.user.id
+    });
+
+    const interestData = interestDoc.data();
+    console.log('✅ Project interest approved:', {
+      projectTitle: interestData.projectTitle,
+      userName: interestData.userName,
+      approvedBy: req.session.user.name
+    });
+
+    res.status(200).json({ success: true });
+  } catch (error) {
+    console.error('Error approving project interest:', error);
+    res.status(500).json({ error: 'Error approving project interest' });
+  }
+};
+
+/**
+ * POST /admin/projects/interests/reject/:id
+ * Rejeita interesse de usuário em projeto
+ */
+export const rejectProjectInterest = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Check if interest exists
+    const interestDoc = await projectInterestsCollection.doc(id).get();
+    if (!interestDoc.exists) {
+      return res.status(404).json({ error: 'Interest not found' });
+    }
+
+    // Update interest status
+    await projectInterestsCollection.doc(id).update({
+      status: 'rejected',
+      rejectedAt: new Date(),
+      rejectedBy: req.session.user.id
+    });
+
+    const interestData = interestDoc.data();
+    console.log('❌ Project interest rejected:', {
+      projectTitle: interestData.projectTitle,
+      userName: interestData.userName,
+      rejectedBy: req.session.user.name
+    });
+
+    res.status(200).json({ success: true });
+  } catch (error) {
+    console.error('Error rejecting project interest:', error);
+    res.status(500).json({ error: 'Error rejecting project interest' });
+  }
+};
+
+/**
+ * DELETE /admin/projects/interests/delete/:id
+ * Exclui interesse de usuário em projeto
+ */
+export const deleteProjectInterest = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Check if interest exists
+    const interestDoc = await projectInterestsCollection.doc(id).get();
+    if (!interestDoc.exists) {
+      return res.status(404).json({ error: 'Interest not found' });
+    }
+
+    const interestData = interestDoc.data();
+
+    // Delete the interest record
+    await projectInterestsCollection.doc(id).delete();
+
+    console.log('🗑️ Project interest deleted:', {
+      projectTitle: interestData.projectTitle,
+      userName: interestData.userName,
+      deletedBy: req.session.user.name
+    });
+
+    res.status(200).json({ success: true });
+  } catch (error) {
+    console.error('Error deleting project interest:', error);
+    res.status(500).json({ error: 'Error deleting project interest' });
   }
 };
 

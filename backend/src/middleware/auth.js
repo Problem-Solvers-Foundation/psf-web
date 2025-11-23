@@ -15,17 +15,28 @@ export const validateSession = (req, res, next) => {
     const user = req.session.user;
 
     if (!user || !user.id || !user.email || !user.role) {
-      console.warn(`[SECURITY] Invalid session data for IP: ${req.ip}`);
-      req.session.destroy();
-      return res.redirect('/signin');
+      console.warn(`[SECURITY] Invalid session data for IP: ${req.ip}, user:`, user);
+      req.session.destroy((err) => {
+        if (err) console.error('Error destroying session:', err);
+        return res.redirect('/signin');
+      });
+      return;
     }
 
     // Verificar se role é válido
     const validRoles = ['user', 'admin', 'superuser'];
     if (!validRoles.includes(user.role)) {
       console.warn(`[SECURITY] Invalid role "${user.role}" for user ${user.email}`);
-      req.session.destroy();
-      return res.redirect('/signin');
+      req.session.destroy((err) => {
+        if (err) console.error('Error destroying session:', err);
+        return res.redirect('/signin');
+      });
+      return;
+    }
+
+    // Log de atividade da sessão (apenas em desenvolvimento)
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`[SESSION] Valid session for user: ${user.email} (${user.role})`);
     }
   }
 
@@ -77,8 +88,11 @@ export const redirectIfAuthenticated = (req, res, next) => {
       return res.redirect('/admin/dashboard');
     } else {
       // Role inválido - força logout por segurança
-      req.session.destroy();
-      return res.redirect('/signin');
+      req.session.destroy((err) => {
+        if (err) console.error('Error destroying session:', err);
+        return res.redirect('/signin');
+      });
+      return;
     }
   }
   next();

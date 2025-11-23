@@ -204,7 +204,200 @@
           </div>
         </div>
       <% } %>
+
+      <!-- Solution Proposals Section -->
+      <div class="mt-8 bg-white rounded-lg shadow">
+        <div class="px-6 py-4 border-b border-gray-200">
+          <h3 class="text-lg font-semibold text-gray-900">
+            Proposed Solutions
+            <span class="ml-2 px-2 py-1 text-xs font-medium bg-orange-100 text-orange-800 rounded-full">
+              <%= solutionProposals.length %>
+            </span>
+          </h3>
+          <p class="text-sm text-gray-600 mt-1">Solutions proposed by community users for approved problems</p>
+        </div>
+
+        <div class="p-6">
+          <% if (solutionProposals.length === 0) { %>
+            <div class="text-center py-8">
+              <svg class="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+              </svg>
+              <p class="text-gray-500">No solution proposals yet</p>
+              <p class="text-sm text-gray-400">Community users haven't proposed any solutions yet</p>
+            </div>
+          <% } else { %>
+            <div class="space-y-4">
+              <% solutionProposals.forEach(proposal => { %>
+                <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50">
+                  <div class="flex items-start justify-between">
+                    <div class="flex-1">
+                      <!-- Proposal Info -->
+                      <div class="flex items-start gap-4">
+                        <!-- User Avatar -->
+                        <div class="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center text-orange-600 font-semibold flex-shrink-0">
+                          <%= proposal.proposedByName.charAt(0).toUpperCase() %>
+                        </div>
+
+                        <!-- Content -->
+                        <div class="flex-1 min-w-0">
+                          <div class="flex items-center gap-2 mb-2">
+                            <h4 class="text-sm font-semibold text-gray-900 truncate">
+                              <%= proposal.title %>
+                            </h4>
+                            <% if (proposal.status === 'pending') { %>
+                              <span class="px-2 py-1 text-xs font-medium bg-yellow-100 text-yellow-800 rounded-full">Pending Review</span>
+                            <% } else if (proposal.status === 'approved') { %>
+                              <span class="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">Approved</span>
+                            <% } else if (proposal.status === 'rejected') { %>
+                              <span class="px-2 py-1 text-xs font-medium bg-red-100 text-red-800 rounded-full">Rejected</span>
+                            <% } else { %>
+                              <span class="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">Under Review</span>
+                            <% } %>
+                          </div>
+
+                          <!-- Problem Reference -->
+                          <p class="text-xs text-gray-600 mb-2">
+                            <span class="font-medium">For problem:</span> <%= proposal.problemTitle %>
+                          </p>
+
+                          <!-- Description Preview -->
+                          <p class="text-sm text-gray-700 line-clamp-2 mb-3">
+                            <%= proposal.description.length > 150 ? proposal.description.substring(0, 150) + '...' : proposal.description %>
+                          </p>
+
+                          <!-- Metadata -->
+                          <div class="flex items-center gap-4 text-xs text-gray-500">
+                            <span>By <%= proposal.proposedByName %></span>
+                            <span>•</span>
+                            <span>Timeline: <%= proposal.timeline %></span>
+                            <span>•</span>
+                            <span><%= proposal.submittedAt.toLocaleDateString() %></span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex items-center gap-2 ml-4">
+                      <button
+                        onclick="showProposalDetailsModal('<%= proposal.id %>', '<%= proposal.title.replace(/'/g, "\\'") %>', '<%= proposal.description.replace(/'/g, "\\'").replace(/\n/g, "\\n") %>', '<%= proposal.problemTitle.replace(/'/g, "\\'") %>', '<%= proposal.proposedByName.replace(/'/g, "\\'") %>', '<%= proposal.timeline.replace(/'/g, "\\'") %>', '<%= proposal.requiredSkills ? proposal.requiredSkills.replace(/'/g, "\\'").replace(/\n/g, "\\n") : "" %>', '<%= proposal.submittedAt.toLocaleDateString() %>')"
+                        class="px-2 py-1 text-xs font-medium text-gray-600 bg-gray-100 rounded hover:bg-gray-200 transition-colors"
+                        title="View details"
+                      >
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                        </svg>
+                      </button>
+
+                      <% if (proposal.status === 'pending') { %>
+                        <button
+                          onclick="approveProposal('<%= proposal.id %>')"
+                          class="px-2 py-1 text-xs font-medium text-green-700 bg-green-100 rounded hover:bg-green-200 transition-colors"
+                          title="Approve"
+                        >
+                          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                          </svg>
+                        </button>
+                        <button
+                          onclick="rejectProposal('<%= proposal.id %>')"
+                          class="px-2 py-1 text-xs font-medium text-red-700 bg-red-100 rounded hover:bg-red-200 transition-colors"
+                          title="Reject"
+                        >
+                          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                          </svg>
+                        </button>
+                      <% } else { %>
+                        <span class="px-2 py-1 text-xs text-gray-500">Reviewed</span>
+                      <% } %>
+                    </div>
+                  </div>
+                </div>
+              <% }); %>
+            </div>
+          <% } %>
+        </div>
+      </div>
+
     </main>
+  </div>
+
+  <!-- Proposal Details Modal -->
+  <div id="proposalDetailsModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+    <div class="flex items-center justify-center min-h-screen p-4">
+      <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+        <div class="p-6">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-lg font-bold text-gray-900">Solution Proposal Details</h3>
+            <button onclick="hideProposalDetailsModal()" class="text-gray-400 hover:text-gray-600">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+              </svg>
+            </button>
+          </div>
+
+          <div class="space-y-4">
+            <!-- Title -->
+            <div>
+              <h4 class="text-sm font-medium text-gray-700 mb-1">Solution Title</h4>
+              <p class="text-lg font-semibold text-gray-900" id="modalProposalTitle"></p>
+            </div>
+
+            <!-- Problem Reference -->
+            <div>
+              <h4 class="text-sm font-medium text-gray-700 mb-1">For Problem</h4>
+              <p class="text-sm text-gray-900" id="modalProposalProblem"></p>
+            </div>
+
+            <!-- Proposed By -->
+            <div>
+              <h4 class="text-sm font-medium text-gray-700 mb-1">Proposed By</h4>
+              <p class="text-sm text-gray-900" id="modalProposalAuthor"></p>
+            </div>
+
+            <!-- Timeline -->
+            <div>
+              <h4 class="text-sm font-medium text-gray-700 mb-1">Estimated Timeline</h4>
+              <p class="text-sm text-gray-900" id="modalProposalTimeline"></p>
+            </div>
+
+            <!-- Description -->
+            <div>
+              <h4 class="text-sm font-medium text-gray-700 mb-1">Description</h4>
+              <div class="p-3 bg-gray-50 rounded-lg">
+                <p class="text-sm text-gray-700" id="modalProposalDescription"></p>
+              </div>
+            </div>
+
+            <!-- Required Skills -->
+            <div id="modalSkillsSection" style="display: none;">
+              <h4 class="text-sm font-medium text-gray-700 mb-1">Required Skills/Expertise</h4>
+              <div class="p-3 bg-gray-50 rounded-lg">
+                <p class="text-sm text-gray-700" id="modalProposalSkills"></p>
+              </div>
+            </div>
+
+            <!-- Submitted Date -->
+            <div>
+              <h4 class="text-sm font-medium text-gray-700 mb-1">Submitted</h4>
+              <p class="text-sm text-gray-600" id="modalProposalDate"></p>
+            </div>
+          </div>
+
+          <div class="flex justify-end mt-6">
+            <button
+              onclick="hideProposalDetailsModal()"
+              class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Moderation Modal -->
@@ -315,6 +508,84 @@
         closeModerationModal();
       }
     });
+
+    // Solution Proposal Functions
+    function showProposalDetailsModal(id, title, description, problemTitle, author, timeline, skills, date) {
+      const modal = document.getElementById('proposalDetailsModal');
+      if (modal) {
+        document.getElementById('proposalModalTitle').textContent = title;
+        document.getElementById('proposalModalDescription').textContent = description;
+        document.getElementById('proposalModalProblem').textContent = problemTitle;
+        document.getElementById('proposalModalAuthor').textContent = author;
+        document.getElementById('proposalModalTimeline').textContent = timeline;
+        document.getElementById('proposalModalSkills').textContent = skills || 'Not specified';
+        document.getElementById('proposalModalDate').textContent = date;
+        modal.classList.remove('hidden');
+      }
+    }
+
+    function closeProposalDetailsModal() {
+      const modal = document.getElementById('proposalDetailsModal');
+      if (modal) {
+        modal.classList.add('hidden');
+      }
+    }
+
+    function approveProposal(id) {
+      if (confirm('Are you sure you want to approve this solution proposal?')) {
+        fetch(`/admin/problems/proposals/approve/${id}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            location.reload();
+          } else {
+            alert('Error approving proposal: ' + data.message);
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('An error occurred while approving the proposal');
+        });
+      }
+    }
+
+    function rejectProposal(id) {
+      if (confirm('Are you sure you want to reject this solution proposal?')) {
+        fetch(`/admin/problems/proposals/reject/${id}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            location.reload();
+          } else {
+            alert('Error rejecting proposal: ' + data.message);
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('An error occurred while rejecting the proposal');
+        });
+      }
+    }
+
+    // Close proposal details modal when clicking outside
+    const proposalModal = document.getElementById('proposalDetailsModal');
+    if (proposalModal) {
+      proposalModal.addEventListener('click', function(e) {
+        if (e.target === this) {
+          closeProposalDetailsModal();
+        }
+      });
+    }
   </script>
 </body>
 </html>

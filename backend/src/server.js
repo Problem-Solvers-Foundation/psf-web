@@ -87,10 +87,11 @@ app.use(session({
   secret: process.env.SESSION_SECRET || 'psf-blog-secret-key-change-in-production',
   resave: false,
   saveUninitialized: false,
+  rolling: true, // Reset timeout on activity
   cookie: {
-    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 dias
+    maxAge: 24 * 60 * 60 * 1000, // 24 horas (reduzido de 7 dias para melhor controle)
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production', // HTTPS obrigatório em produção
+    secure: false, // Forçar false em desenvolvimento para evitar problemas
     sameSite: 'lax' // Usar 'lax' para permitir cookies em redirects no mesmo site
   }
 }));

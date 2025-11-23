@@ -23,7 +23,7 @@
 
   <%- include('../partials/admin-mobile-header') %>
 
-  <% if (user.role === 'user') { %>
+  <% if (user.role === 'user' || (typeof from !== 'undefined' && from === 'community')) { %>
     <%- include('../partials/community-sidebar') %>
   <% } else { %>
     <%- include('../partials/admin-sidebar') %>

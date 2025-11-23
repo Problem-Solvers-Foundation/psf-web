@@ -270,10 +270,10 @@ router.post('/problems/submit', requireAuth, problemController.submitProblem);
 router.get('/problems/my', requireAuth, problemController.getMyProblems);
 
 /**
- * GET /admin/problems/community
+ * GET /admin/community-dashboard/problems
  * Página principal de problemas para community users
  */
-router.get('/problems/community', requireAuth, problemController.getCommunityProblems);
+router.get('/community-dashboard/problems', requireAuth, problemController.getCommunityProblems);
 
 /**
  * GET /admin/problems
@@ -292,5 +292,53 @@ router.post('/problems/moderate/:id', requireAuth, requireAdminFeatures, problem
  * Deleta problema (admin/superuser only)
  */
 router.post('/problems/delete/:id', requireAuth, requireAdminFeatures, problemController.deleteProblem);
+
+/**
+ * GET /admin/community-dashboard/solutions
+ * Lista projetos e problemas aprovados para community users
+ */
+router.get('/community-dashboard/solutions', requireAuth, problemController.getCommunitySolutions);
+
+/**
+ * POST /admin/community-dashboard/join-project
+ * Manifesta interesse em participar de um projeto
+ */
+router.post('/community-dashboard/join-project', requireAuth, problemController.joinProject);
+
+/**
+ * POST /admin/community-dashboard/propose-solution
+ * Propõe solução para um problema aprovado
+ */
+router.post('/community-dashboard/propose-solution', requireAuth, problemController.proposeSolution);
+
+/**
+ * POST /admin/projects/interests/approve/:id
+ * Aprova interesse de usuário em projeto
+ */
+router.post('/projects/interests/approve/:id', requireAuth, requireAdminFeatures, adminController.approveProjectInterest);
+
+/**
+ * POST /admin/projects/interests/reject/:id
+ * Rejeita interesse de usuário em projeto
+ */
+router.post('/projects/interests/reject/:id', requireAuth, requireAdminFeatures, adminController.rejectProjectInterest);
+
+/**
+ * DELETE /admin/projects/interests/delete/:id
+ * Exclui interesse de usuário em projeto
+ */
+router.delete('/projects/interests/delete/:id', requireAuth, requireAdminFeatures, adminController.deleteProjectInterest);
+
+/**
+ * POST /admin/problems/proposals/approve/:id
+ * Aprova proposta de solução (admin/superuser only)
+ */
+router.post('/problems/proposals/approve/:id', requireAuth, requireAdminFeatures, problemController.approveSolutionProposal);
+
+/**
+ * POST /admin/problems/proposals/reject/:id
+ * Rejeita proposta de solução (admin/superuser only)
+ */
+router.post('/problems/proposals/reject/:id', requireAuth, requireAdminFeatures, problemController.rejectSolutionProposal);
 
 export default router;
