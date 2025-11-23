@@ -3,8 +3,43 @@
  * Problem Solver Foundation Backend
  */
 
-import validator from 'validator';
-import DOMPurify from 'isomorphic-dompurify';
+// Basic validation functions that don't require external dependencies
+const basicValidator = {
+  isEmail: (str) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(str),
+  isURL: (str, options = {}) => {
+    try {
+      const url = new URL(str);
+      if (options.protocols && !options.protocols.includes(url.protocol.slice(0, -1))) {
+        return false;
+      }
+      if (options.require_protocol && !url.protocol) {
+        return false;
+      }
+      return true;
+    } catch {
+      return false;
+    }
+  }
+};
+
+const basicSanitizer = {
+  sanitize: (str, options = {}) => {
+    if (!str) return '';
+    // Remove HTML tags and escape dangerous characters
+    let cleaned = str.replace(/<[^>]*>/g, '');
+    cleaned = cleaned.replace(/[<>&"']/g, (char) => {
+      const map = {
+        '<': '&lt;',
+        '>': '&gt;',
+        '&': '&amp;',
+        '"': '&quot;',
+        "'": '&#39;'
+      };
+      return map[char] || char;
+    });
+    return cleaned;
+  }
+};
 
 /**
  * Sanitize text input to prevent XSS attacks
@@ -12,11 +47,12 @@ import DOMPurify from 'isomorphic-dompurify';
 export const sanitizeText = (input, maxLength = 500) => {
   if (!input || typeof input !== 'string') return '';
 
-  // Remove potentially dangerous characters and limit length
-  return DOMPurify.sanitize(input.trim(), {
+  const cleaned = basicSanitizer.sanitize(input.trim(), {
     ALLOWED_TAGS: [],
     ALLOWED_ATTR: []
-  }).substring(0, maxLength);
+  });
+
+  return cleaned.substring(0, maxLength);
 };
 
 /**
@@ -26,10 +62,13 @@ export const sanitizeHtml = (input, maxLength = 2000) => {
   if (!input || typeof input !== 'string') return '';
 
   // Allow basic formatting but remove scripts and dangerous content
-  return DOMPurify.sanitize(input.trim(), {
-    ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'ul', 'ol', 'li'],
-    ALLOWED_ATTR: []
-  }).substring(0, maxLength);
+  let cleaned = input.trim();
+  // Remove script tags and their content
+  cleaned = cleaned.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+  // Remove dangerous attributes
+  cleaned = cleaned.replace(/\s*(on\w+|javascript:|data:)\s*=\s*["'][^"']*["']/gi, '');
+
+  return cleaned.substring(0, maxLength);
 };
 
 /**
@@ -39,7 +78,7 @@ export const sanitizeEmail = (email) => {
   if (!email || typeof email !== 'string') return '';
 
   const cleanEmail = email.toLowerCase().trim();
-  return validator.isEmail(cleanEmail) ? cleanEmail : '';
+  return basicValidator.isEmail(cleanEmail) ? cleanEmail : '';
 };
 
 /**
@@ -51,7 +90,7 @@ export const sanitizeUrl = (url, allowedDomains = []) => {
   const cleanUrl = url.trim();
 
   // Check if it's a valid URL
-  if (!validator.isURL(cleanUrl, {
+  if (!basicValidator.isURL(cleanUrl, {
     protocols: ['http', 'https'],
     require_protocol: true
   })) {
