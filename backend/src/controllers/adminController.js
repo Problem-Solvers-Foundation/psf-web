@@ -1299,7 +1299,9 @@ export const showCommunityDashboard = async (req, res) => {
     res.render('admin/community-dashboard', {
       title: 'Community Dashboard',
       currentPage: 'community-dashboard',
-      user: req.session.user
+      user: req.session.user,
+      success: req.query.success || null,
+      error: req.query.error || null
     });
   } catch (error) {
     console.error('Error loading community dashboard:', error);

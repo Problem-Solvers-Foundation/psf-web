@@ -9,6 +9,7 @@ import { formatNumber } from '../utils/formatNumber.js';
 
 // Auth imports
 import * as adminController from '../controllers/adminController.js';
+import * as problemController from '../controllers/problemController.js';
 import { redirectIfAuthenticated } from '../middleware/auth.js';
 import { checkLoginRateLimit } from '../middleware/loginRateLimiter.js';
 
@@ -245,5 +246,21 @@ router.post('/signup', adminController.processSignup);
  * Faz logout
  */
 router.get('/logout', adminController.logout);
+
+// ===============================
+// PROBLEMAS PÚBLICOS
+// ===============================
+
+/**
+ * GET /problems
+ * Lista problemas aprovados publicamente
+ */
+router.get('/problems', problemController.getPublicProblems);
+
+/**
+ * GET /problems/:id
+ * Exibe detalhes de problema aprovado
+ */
+router.get('/problems/:id', problemController.getPublicProblemDetail);
 
 export default router;

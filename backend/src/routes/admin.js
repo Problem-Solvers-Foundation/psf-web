@@ -6,6 +6,7 @@
 import { Router } from 'express';
 const router = Router();
 import * as adminController from '../controllers/adminController.js';
+import * as problemController from '../controllers/problemController.js';
 import { requireAuth, redirectIfAuthenticated } from '../middleware/auth.js';
 import { requireAdminFeatures } from '../middleware/rolePermissions.js';
 import { checkLoginRateLimit } from '../middleware/loginRateLimiter.js';
@@ -251,5 +252,45 @@ router.get('/profile', requireAuth, adminController.showProfile);
  * Atualiza próprio perfil
  */
 router.post('/profile', requireAuth, adminController.updateProfile);
+
+// ===============================
+// GERENCIAMENTO DE PROBLEMAS
+// ===============================
+
+/**
+ * POST /admin/problems/submit
+ * Submete problema (community users)
+ */
+router.post('/problems/submit', requireAuth, problemController.submitProblem);
+
+/**
+ * GET /admin/problems/my
+ * Lista problemas do usuário logado (community users)
+ */
+router.get('/problems/my', requireAuth, problemController.getMyProblems);
+
+/**
+ * GET /admin/problems/community
+ * Página principal de problemas para community users
+ */
+router.get('/problems/community', requireAuth, problemController.getCommunityProblems);
+
+/**
+ * GET /admin/problems
+ * Lista problemas para moderação (admin/superuser only)
+ */
+router.get('/problems', requireAuth, requireAdminFeatures, problemController.getProblemsForModeration);
+
+/**
+ * POST /admin/problems/moderate/:id
+ * Modera problema - approve/reject/edit (admin/superuser only)
+ */
+router.post('/problems/moderate/:id', requireAuth, requireAdminFeatures, problemController.moderateProblem);
+
+/**
+ * POST /admin/problems/delete/:id
+ * Deleta problema (admin/superuser only)
+ */
+router.post('/problems/delete/:id', requireAuth, requireAdminFeatures, problemController.deleteProblem);
 
 export default router;

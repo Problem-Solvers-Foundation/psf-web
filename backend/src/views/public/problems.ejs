@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Community Problems - Problem Solver Foundation</title>
+  <meta name="description" content="Discover real-world problems submitted by our community that need innovative solutions.">
+
+  <!-- Favicon - Multiple formats for browser compatibility -->
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon.png">
+  <link rel="shortcut icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon.png">
+
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#117dd4",
+            "background-light": "#f6f7f8",
+            "background-dark": "#101a22",
+            "text-light": "#101a22",
+            "text-dark": "#f6f7f8",
+            "surface-light": "#ffffff",
+            "surface-dark": "#1b2733",
+            "border-light": "#e7eef3",
+            "border-dark": "#2a3b4c",
+            "muted-light": "#4c779a",
+            "muted-dark": "#a0b3c4"
+          },
+          fontFamily: { "display": ["Inter", "sans-serif"] },
+          borderRadius: { "DEFAULT": "0.5rem", "lg": "0.75rem", "xl": "1rem", "full": "9999px" }
+        }
+      }
+    }
+  </script>
+  <link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark">
+  <div class="relative flex h-auto min-h-screen w-full flex-col">
+    <div class="layout-container flex h-full grow flex-col">
+      <%- include('../partials/header', { currentPage: 'problems' }) %>
+
+      <main class="flex-1">
+        <!-- Hero Section -->
+        <section class="w-full bg-gradient-to-b from-primary/5 to-transparent">
+          <div class="container mx-auto px-4 py-16 sm:py-24">
+            <div class="text-center max-w-4xl mx-auto">
+              <h1 class="text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white sm:text-5xl md:text-6xl mb-6">
+                Community Problems
+              </h1>
+              <p class="text-xl text-gray-500 dark:text-gray-400 mb-8 max-w-3xl mx-auto">
+                Real-world challenges identified by our community that need innovative solutions.
+                Each problem represents an opportunity to make a meaningful impact.
+              </p>
+              <!-- Filter by Knowledge Field (only show if there are available fields) -->
+              <% if (availableFields.length > 0) { %>
+                <div class="max-w-4xl mx-auto">
+                  <div class="bg-surface-light dark:bg-surface-dark rounded-xl border border-border-light dark:border-border-dark p-6 mb-8">
+                    <h3 class="text-lg font-semibold mb-4 text-center">Filter by Knowledge Field</h3>
+                    <div class="flex flex-wrap justify-center gap-3">
+                      <a href="/problems" class="px-4 py-2 rounded-full border border-primary <%= !currentField ? 'bg-primary text-white' : 'text-primary hover:bg-primary/10' %> transition-colors">
+                        All Fields
+                      </a>
+                      <% availableFields.forEach(field => { %>
+                        <a href="/problems?field=<%= encodeURIComponent(field.toLowerCase()) %>" class="px-4 py-2 rounded-full border border-primary <%= currentField && currentField.toLowerCase() === field.toLowerCase() ? 'bg-primary text-white' : 'text-primary hover:bg-primary/10' %> transition-colors">
+                          <%= field %>
+                        </a>
+                      <% }); %>
+                    </div>
+                  </div>
+                </div>
+              <% } %>
+              <p class="text-center text-muted-light dark:text-muted-dark">
+                <span class="font-semibold"><%= totalProblems %></span> problems identified so far
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Problems Grid -->
+        <section class="w-full py-16">
+          <div class="container mx-auto px-4">
+            <% if (error) { %>
+              <div class="max-w-md mx-auto bg-red-50 border border-red-200 rounded-lg p-6 text-center">
+                <div class="text-red-600 text-lg font-medium mb-2">Sorry, something went wrong</div>
+                <p class="text-red-700 text-sm"><%= error %></p>
+              </div>
+            <% } else if (problems.length === 0) { %>
+              <div class="max-w-md mx-auto text-center">
+                <div class="w-16 h-16 mx-auto mb-6 text-muted-light dark:text-muted-dark">
+                  <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                  </svg>
+                </div>
+                <h3 class="text-xl font-semibold mb-3">No Problems Yet</h3>
+                <p class="text-muted-light dark:text-muted-dark mb-6">
+                  Be the first to submit a problem that needs solving!
+                </p>
+                <a href="/signup" class="text-primary font-medium hover:underline">
+                  Join our community →
+                </a>
+              </div>
+            <% } else { %>
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <% problems.forEach(problem => { %>
+                  <article class="bg-surface-light dark:bg-surface-dark rounded-xl border border-border-light dark:border-border-dark overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                    <div class="p-6">
+                      <!-- Problem Header -->
+                      <div class="flex items-start gap-3 mb-4">
+                        <div class="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <svg class="w-6 h-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                          </svg>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                          <h3 class="text-lg font-semibold mb-2 line-clamp-2">
+                            <a href="/problems/<%= problem.id %>" class="hover:text-primary transition-colors">
+                              <%= problem.title %>
+                            </a>
+                          </h3>
+                          <div class="flex items-center gap-2 text-xs text-muted-light dark:text-muted-dark">
+                            <span class="material-symbols-outlined text-sm">location_on</span>
+                            <span>
+                              <% if (typeof problem.location === 'object') { %>
+                                <%= problem.location.city %><% if (problem.location.state) { %>, <%= problem.location.state %><% } %>, <%= problem.location.country %>
+                              <% } else { %>
+                                <%= problem.location %>
+                              <% } %>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Problem Description -->
+                      <p class="text-muted-light dark:text-muted-dark text-sm mb-4 line-clamp-3">
+                        <%= problem.description %>
+                      </p>
+
+                      <!-- Problem Meta -->
+                      <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-2">
+                          <span class="px-3 py-1 bg-primary/10 text-primary text-xs font-medium rounded-full">
+                            <%= problem.knowledgeField %>
+                          </span>
+                          <span class="px-3 py-1 text-xs font-medium rounded-full <%= problem.urgency === 'high' ? 'bg-red-100 text-red-700' : problem.urgency === 'medium' ? 'bg-yellow-100 text-yellow-700' : 'bg-green-100 text-green-700' %>">
+                            <%= problem.urgency %> urgency
+                          </span>
+                        </div>
+                      </div>
+
+                      <!-- Problem Footer -->
+                      <div class="flex items-center justify-between text-xs text-muted-light dark:text-muted-dark">
+                        <div class="flex items-center gap-1">
+                          <span class="material-symbols-outlined text-sm">schedule</span>
+                          <span><%= new Date(problem.submittedAt).toLocaleDateString() %></span>
+                        </div>
+                        <a href="/problems/<%= problem.id %>" class="text-primary font-medium hover:underline">
+                          Learn more →
+                        </a>
+                      </div>
+                    </div>
+                  </article>
+                <% }); %>
+              </div>
+
+              <!-- Pagination -->
+              <% if (totalPages > 1) { %>
+                <div class="flex justify-center mt-12">
+                  <nav class="flex items-center gap-1">
+                    <% if (currentPage > 1) { %>
+                      <a href="/problems?page=<%= currentPage - 1 %>" class="px-4 py-2 rounded-lg border border-border-light dark:border-border-dark hover:bg-surface-light dark:hover:bg-surface-dark transition-colors">
+                        <span class="material-symbols-outlined text-lg">chevron_left</span>
+                      </a>
+                    <% } %>
+
+                    <% for (let i = Math.max(1, currentPage - 2); i <= Math.min(totalPages, currentPage + 2); i++) { %>
+                      <a href="/problems?page=<%= i %>" class="px-4 py-2 rounded-lg <%= i === currentPage ? 'bg-primary text-white' : 'border border-border-light dark:border-border-dark hover:bg-surface-light dark:hover:bg-surface-dark' %> transition-colors">
+                        <%= i %>
+                      </a>
+                    <% } %>
+
+                    <% if (currentPage < totalPages) { %>
+                      <a href="/problems?page=<%= currentPage + 1 %>" class="px-4 py-2 rounded-lg border border-border-light dark:border-border-dark hover:bg-surface-light dark:hover:bg-surface-dark transition-colors">
+                        <span class="material-symbols-outlined text-lg">chevron_right</span>
+                      </a>
+                    <% } %>
+                  </nav>
+                </div>
+              <% } %>
+            <% } %>
+          </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="w-full bg-gradient-to-r from-primary to-blue-600 py-16">
+          <div class="container mx-auto px-4 text-center">
+            <div class="max-w-3xl mx-auto">
+              <h2 class="text-3xl sm:text-4xl font-bold text-white mb-6">
+                Ready to Make an Impact?
+              </h2>
+              <p class="text-xl text-blue-100 mb-8">
+                Join our community of problem solvers and help create solutions that matter.
+              </p>
+              <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="/signup" class="bg-white text-primary px-8 py-4 rounded-xl font-semibold hover:bg-blue-50 transition-all transform hover:scale-105 shadow-lg">
+                  Join Our Community
+                </a>
+                <a href="/solutions" class="bg-blue-700 text-white px-8 py-4 rounded-xl font-semibold hover:bg-blue-800 transition-all">
+                  View Solutions
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <%- include('../partials/footer') %>
+    </div>
+  </div>
+
+  <!-- Add line-clamp utility styles -->
+  <style>
+    .line-clamp-2 {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .line-clamp-3 {
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+  </style>
+</body>
+</html>

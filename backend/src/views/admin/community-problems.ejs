@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Community Problems - PSF</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: "#117dd4"
+          }
+        }
+      }
+    };
+  </script>
+  <%- include('../partials/admin-styles') %>
+</head>
+<body class="bg-gray-50">
+  <% const currentPage = 'community-problems'; %>
+
+  <%- include('../partials/admin-mobile-header') %>
+  <%- include('../partials/community-sidebar') %>
+
+  <!-- Main Content -->
+  <div class="lg:ml-64 min-h-screen pt-14 lg:pt-0">
+    <!-- Top Bar -->
+    <header class="bg-white border-b border-gray-200 sticky top-14 lg:top-0 z-10">
+      <div class="px-4 sm:px-6 lg:px-8 py-4">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="text-2xl font-bold text-gray-900">Problems Community</h2>
+            <p class="text-sm text-gray-600 mt-1">Explore and contribute to problem solving</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <a href="/problems" target="_blank" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+              <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+              </svg>
+              View Public Page
+            </a>
+            <button onclick="showSubmitProblemForm()" class="px-4 py-2 text-sm font-medium text-white bg-primary rounded-lg hover:bg-primary/90 transition-colors">
+              <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+              </svg>
+              Submit Problem
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Page Content -->
+    <main class="p-4 sm:p-6 lg:p-8">
+      <!-- Success/Error Messages -->
+      <% if (success) { %>
+        <div class="mb-6 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg">
+          <%= success %>
+        </div>
+      <% } %>
+
+      <% if (error) { %>
+        <div class="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+          <%= error %>
+        </div>
+      <% } %>
+
+      <!-- Filters -->
+      <div class="mb-8 bg-white rounded-lg shadow p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Filter Problems</h3>
+        <div class="flex flex-wrap gap-3">
+          <a href="?filter=approved" class="px-4 py-2 text-sm font-medium rounded-lg transition-colors <%= currentFilter === 'approved' ? 'bg-primary text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' %>">
+            Approved Problems
+            <span class="ml-1 px-2 py-1 text-xs rounded-full <%= currentFilter === 'approved' ? 'bg-white/20 text-white' : 'bg-gray-200 text-gray-600' %>">
+              <%= filterCounts.approved %>
+            </span>
+          </a>
+
+          <a href="?filter=my" class="px-4 py-2 text-sm font-medium rounded-lg transition-colors <%= currentFilter === 'my' ? 'bg-primary text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' %>">
+            My Problems
+            <span class="ml-1 px-2 py-1 text-xs rounded-full <%= currentFilter === 'my' ? 'bg-white/20 text-white' : 'bg-gray-200 text-gray-600' %>">
+              <%= filterCounts.my %>
+            </span>
+          </a>
+
+          <a href="?filter=all" class="px-4 py-2 text-sm font-medium rounded-lg transition-colors <%= currentFilter === 'all' ? 'bg-primary text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' %>">
+            All Problems
+            <span class="ml-1 px-2 py-1 text-xs rounded-full <%= currentFilter === 'all' ? 'bg-white/20 text-white' : 'bg-gray-200 text-gray-600' %>">
+              <%= filterCounts.all %>
+            </span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Problems Grid -->
+      <% if (problems.length === 0) { %>
+        <div class="text-center py-12">
+          <svg class="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6-4h6m2 5.291A7.962 7.962 0 0112 15c-2.34 0-4.47-.881-6.08-2.33"/>
+          </svg>
+          <h3 class="text-lg font-semibold text-gray-900 mb-2">No problems found</h3>
+          <p class="text-gray-600 mb-4">
+            <% if (currentFilter === 'my') { %>
+              You haven't submitted any problems yet.
+            <% } else if (currentFilter === 'approved') { %>
+              No approved problems available yet.
+            <% } else { %>
+              No problems available yet.
+            <% } %>
+          </p>
+          <button onclick="showSubmitProblemForm()" class="px-6 py-3 bg-primary text-white rounded-lg font-semibold hover:bg-primary/90 transition-colors">
+            Submit Your First Problem
+          </button>
+        </div>
+      <% } else { %>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <% problems.forEach(problem => { %>
+            <div class="bg-white rounded-lg shadow hover:shadow-lg transition-shadow p-6">
+              <!-- Status Badge -->
+              <div class="flex items-start justify-between mb-3">
+                <div>
+                  <% if (problem.status === 'approved') { %>
+                    <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                      Approved
+                    </span>
+                  <% } else if (problem.status === 'pending') { %>
+                    <span class="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                      Under Review
+                    </span>
+                  <% } else if (problem.status === 'rejected') { %>
+                    <span class="px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">
+                      Rejected
+                    </span>
+                  <% } %>
+                </div>
+
+                <div class="flex items-center gap-1 text-xs text-gray-500">
+                  <% if (problem.urgency === 'critical') { %>
+                    <div class="w-2 h-2 bg-red-500 rounded-full"></div>
+                    <span>Critical</span>
+                  <% } else if (problem.urgency === 'high') { %>
+                    <div class="w-2 h-2 bg-orange-500 rounded-full"></div>
+                    <span>High</span>
+                  <% } else if (problem.urgency === 'medium') { %>
+                    <div class="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                    <span>Medium</span>
+                  <% } else { %>
+                    <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                    <span>Low</span>
+                  <% } %>
+                </div>
+              </div>
+
+              <!-- Title -->
+              <h3 class="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
+                <%= problem.title %>
+              </h3>
+
+              <!-- Description -->
+              <p class="text-sm text-gray-600 mb-4 line-clamp-3">
+                <%= problem.description %>
+              </p>
+
+              <!-- Meta Info -->
+              <div class="space-y-2 mb-4">
+                <div class="flex items-center gap-2 text-sm text-gray-500">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                  </svg>
+                  <span><%= problem.location %></span>
+                </div>
+
+                <div class="flex items-center gap-2 text-sm text-gray-500">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                  </svg>
+                  <span><%= problem.knowledgeField %></span>
+                </div>
+              </div>
+
+              <!-- Author & Date -->
+              <div class="flex items-center justify-between text-xs text-gray-500 mb-4">
+                <span>by <%= problem.submittedByName %></span>
+                <span><%= problem.submittedAt.toLocaleDateString() %></span>
+              </div>
+
+              <!-- Actions -->
+              <div class="flex items-center justify-between pt-4 border-t border-gray-200">
+                <% if (problem.status === 'approved') { %>
+                  <a href="/problems/<%= problem.id %>" target="_blank" class="text-sm font-medium text-primary hover:text-primary/80 transition-colors">
+                    View Details →
+                  </a>
+                <% } else { %>
+                  <span class="text-sm text-gray-400">Details pending approval</span>
+                <% } %>
+
+                <% if (problem.submittedBy === user.id) { %>
+                  <span class="text-xs px-2 py-1 bg-blue-100 text-blue-800 rounded-full">
+                    Your Problem
+                  </span>
+                <% } %>
+              </div>
+            </div>
+          <% }); %>
+        </div>
+
+        <!-- Pagination -->
+        <% if (totalPages > 1) { %>
+          <div class="flex items-center justify-center mt-8 gap-2">
+            <% if (page > 1) { %>
+              <a href="?filter=<%= currentFilter %>&page=<%= page - 1 %>" class="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
+                Previous
+              </a>
+            <% } %>
+
+            <% for (let i = Math.max(1, page - 2); i <= Math.min(totalPages, page + 2); i++) { %>
+              <% if (i === page) { %>
+                <span class="px-3 py-2 text-sm font-medium text-white bg-primary rounded-lg">
+                  <%= i %>
+                </span>
+              <% } else { %>
+                <a href="?filter=<%= currentFilter %>&page=<%= i %>" class="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
+                  <%= i %>
+                </a>
+              <% } %>
+            <% } %>
+
+            <% if (page < totalPages) { %>
+              <a href="?filter=<%= currentFilter %>&page=<%= page + 1 %>" class="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
+                Next
+              </a>
+            <% } %>
+          </div>
+        <% } %>
+      <% } %>
+    </main>
+  </div>
+
+  <!-- Submit Problem Modal (same as community dashboard) -->
+  <div id="submitProblemModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+    <div class="flex items-center justify-center min-h-screen p-4">
+      <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+        <div class="p-6">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-lg font-bold text-gray-900">Submit a Problem</h3>
+            <button onclick="hideSubmitProblemForm()" class="text-gray-400 hover:text-gray-600">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+              </svg>
+            </button>
+          </div>
+
+          <form action="/admin/problems/submit" method="POST">
+            <div class="space-y-6">
+              <!-- Title -->
+              <div>
+                <label for="title" class="block text-sm font-medium text-gray-700 mb-2">
+                  Problem Title <span class="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="title"
+                  name="title"
+                  required
+                  minlength="5"
+                  maxlength="200"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+                  placeholder="Brief description of the problem"
+                >
+              </div>
+
+              <!-- Description -->
+              <div>
+                <label for="description" class="block text-sm font-medium text-gray-700 mb-2">
+                  Detailed Description <span class="text-red-500">*</span>
+                </label>
+                <textarea
+                  id="description"
+                  name="description"
+                  required
+                  minlength="20"
+                  maxlength="2000"
+                  rows="6"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+                  placeholder="Provide detailed information about the problem, its impact, and why it needs to be solved..."
+                ></textarea>
+                <p class="mt-1 text-sm text-gray-500">
+                  <span id="descCounter">0</span>/2000 characters
+                </p>
+              </div>
+
+              <!-- Location -->
+              <div>
+                <label for="location" class="block text-sm font-medium text-gray-700 mb-2">
+                  Location/Region <span class="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="location"
+                  name="location"
+                  required
+                  minlength="2"
+                  maxlength="100"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+                  placeholder="e.g., São Paulo, Brazil or Global"
+                >
+              </div>
+
+              <!-- Knowledge Field -->
+              <div>
+                <label for="knowledgeField" class="block text-sm font-medium text-gray-700 mb-2">
+                  Knowledge Field <span class="text-red-500">*</span>
+                </label>
+                <select
+                  id="knowledgeField"
+                  name="knowledgeField"
+                  required
+                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+                >
+                  <option value="">Select a field...</option>
+                  <option value="Technology">Technology</option>
+                  <option value="Healthcare">Healthcare</option>
+                  <option value="Education">Education</option>
+                  <option value="Environment">Environment</option>
+                  <option value="Social Issues">Social Issues</option>
+                  <option value="Economics">Economics</option>
+                  <option value="Infrastructure">Infrastructure</option>
+                  <option value="Agriculture">Agriculture</option>
+                  <option value="Energy">Energy</option>
+                  <option value="Transportation">Transportation</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+
+              <!-- Urgency -->
+              <div>
+                <label for="urgency" class="block text-sm font-medium text-gray-700 mb-2">
+                  Urgency Level
+                </label>
+                <select
+                  id="urgency"
+                  name="urgency"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+                >
+                  <option value="low">Low - Can wait for solution</option>
+                  <option value="medium" selected>Medium - Should be addressed</option>
+                  <option value="high">High - Needs urgent attention</option>
+                  <option value="critical">Critical - Immediate action required</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center justify-end gap-3 mt-8 pt-6 border-t border-gray-200">
+              <button
+                type="button"
+                onclick="hideSubmitProblemForm()"
+                class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                class="px-6 py-2 text-sm font-medium text-white bg-primary rounded-lg hover:bg-primary/90 focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors"
+              >
+                Submit Problem
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Problem submission form functions
+    function showSubmitProblemForm() {
+      document.getElementById('submitProblemModal').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function hideSubmitProblemForm() {
+      document.getElementById('submitProblemModal').classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+
+    // Character counter for description
+    document.addEventListener('DOMContentLoaded', function() {
+      const descTextarea = document.getElementById('description');
+      const descCounter = document.getElementById('descCounter');
+
+      if (descTextarea && descCounter) {
+        function updateDescCounter() {
+          const length = descTextarea.value.length;
+          descCounter.textContent = length;
+
+          if (length > 1800) {
+            descCounter.style.color = '#dc2626'; // red
+          } else if (length > 1600) {
+            descCounter.style.color = '#ea580c'; // orange
+          } else {
+            descCounter.style.color = '#6b7280'; // gray
+          }
+        }
+
+        descTextarea.addEventListener('input', updateDescCounter);
+        updateDescCounter(); // Initial count
+      }
+    });
+  </script>
+
+  <%- include('../partials/admin-scripts') %>
+</body>
+</html>

@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title><%= problem.title %> - Problem Solver Foundation</title>
+  <meta name="description" content="<%= problem.description.substring(0, 160) %>...">
+
+  <!-- Favicon - Multiple formats for browser compatibility -->
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon.png">
+  <link rel="shortcut icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon.png">
+
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#117dd4",
+            "background-light": "#f6f7f8",
+            "background-dark": "#101a22",
+            "text-light": "#101a22",
+            "text-dark": "#f6f7f8",
+            "surface-light": "#ffffff",
+            "surface-dark": "#1b2733",
+            "border-light": "#e7eef3",
+            "border-dark": "#2a3b4c",
+            "muted-light": "#4c779a",
+            "muted-dark": "#a0b3c4"
+          },
+          fontFamily: { "display": ["Inter", "sans-serif"] },
+          borderRadius: { "DEFAULT": "0.5rem", "lg": "0.75rem", "xl": "1rem", "full": "9999px" }
+        }
+      }
+    }
+  </script>
+  <link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark">
+  <div class="relative flex h-auto min-h-screen w-full flex-col">
+    <div class="layout-container flex h-full grow flex-col">
+      <%- include('../partials/header', { currentPage: 'problems' }) %>
+
+      <main class="flex-1">
+        <!-- Breadcrumb -->
+        <section class="w-full bg-surface-light dark:bg-surface-dark border-b border-border-light dark:border-border-dark">
+          <div class="container mx-auto px-4 py-4">
+            <nav class="flex items-center gap-2 text-sm text-muted-light dark:text-muted-dark">
+              <a href="/" class="hover:text-primary transition-colors">Home</a>
+              <span class="material-symbols-outlined text-sm">chevron_right</span>
+              <a href="/problems" class="hover:text-primary transition-colors">Problems</a>
+              <span class="material-symbols-outlined text-sm">chevron_right</span>
+              <span class="text-text-light dark:text-text-dark font-medium truncate">
+                <%= problem.title %>
+              </span>
+            </nav>
+          </div>
+        </section>
+
+        <!-- Problem Detail -->
+        <section class="w-full py-12 sm:py-16">
+          <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto">
+              <!-- Problem Header -->
+              <header class="mb-8">
+                <div class="flex items-start gap-4 mb-6">
+                  <div class="w-16 h-16 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <svg class="w-8 h-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4">
+                      <%= problem.title %>
+                    </h1>
+                    <div class="flex flex-wrap items-center gap-4 text-sm text-muted-light dark:text-muted-dark">
+                      <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-lg">schedule</span>
+                        <span>Submitted <%= new Date(problem.submittedAt).toLocaleDateString() %></span>
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-lg">location_on</span>
+                        <span>
+                          <% if (typeof problem.location === 'object') { %>
+                            <%= problem.location.city %><% if (problem.location.state) { %>, <%= problem.location.state %><% } %>, <%= problem.location.country %>
+                          <% } else { %>
+                            <%= problem.location %>
+                          <% } %>
+                        </span>
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-lg">person</span>
+                        <span>By <%= problem.submittedByName %></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Problem Tags -->
+                <div class="flex flex-wrap gap-3">
+                  <span class="px-4 py-2 bg-primary/10 text-primary font-medium rounded-full">
+                    <%= problem.knowledgeField %>
+                  </span>
+                  <span class="px-4 py-2 font-medium rounded-full <%= problem.urgency === 'high' ? 'bg-red-100 text-red-700' : problem.urgency === 'medium' ? 'bg-yellow-100 text-yellow-700' : 'bg-green-100 text-green-700' %>">
+                    <%= problem.urgency.charAt(0).toUpperCase() + problem.urgency.slice(1) %> Priority
+                  </span>
+                  <span class="px-4 py-2 bg-green-100 text-green-700 font-medium rounded-full">
+                    Community Verified
+                  </span>
+                </div>
+              </header>
+
+              <!-- Problem Content -->
+              <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Main Content -->
+                <div class="lg:col-span-2">
+                  <article class="bg-surface-light dark:bg-surface-dark rounded-xl border border-border-light dark:border-border-dark p-6 sm:p-8">
+                    <h2 class="text-xl font-semibold mb-6">Problem Description</h2>
+                    <div class="prose prose-lg max-w-none text-text-light dark:text-text-dark">
+                      <p class="text-lg leading-relaxed whitespace-pre-line">
+                        <%= problem.description %>
+                      </p>
+                    </div>
+
+                    <% if (problem.adminNotes) { %>
+                      <div class="mt-8 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                        <h3 class="text-sm font-semibold text-blue-800 dark:text-blue-200 mb-2 flex items-center gap-2">
+                          <span class="material-symbols-outlined text-lg">info</span>
+                          Additional Information
+                        </h3>
+                        <p class="text-blue-700 dark:text-blue-300 text-sm">
+                          <%= problem.adminNotes %>
+                        </p>
+                      </div>
+                    <% } %>
+                  </article>
+
+                  <!-- Call to Action -->
+                  <div class="mt-8 bg-gradient-to-r from-primary to-blue-600 rounded-xl p-6 sm:p-8 text-white">
+                    <h3 class="text-xl font-bold mb-3">Ready to Solve This Problem?</h3>
+                    <p class="text-blue-100 mb-6">
+                      Join our community of innovators and help develop solutions that make a real difference.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-3">
+                      <a href="/signup" class="bg-white text-primary px-6 py-3 rounded-lg font-semibold hover:bg-blue-50 transition-all text-center">
+                        Join Our Community
+                      </a>
+                      <a href="/solutions" class="bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-800 transition-all text-center">
+                        View Solutions
+                      </a>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Sidebar -->
+                <div class="lg:col-span-1">
+                  <div class="sticky top-8 space-y-6">
+                    <!-- Problem Stats -->
+                    <div class="bg-surface-light dark:bg-surface-dark rounded-xl border border-border-light dark:border-border-dark p-6">
+                      <h3 class="font-semibold mb-4 flex items-center gap-2">
+                        <span class="material-symbols-outlined">analytics</span>
+                        Problem Details
+                      </h3>
+                      <div class="space-y-3">
+                        <div>
+                          <span class="text-muted-light dark:text-muted-dark text-sm block mb-1">Knowledge Field</span>
+                          <span class="font-medium"><%= problem.knowledgeField %></span>
+                        </div>
+                        <div>
+                          <span class="text-muted-light dark:text-muted-dark text-sm block mb-1">Priority Level</span>
+                          <span class="font-medium capitalize"><%= problem.urgency %></span>
+                        </div>
+                        <div>
+                          <span class="text-muted-light dark:text-muted-dark text-sm block mb-1">Location</span>
+                          <span class="font-medium">
+                            <% if (typeof problem.location === 'object') { %>
+                              <%= problem.location.city %><% if (problem.location.state) { %>, <%= problem.location.state %><% } %><br>
+                              <span class="text-sm text-muted-light dark:text-muted-dark"><%= problem.location.country %></span>
+                            <% } else { %>
+                              <%= problem.location %>
+                            <% } %>
+                          </span>
+                        </div>
+                        <div>
+                          <span class="text-muted-light dark:text-muted-dark text-sm block mb-1">Status</span>
+                          <span class="font-medium text-green-600">Community Verified</span>
+                        </div>
+                        <div>
+                          <span class="text-muted-light dark:text-muted-dark text-sm block mb-1">Submitted</span>
+                          <span class="font-medium"><%= new Date(problem.submittedAt).toLocaleDateString() %></span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Related Actions -->
+                    <div class="bg-surface-light dark:bg-surface-dark rounded-xl border border-border-light dark:border-border-dark p-6">
+                      <h3 class="font-semibold mb-4 flex items-center gap-2">
+                        <span class="material-symbols-outlined">lightbulb</span>
+                        Get Involved
+                      </h3>
+                      <div class="space-y-3">
+                        <a href="/signup" class="block w-full text-center bg-primary text-white px-4 py-3 rounded-lg font-medium hover:bg-blue-600 transition-colors">
+                          Join Community
+                        </a>
+                        <a href="/problems" class="block w-full text-center border border-border-light dark:border-border-dark px-4 py-3 rounded-lg font-medium hover:bg-surface-light dark:hover:bg-surface-dark transition-colors">
+                          View All Problems
+                        </a>
+                        <a href="/solutions" class="block w-full text-center border border-border-light dark:border-border-dark px-4 py-3 rounded-lg font-medium hover:bg-surface-light dark:hover:bg-surface-dark transition-colors">
+                          Explore Solutions
+                        </a>
+                      </div>
+                    </div>
+
+                    <!-- Share -->
+                    <div class="bg-surface-light dark:bg-surface-dark rounded-xl border border-border-light dark:border-border-dark p-6">
+                      <h3 class="font-semibold mb-4 flex items-center gap-2">
+                        <span class="material-symbols-outlined">share</span>
+                        Share This Problem
+                      </h3>
+                      <div class="flex gap-3">
+                        <button onclick="shareOnTwitter()" class="flex-1 bg-blue-400 text-white p-3 rounded-lg hover:bg-blue-500 transition-colors">
+                          <span class="material-symbols-outlined">share</span>
+                        </button>
+                        <button onclick="copyToClipboard()" class="flex-1 bg-gray-600 text-white p-3 rounded-lg hover:bg-gray-700 transition-colors">
+                          <span class="material-symbols-outlined">content_copy</span>
+                        </button>
+                        <button onclick="shareByEmail()" class="flex-1 bg-green-600 text-white p-3 rounded-lg hover:bg-green-700 transition-colors">
+                          <span class="material-symbols-outlined">email</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Related Problems -->
+        <section class="w-full py-16 bg-background-light dark:bg-background-dark">
+          <div class="container mx-auto px-4">
+            <div class="max-w-6xl mx-auto">
+              <h2 class="text-2xl sm:text-3xl font-bold text-center mb-12">
+                More Problems to Solve
+              </h2>
+              <div class="text-center">
+                <a href="/problems" class="bg-primary text-white px-8 py-4 rounded-xl font-semibold hover:bg-blue-600 transition-all transform hover:scale-105 shadow-lg inline-flex items-center gap-2">
+                  <span>Explore All Problems</span>
+                  <span class="material-symbols-outlined">arrow_forward</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <%- include('../partials/footer') %>
+    </div>
+  </div>
+
+  <script>
+    function shareOnTwitter() {
+      const text = encodeURIComponent(`Check out this problem that needs solving: "<%= problem.title %>" - <%= problem.description.substring(0, 100) %>...`);
+      const url = encodeURIComponent(window.location.href);
+      window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
+    }
+
+    function copyToClipboard() {
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        alert('Link copied to clipboard!');
+      });
+    }
+
+    function shareByEmail() {
+      const subject = encodeURIComponent(`Problem to Solve: <%= problem.title %>`);
+      const body = encodeURIComponent(`I found this interesting problem that needs solving:\n\n"<%= problem.title %>"\n\n<%= problem.description %>\n\nCheck it out: ${window.location.href}`);
+      window.open(`mailto:?subject=${subject}&body=${body}`);
+    }
+  </script>
+</body>
+</html>
