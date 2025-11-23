@@ -300,6 +300,12 @@ router.post('/problems/delete/:id', requireAuth, requireAdminFeatures, problemCo
 router.get('/community-dashboard/solutions', requireAuth, problemController.getCommunitySolutions);
 
 /**
+ * GET /admin/community-dashboard/community
+ * Página da comunidade para visualizar usuários e fóruns
+ */
+router.get('/community-dashboard/community', requireAuth, adminController.showCommunity);
+
+/**
  * POST /admin/community-dashboard/join-project
  * Manifesta interesse em participar de um projeto
  */

@@ -1473,6 +1473,111 @@ export const updateProfile = async (req, res) => {
 };
 
 /**
+ * GET /admin/community-dashboard/community
+ * Shows community page with user listings and forums
+ */
+export const showCommunity = async (req, res) => {
+  try {
+    const { search, location, page = 1 } = req.query;
+    const limit = 12; // Users per page
+    const offset = (page - 1) * limit;
+
+    // Build query for users
+    let usersQuery = usersCollection.where('role', '==', 'user');
+
+    // Apply search filter (name, firstName, lastName)
+    if (search && search.trim()) {
+      const searchTerm = search.trim().toLowerCase();
+      // Note: Firestore doesn't support full-text search, so we'll filter in memory
+      const allUsersSnapshot = await usersQuery.get();
+      const filteredUsers = allUsersSnapshot.docs.filter(doc => {
+        const userData = doc.data();
+        const fullName = `${userData.firstName || ''} ${userData.lastName || ''} ${userData.name || ''}`.toLowerCase();
+        return fullName.includes(searchTerm);
+      });
+
+      const users = filteredUsers
+        .slice(offset, offset + limit)
+        .map(doc => ({ id: doc.id, ...doc.data() }));
+
+      return res.render('admin/community', {
+        user: req.session.user,
+        users: users,
+        search: search,
+        location: location || '',
+        currentPage: parseInt(page),
+        totalPages: Math.ceil(filteredUsers.length / limit),
+        totalUsers: filteredUsers.length,
+        error: null,
+        success: req.query.success || null
+      });
+    }
+
+    // Apply location filter
+    if (location && location.trim()) {
+      const locationTerm = location.trim().toLowerCase();
+      const allUsersSnapshot = await usersQuery.get();
+      const filteredUsers = allUsersSnapshot.docs.filter(doc => {
+        const userData = doc.data();
+        const userLocation = `${userData.country || ''} ${userData.state || ''} ${userData.city || ''}`.toLowerCase();
+        return userLocation.includes(locationTerm);
+      });
+
+      const users = filteredUsers
+        .slice(offset, offset + limit)
+        .map(doc => ({ id: doc.id, ...doc.data() }));
+
+      return res.render('admin/community', {
+        user: req.session.user,
+        users: users,
+        search: search || '',
+        location: location,
+        currentPage: parseInt(page),
+        totalPages: Math.ceil(filteredUsers.length / limit),
+        totalUsers: filteredUsers.length,
+        error: null,
+        success: req.query.success || null
+      });
+    }
+
+    // Default query - get all community users
+    const usersSnapshot = await usersQuery.limit(limit).offset(offset).get();
+    const totalUsersSnapshot = await usersQuery.get();
+
+    const users = usersSnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+
+    res.render('admin/community', {
+      user: req.session.user,
+      users: users,
+      search: search || '',
+      location: location || '',
+      currentPage: parseInt(page),
+      totalPages: Math.ceil(totalUsersSnapshot.docs.length / limit),
+      totalUsers: totalUsersSnapshot.docs.length,
+      error: req.query.error || null,
+      success: req.query.success || null
+    });
+
+  } catch (error) {
+    console.error('Error loading community page:', error);
+    res.status(500).render('admin/community', {
+      user: req.session.user,
+      users: [],
+      search: '',
+      location: '',
+      currentPage: 1,
+      totalPages: 1,
+      totalUsers: 0,
+      error: 'An error occurred while loading the community page',
+      success: null
+    });
+  }
+};
+
+/**
  * POST /admin/projects/interests/approve/:id
  * Aprova interesse de usuário em projeto
  */
