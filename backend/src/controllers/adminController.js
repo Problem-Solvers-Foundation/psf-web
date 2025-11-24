@@ -2124,57 +2124,85 @@ export const createEvent = async (req, res) => {
  */
 export const editEvent = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { title, description, date, time, meetingUrl } = req.body;
+    const { eventId, title, description, date, time, meetingUrl, accessType, targetUsers } = req.body;
+
+    if (!eventId) {
+      return res.status(400).json({
+        success: false,
+        error: 'Event ID is required'
+      });
+    }
 
     // Validation
     if (!title || title.trim().length < 3) {
-      return res.redirect('/admin/events?error=' +
-        encodeURIComponent('Event title must be at least 3 characters long'));
+      return res.status(400).json({
+        success: false,
+        error: 'Event title must be at least 3 characters long'
+      });
     }
 
     if (!description || description.trim().length < 10) {
-      return res.redirect('/admin/events?error=' +
-        encodeURIComponent('Event description must be at least 10 characters long'));
+      return res.status(400).json({
+        success: false,
+        error: 'Event description must be at least 10 characters long'
+      });
     }
 
     if (!date || !time) {
-      return res.redirect('/admin/events?error=' +
-        encodeURIComponent('Event date and time are required'));
+      return res.status(400).json({
+        success: false,
+        error: 'Event date and time are required'
+      });
     }
 
     // Validate URL if provided
     if (meetingUrl && meetingUrl.trim()) {
       const urlPattern = /^https?:\/\/.+/i;
       if (!urlPattern.test(meetingUrl.trim())) {
-        return res.redirect('/admin/events?error=' +
-          encodeURIComponent('Meeting URL must be a valid HTTP/HTTPS URL'));
+        return res.status(400).json({
+          success: false,
+          error: 'Meeting URL must be a valid HTTP/HTTPS URL'
+        });
       }
     }
 
     // Create event datetime
     const eventDateTime = new Date(`${date}T${time}`);
     if (isNaN(eventDateTime.getTime())) {
-      return res.redirect('/admin/events?error=' +
-        encodeURIComponent('Invalid date or time format'));
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid date or time format'
+      });
+    }
+
+    // Process target users
+    let processedTargetUsers = ['all'];
+    if (accessType === 'specific' && targetUsers && Array.isArray(targetUsers)) {
+      processedTargetUsers = targetUsers;
     }
 
     // Update event
-    await eventsCollection.doc(id).update({
+    await eventsCollection.doc(eventId).update({
       title: sanitizeText(title, 200),
       description: sanitizeText(description, 2000),
       date: eventDateTime,
       meetingUrl: meetingUrl ? sanitizeUrl(meetingUrl) : '',
+      accessType: accessType || 'all',
+      targetUsers: processedTargetUsers,
       updatedAt: new Date()
     });
 
-    res.redirect('/admin/events?success=' +
-      encodeURIComponent('Event updated successfully!'));
+    res.status(200).json({
+      success: true,
+      message: 'Event updated successfully!'
+    });
 
   } catch (error) {
     console.error('Error updating event:', error);
-    res.redirect('/admin/events?error=' +
-      encodeURIComponent('An error occurred while updating the event'));
+    res.status(500).json({
+      success: false,
+      error: 'An error occurred while updating the event'
+    });
   }
 };
 
@@ -2184,9 +2212,16 @@ export const editEvent = async (req, res) => {
  */
 export const archiveEvent = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { eventId } = req.body;
 
-    await eventsCollection.doc(id).update({
+    if (!eventId) {
+      return res.status(400).json({
+        success: false,
+        error: 'Event ID is required'
+      });
+    }
+
+    await eventsCollection.doc(eventId).update({
       status: 'archived',
       archivedAt: new Date(),
       updatedAt: new Date()
@@ -2212,9 +2247,16 @@ export const archiveEvent = async (req, res) => {
  */
 export const unarchiveEvent = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { eventId } = req.body;
 
-    await eventsCollection.doc(id).update({
+    if (!eventId) {
+      return res.status(400).json({
+        success: false,
+        error: 'Event ID is required'
+      });
+    }
+
+    await eventsCollection.doc(eventId).update({
       status: 'active',
       archivedAt: null,
       updatedAt: new Date()
@@ -2240,10 +2282,17 @@ export const unarchiveEvent = async (req, res) => {
  */
 export const deleteEvent = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { eventId } = req.body;
+
+    if (!eventId) {
+      return res.status(400).json({
+        success: false,
+        error: 'Event ID is required'
+      });
+    }
 
     // Get event for logging
-    const eventDoc = await eventsCollection.doc(id).get();
+    const eventDoc = await eventsCollection.doc(eventId).get();
     if (!eventDoc.exists) {
       return res.status(404).json({
         success: false,
@@ -2254,10 +2303,10 @@ export const deleteEvent = async (req, res) => {
     const eventData = eventDoc.data();
 
     // Delete event
-    await eventsCollection.doc(id).delete();
+    await eventsCollection.doc(eventId).delete();
 
     console.log('✅ Event deleted successfully:', {
-      eventId: id,
+      eventId: eventId,
       eventTitle: eventData.title,
       deletedBy: req.session.user.name
     });
