@@ -33,9 +33,6 @@
           <h2 class="text-2xl font-bold text-gray-900">Community</h2>
           <p class="text-sm text-gray-600">Connect with fellow problem solvers and join discussions</p>
         </div>
-        <div class="text-sm text-gray-500">
-          <%= totalUsers %> community members
-        </div>
       </div>
     </div>
 
@@ -54,52 +51,6 @@
         </div>
       <% } %>
 
-      <!-- Search and Filters -->
-      <div class="bg-white rounded-lg shadow p-6 mb-6">
-        <div class="flex flex-col lg:flex-row gap-4">
-          <div class="flex-1">
-            <label for="search" class="block text-sm font-medium text-gray-700 mb-2">Search Members</label>
-            <input
-              type="text"
-              id="search"
-              name="search"
-              value="<%= search %>"
-              placeholder="Search by name..."
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
-            >
-          </div>
-          <div class="flex-1">
-            <label for="location" class="block text-sm font-medium text-gray-700 mb-2">Filter by Location</label>
-            <input
-              type="text"
-              id="location"
-              name="location"
-              value="<%= location %>"
-              placeholder="Filter by country, state, or city..."
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
-            >
-          </div>
-          <div class="flex items-end">
-            <button
-              type="button"
-              id="searchBtn"
-              class="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
-            >
-              Search
-            </button>
-          </div>
-          <% if (search || location) { %>
-            <div class="flex items-end">
-              <a
-                href="/admin/community-dashboard/community"
-                class="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors"
-              >
-                Clear
-              </a>
-            </div>
-          <% } %>
-        </div>
-      </div>
 
       <!-- Tabs -->
       <div class="bg-white rounded-lg shadow mb-6">
@@ -127,12 +78,70 @@
                 Discussion Forums
               </span>
             </button>
+            <button
+              class="py-4 px-1 border-b-2 font-medium text-sm tab-button"
+              data-tab="events"
+            >
+              <span class="flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+                Events
+              </span>
+            </button>
           </nav>
         </div>
       </div>
 
       <!-- Members Tab Content -->
       <div id="members-tab" class="tab-content">
+        <!-- Search and Filters -->
+        <div class="bg-white rounded-lg shadow p-6 mb-6">
+          <div class="flex flex-col lg:flex-row gap-4">
+            <div class="flex-1">
+              <label for="search" class="block text-sm font-medium text-gray-700 mb-2">Search Members</label>
+              <input
+                type="text"
+                id="search"
+                name="search"
+                value="<%= search %>"
+                placeholder="Search by name..."
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+              >
+            </div>
+            <div class="flex-1">
+              <label for="location" class="block text-sm font-medium text-gray-700 mb-2">Filter by Location</label>
+              <input
+                type="text"
+                id="location"
+                name="location"
+                value="<%= location %>"
+                placeholder="Filter by country, state, or city..."
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+              >
+            </div>
+            <div class="flex items-end">
+              <button
+                type="button"
+                id="searchBtn"
+                class="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+              >
+                Search
+              </button>
+            </div>
+            <% if (search || location) { %>
+              <div class="flex items-end">
+                <a
+                  href="/admin/community-dashboard/community"
+                  class="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors"
+                >
+                  Clear
+                </a>
+              </div>
+            <% } %>
+          </div>
+        </div>
+
         <% if (users.length === 0) { %>
           <div class="bg-white rounded-lg shadow p-8 text-center">
             <svg class="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -393,6 +402,84 @@
           <% } %>
         </div>
       </div>
+
+      <!-- Events Tab Content -->
+      <div id="events-tab" class="tab-content hidden">
+        <div class="mb-6">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">Community Events</h3>
+        </div>
+
+        <!-- Events List -->
+        <div class="space-y-4">
+          <% if (typeof events !== 'undefined' && events.length > 0) { %>
+            <% events.forEach(function(event) { %>
+              <div class="bg-white rounded-lg shadow border hover:shadow-md transition-shadow">
+                <div class="p-6">
+                  <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+                    <div class="flex-1 min-w-0">
+                      <h4 class="text-lg font-semibold text-gray-900 mb-2">
+                        <%= event.title %>
+                      </h4>
+
+                      <p class="text-gray-600 mb-3">
+                        <%= event.description %>
+                      </p>
+
+                      <div class="flex flex-wrap items-center gap-4 text-sm text-gray-500 mb-3">
+                        <div class="flex items-center gap-1">
+                          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                          </svg>
+                          <span><%= new Date(event.date.seconds ? event.date.seconds * 1000 : event.date).toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                          }) %></span>
+                        </div>
+                        <div class="flex items-center gap-1">
+                          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                          </svg>
+                          <span><%= new Date(event.date.seconds ? event.date.seconds * 1000 : event.date).toLocaleTimeString('en-US', {
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          }) %></span>
+                        </div>
+                      </div>
+
+                      <% if (event.meetingUrl) { %>
+                        <div class="flex items-center gap-2">
+                          <a href="<%= event.meetingUrl %>" target="_blank"
+                             class="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 text-blue-700 text-sm rounded-lg hover:bg-blue-200 transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                            </svg>
+                            Join Meeting
+                          </a>
+                        </div>
+                      <% } %>
+                    </div>
+
+                    <div class="flex-shrink-0">
+                      <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                        Active
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            <% }); %>
+          <% } else { %>
+            <div class="bg-white rounded-lg shadow p-8 text-center">
+              <svg class="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+              </svg>
+              <h3 class="text-lg font-medium text-gray-900 mb-2">No events scheduled</h3>
+              <p class="text-gray-600">Check back later for upcoming community events and meetups.</p>
+            </div>
+          <% } %>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -593,26 +680,62 @@
   </div>
 
   <script>
-    // Tab switching
+    // Tab switching with hash support
+    function switchTab(tabName) {
+      // Update tab buttons
+      document.querySelectorAll('.tab-button').forEach(btn => {
+        btn.classList.remove('active', 'border-primary', 'text-primary');
+        btn.classList.add('border-transparent', 'text-gray-500');
+      });
+
+      const activeButton = document.querySelector(`[data-tab="${tabName}"]`);
+      if (activeButton) {
+        activeButton.classList.add('active', 'border-primary', 'text-primary');
+        activeButton.classList.remove('border-transparent', 'text-gray-500');
+      }
+
+      // Update tab content
+      document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.add('hidden');
+      });
+
+      const targetTab = document.getElementById(tabName + '-tab');
+      if (targetTab) {
+        targetTab.classList.remove('hidden');
+      }
+    }
+
+    // Handle hash navigation
+    function handleHashNavigation() {
+      const hash = window.location.hash;
+      if (hash === '#events-tab') {
+        switchTab('events');
+      } else if (hash === '#forums-tab') {
+        switchTab('forums');
+      } else {
+        switchTab('members'); // default tab
+      }
+    }
+
+    // Add click listeners to tab buttons
     document.querySelectorAll('.tab-button').forEach(button => {
       button.addEventListener('click', () => {
         const tabName = button.dataset.tab;
+        switchTab(tabName);
 
-        // Update tab buttons
-        document.querySelectorAll('.tab-button').forEach(btn => {
-          btn.classList.remove('active', 'border-primary', 'text-primary');
-          btn.classList.add('border-transparent', 'text-gray-500');
-        });
-        button.classList.add('active', 'border-primary', 'text-primary');
-        button.classList.remove('border-transparent', 'text-gray-500');
-
-        // Update tab content
-        document.querySelectorAll('.tab-content').forEach(content => {
-          content.classList.add('hidden');
-        });
-        document.getElementById(tabName + '-tab').classList.remove('hidden');
+        // Update hash without scrolling
+        const newHash = `#${tabName}-tab`;
+        if (window.location.hash !== newHash) {
+          history.replaceState(null, null, newHash);
+        }
       });
     });
+
+    // Handle browser back/forward
+    window.addEventListener('hashchange', handleHashNavigation);
+
+    // Initialize on load
+    document.addEventListener('DOMContentLoaded', handleHashNavigation);
 
     // Search functionality
     document.getElementById('searchBtn').addEventListener('click', () => {
@@ -1286,6 +1409,7 @@
     window.closeReplyModal = closeReplyModal;
     window.viewDiscussion = viewDiscussion;
   </script>
+
 
   <style>
     .line-clamp-3 {

@@ -371,4 +371,50 @@ router.post('/problems/proposals/approve/:id', requireAuth, requireAdminFeatures
  */
 router.post('/problems/proposals/reject/:id', requireAuth, requireAdminFeatures, problemController.rejectSolutionProposal);
 
+// ===============================
+// GERENCIAMENTO DE EVENTOS
+// ===============================
+
+/**
+ * GET /admin/events
+ * Lista eventos para administração (admin/superuser only)
+ */
+router.get('/events', requireAuth, requireAdminFeatures, adminController.showEvents);
+
+/**
+ * POST /admin/events/create
+ * Cria novo evento (admin/superuser only)
+ */
+router.post('/events/create', requireAuth, requireAdminFeatures, adminController.createEvent);
+
+/**
+ * POST /admin/events/edit
+ * Edita evento existente (admin/superuser only)
+ */
+router.post('/events/edit', requireAuth, requireAdminFeatures, adminController.editEvent);
+
+/**
+ * POST /admin/events/archive
+ * Arquiva evento (admin/superuser only)
+ */
+router.post('/events/archive', requireAuth, requireAdminFeatures, adminController.archiveEvent);
+
+/**
+ * POST /admin/events/unarchive
+ * Desarquiva evento (admin/superuser only)
+ */
+router.post('/events/unarchive', requireAuth, requireAdminFeatures, adminController.unarchiveEvent);
+
+/**
+ * POST /admin/events/delete
+ * Deleta evento permanentemente (admin/superuser only)
+ */
+router.post('/events/delete', requireAuth, requireAdminFeatures, adminController.deleteEvent);
+
+/**
+ * GET /admin/api/community-users
+ * Lista usuários da comunidade para seleção em eventos (admin/superuser only)
+ */
+router.get('/api/community-users', requireAuth, requireAdminFeatures, adminController.getCommunityUsers);
+
 export default router;

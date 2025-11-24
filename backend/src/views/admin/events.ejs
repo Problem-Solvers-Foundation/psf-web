@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Events Management - PSF Admin</title>
+  <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: "#117dd4"
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    .animate-fade-in { animation: fadeIn 0.3s ease-in-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  </style>
+</head>
+
+<body class="bg-gray-100">
+  <%- include('../partials/admin-mobile-header') %>
+
+  <div class="flex">
+    <%- include('../partials/admin-sidebar') %>
+
+    <main class="flex-1 lg:ml-64 p-8">
+      <!-- Header Section -->
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+        <div class="flex justify-between items-start">
+          <div>
+            <h1 class="text-2xl font-bold text-gray-900 mb-2">Events Management</h1>
+            <p class="text-gray-600">Manage community events, meetings, and activities</p>
+          </div>
+          <button onclick="openCreateEventModal()"
+                  class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+            </svg>
+            Create Event
+          </button>
+        </div>
+      </div>
+
+      <!-- Events Filter -->
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
+        <div class="flex flex-wrap gap-4 items-center">
+          <label class="text-sm font-medium text-gray-700">Filter by Status:</label>
+          <select id="statusFilter" onchange="filterEvents()"
+                  class="border border-gray-300 rounded-md px-3 py-1 text-sm focus:ring-2 focus:ring-rose-500 focus:border-rose-500">
+            <option value="all">All Events</option>
+            <option value="active" selected>Active Only</option>
+            <option value="archived">Archived Only</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Events List -->
+      <div id="events-container">
+        <% if (events && events.length > 0) { %>
+          <div class="grid gap-4">
+            <% events.forEach(event => { %>
+              <div class="event-card bg-white rounded-lg shadow-sm border border-gray-200 p-6 <%= event.status === 'archived' ? 'opacity-60' : '' %>"
+                   data-status="<%= event.status %>" data-event-id="<%= event.id %>">
+                <div class="flex justify-between items-start mb-4">
+                  <div class="flex-1">
+                    <div class="flex items-center gap-2 mb-2">
+                      <h3 class="text-lg font-semibold text-gray-900"><%= event.title %></h3>
+                      <span class="px-2 py-1 text-xs font-medium rounded-full
+                                   <%= event.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' %>">
+                        <%= event.status.charAt(0).toUpperCase() + event.status.slice(1) %>
+                      </span>
+                    </div>
+                    <p class="text-gray-600 mb-3"><%= event.description %></p>
+
+                    <div class="flex flex-wrap gap-4 text-sm text-gray-500">
+                      <div class="flex items-center gap-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
+                        <span><%= new Date(event.date.seconds ? event.date.seconds * 1000 : event.date).toLocaleDateString('pt-BR') %></span>
+                      </div>
+                      <div class="flex items-center gap-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <span><%= new Date(event.date.seconds ? event.date.seconds * 1000 : event.date).toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'}) %></span>
+                      </div>
+                      <% if (event.meetingUrl) { %>
+                        <div class="flex items-center gap-1">
+                          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
+                          </svg>
+                          <a href="<%= event.meetingUrl %>" target="_blank"
+                             class="text-rose-600 hover:text-rose-700">Meeting Link</a>
+                        </div>
+                      <% } %>
+                    </div>
+                  </div>
+
+                  <div class="flex items-center gap-2 ml-4">
+                    <button onclick="editEvent('<%= event.id %>')"
+                            class="bg-blue-100 text-blue-600 hover:bg-blue-200 hover:text-blue-700 p-2 rounded-lg transition-colors" title="Edit Event">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                      </svg>
+                    </button>
+
+                    <% if (event.status === 'active') { %>
+                      <button onclick="archiveEvent('<%= event.id %>')"
+                              class="bg-orange-100 text-orange-600 hover:bg-orange-200 hover:text-orange-700 p-2 rounded-lg transition-colors" title="Archive Event">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/>
+                        </svg>
+                      </button>
+                    <% } else { %>
+                      <button onclick="unarchiveEvent('<%= event.id %>')"
+                              class="bg-green-100 text-green-600 hover:bg-green-200 hover:text-green-700 p-2 rounded-lg transition-colors" title="Unarchive Event">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/>
+                        </svg>
+                      </button>
+                    <% } %>
+
+                    <button onclick="deleteEvent('<%= event.id %>')"
+                            class="bg-red-100 text-red-600 hover:bg-red-200 hover:text-red-700 p-2 rounded-lg transition-colors" title="Delete Event">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            <% }); %>
+          </div>
+        <% } else { %>
+          <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-8 text-center">
+            <div class="text-gray-400 mb-4 flex justify-center">
+              <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+              </svg>
+            </div>
+            <h3 class="text-lg font-medium text-gray-900 mb-2">No events found</h3>
+            <p class="text-gray-600 mb-4">Start by creating your first community event</p>
+            <button onclick="openCreateEventModal()"
+                    class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors">
+              Create Event
+            </button>
+          </div>
+        <% } %>
+      </div>
+    </main>
+  </div>
+
+  <!-- Create/Edit Event Modal -->
+  <div id="eventModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+    <div class="flex items-center justify-center min-h-screen p-4">
+      <div class="bg-white rounded-lg shadow-xl max-w-md w-full animate-fade-in">
+        <div class="p-6">
+          <div class="flex justify-between items-center mb-4">
+            <h3 id="modalTitle" class="text-lg font-semibold text-gray-900">Create New Event</h3>
+            <button onclick="closeEventModal()" class="text-gray-400 hover:text-gray-600">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+
+          <form id="eventForm">
+            <input type="hidden" id="eventId" name="eventId">
+
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700 mb-2">Event Title</label>
+              <input type="text" id="title" name="title" required maxlength="200"
+                     class="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-rose-500 focus:border-rose-500">
+            </div>
+
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+              <textarea id="description" name="description" required maxlength="2000" rows="3"
+                        class="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-rose-500 focus:border-rose-500"></textarea>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 mb-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Date</label>
+                <input type="date" id="date" name="date" required
+                       class="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-rose-500 focus:border-rose-500">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Time</label>
+                <input type="time" id="time" name="time" required
+                       class="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-rose-500 focus:border-rose-500">
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700 mb-2">Meeting URL (Optional)</label>
+              <input type="url" id="meetingUrl" name="meetingUrl" placeholder="https://meet.google.com/..."
+                     class="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-rose-500 focus:border-rose-500">
+            </div>
+
+            <div class="mb-6">
+              <label class="block text-sm font-medium text-gray-700 mb-2">Event Access</label>
+              <div class="space-y-3">
+                <div class="flex items-center">
+                  <input type="radio" id="accessAll" name="accessType" value="all" checked
+                         class="h-4 w-4 text-primary focus:ring-primary border-gray-300" onchange="toggleUserSelection()">
+                  <label for="accessAll" class="ml-2 block text-sm text-gray-900">
+                    All community users
+                  </label>
+                </div>
+                <div class="flex items-center">
+                  <input type="radio" id="accessSpecific" name="accessType" value="specific"
+                         class="h-4 w-4 text-primary focus:ring-primary border-gray-300" onchange="toggleUserSelection()">
+                  <label for="accessSpecific" class="ml-2 block text-sm text-gray-900">
+                    Specific users only
+                  </label>
+                </div>
+              </div>
+
+              <div id="userSelectionContainer" class="mt-3 hidden">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Select Users</label>
+                <div id="userList" class="max-h-40 overflow-y-auto border border-gray-300 rounded-md p-2 space-y-2">
+                  <div class="text-sm text-gray-500">Loading users...</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex justify-end gap-3">
+              <button type="button" onclick="closeEventModal()"
+                      class="px-4 py-2 text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors duration-200">
+                Cancel
+              </button>
+              <button type="submit"
+                      class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
+                <span id="submitText">Create Event</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentEditingId = null;
+    let communityUsers = [];
+
+    // Load community users on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      loadCommunityUsers();
+    });
+
+    async function loadCommunityUsers() {
+      try {
+        const response = await fetch('/admin/api/community-users');
+        const data = await response.json();
+        if (data.success) {
+          communityUsers = data.users;
+        }
+      } catch (error) {
+        console.error('Error loading users:', error);
+      }
+    }
+
+    function toggleUserSelection() {
+      const accessType = document.querySelector('input[name="accessType"]:checked').value;
+      const container = document.getElementById('userSelectionContainer');
+
+      if (accessType === 'specific') {
+        container.classList.remove('hidden');
+        renderUserList();
+      } else {
+        container.classList.add('hidden');
+      }
+    }
+
+    function renderUserList() {
+      const userList = document.getElementById('userList');
+
+      if (communityUsers.length === 0) {
+        userList.innerHTML = '<div class="text-sm text-gray-500">No community users found</div>';
+        return;
+      }
+
+      const userCheckboxes = communityUsers.map(user => `
+        <div class="flex items-center">
+          <input type="checkbox" id="user_${user.id}" name="targetUsers" value="${user.id}"
+                 class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded">
+          <label for="user_${user.id}" class="ml-2 text-sm text-gray-900">
+            ${user.firstName && user.lastName ? `${user.firstName} ${user.lastName}` : user.name || user.email}
+          </label>
+        </div>
+      `).join('');
+
+      userList.innerHTML = userCheckboxes;
+    }
+
+    function openCreateEventModal() {
+      currentEditingId = null;
+      document.getElementById('modalTitle').textContent = 'Create New Event';
+      document.getElementById('submitText').textContent = 'Create Event';
+      document.getElementById('eventForm').reset();
+      document.getElementById('eventId').value = '';
+
+      // Reset access type to "all"
+      document.getElementById('accessAll').checked = true;
+      document.getElementById('userSelectionContainer').classList.add('hidden');
+
+      document.getElementById('eventModal').classList.remove('hidden');
+    }
+
+    function closeEventModal() {
+      document.getElementById('eventModal').classList.add('hidden');
+      currentEditingId = null;
+    }
+
+    function editEvent(eventId) {
+      // Find event data from the page
+      const eventCard = document.querySelector(`[data-event-id="${eventId}"]`);
+      if (!eventCard) return;
+
+      // Extract event data from the card
+      const title = eventCard.querySelector('h3').textContent.trim();
+      const description = eventCard.querySelector('.text-gray-600').textContent.trim();
+
+      // Extract date and time from the card
+      const dateSpans = eventCard.querySelectorAll('.text-gray-500 span');
+      let eventDate = '';
+      let eventTime = '';
+
+      if (dateSpans.length >= 2) {
+        // Parse Brazilian date format (dd/mm/yyyy)
+        const dateStr = dateSpans[0].textContent.trim();
+        const timeStr = dateSpans[1].textContent.trim();
+
+        // Convert dd/mm/yyyy to yyyy-mm-dd for HTML input
+        const dateParts = dateStr.split('/');
+        if (dateParts.length === 3) {
+          eventDate = `${dateParts[2]}-${dateParts[1].padStart(2, '0')}-${dateParts[0].padStart(2, '0')}`;
+        }
+
+        eventTime = timeStr;
+      }
+
+      // Extract meeting URL if present
+      const meetingLink = eventCard.querySelector('a[href*="http"]');
+      const meetingUrl = meetingLink ? meetingLink.href : '';
+
+      // Populate the form
+      currentEditingId = eventId;
+      document.getElementById('modalTitle').textContent = 'Edit Event';
+      document.getElementById('submitText').textContent = 'Update Event';
+      document.getElementById('eventId').value = eventId;
+      document.getElementById('title').value = title;
+      document.getElementById('description').value = description;
+      document.getElementById('date').value = eventDate;
+      document.getElementById('time').value = eventTime;
+      document.getElementById('meetingUrl').value = meetingUrl;
+
+      document.getElementById('eventModal').classList.remove('hidden');
+    }
+
+    function archiveEvent(eventId) {
+      if (confirm('Are you sure you want to archive this event? It will no longer be visible to community members.')) {
+        fetch('/admin/events/archive', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ eventId })
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            location.reload();
+          } else {
+            alert('Error archiving event: ' + data.message);
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('An error occurred while archiving the event');
+        });
+      }
+    }
+
+    function unarchiveEvent(eventId) {
+      if (confirm('Are you sure you want to unarchive this event? It will become visible to community members again.')) {
+        fetch('/admin/events/unarchive', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ eventId })
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            location.reload();
+          } else {
+            alert('Error unarchiving event: ' + data.message);
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('An error occurred while unarchiving the event');
+        });
+      }
+    }
+
+    function deleteEvent(eventId) {
+      if (confirm('Are you sure you want to permanently delete this event? This action cannot be undone.')) {
+        fetch('/admin/events/delete', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ eventId })
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            location.reload();
+          } else {
+            alert('Error deleting event: ' + data.message);
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('An error occurred while deleting the event');
+        });
+      }
+    }
+
+    function filterEvents() {
+      const filter = document.getElementById('statusFilter').value;
+      const eventCards = document.querySelectorAll('.event-card');
+
+      eventCards.forEach(card => {
+        const status = card.dataset.status;
+        if (filter === 'all' || status === filter) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    // Handle form submission
+    document.getElementById('eventForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const formData = new FormData(this);
+      const data = Object.fromEntries(formData);
+
+      // Handle target users based on access type
+      const accessType = data.accessType;
+      if (accessType === 'specific') {
+        const selectedUsers = Array.from(document.querySelectorAll('input[name="targetUsers"]:checked'))
+          .map(checkbox => checkbox.value);
+
+        if (selectedUsers.length === 0) {
+          alert('Please select at least one user for specific access');
+          return;
+        }
+
+        data.targetUsers = selectedUsers;
+      } else {
+        data.targetUsers = ['all'];
+      }
+
+      const url = currentEditingId ? '/admin/events/edit' : '/admin/events/create';
+
+      fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          location.reload();
+        } else {
+          alert('Error: ' + data.message);
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while saving the event');
+      });
+    });
+
+    // Close modal on outside click
+    document.getElementById('eventModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeEventModal();
+      }
+    });
+  </script>
+</body>
+</html>

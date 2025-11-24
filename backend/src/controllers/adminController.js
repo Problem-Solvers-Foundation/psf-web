@@ -25,6 +25,7 @@ const projectInterestsCollection = db.collection('projectInterests');
 const forumsCollection = db.collection('forums');
 const discussionsCollection = db.collection('discussions');
 const repliesCollection = db.collection('replies');
+const eventsCollection = db.collection('events');
 
 // IMPORTANTE: ADMIN_EMAIL e ADMIN_PASSWORD não são mais utilizados
 // Todo o sistema de autenticação agora usa apenas bcrypt com senhas hashadas no banco de dados
@@ -1539,9 +1540,39 @@ export const showCommunity = async (req, res) => {
         .slice(offset, offset + limit)
         .map(doc => ({ id: doc.id, ...doc.data() }));
 
+      // Get active events for the events tab - filter by user access
+      const eventsSnapshot = await eventsCollection
+        .where('status', '==', 'active')
+        .get();
+
+      const currentUserId = req.session.user.id;
+      const filteredEvents = eventsSnapshot.docs.filter(doc => {
+        const eventData = doc.data();
+
+        // If no access control is defined or targetUsers includes 'all', show to everyone
+        if (!eventData.accessType || eventData.accessType === 'all' ||
+            !eventData.targetUsers || eventData.targetUsers.includes('all')) {
+          return true;
+        }
+
+        // If specific access, check if current user is in the target list
+        if (eventData.accessType === 'specific' && eventData.targetUsers) {
+          return eventData.targetUsers.includes(currentUserId);
+        }
+
+        return false;
+      });
+
+      const events = filteredEvents.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+
       return res.render('admin/community', {
         user: req.session.user,
         users: users,
+        discussions: [],
+        events: events,
         search: search,
         location: location || '',
         currentPage: parseInt(page),
@@ -1566,9 +1597,39 @@ export const showCommunity = async (req, res) => {
         .slice(offset, offset + limit)
         .map(doc => ({ id: doc.id, ...doc.data() }));
 
+      // Get active events for the events tab - filter by user access
+      const eventsSnapshot = await eventsCollection
+        .where('status', '==', 'active')
+        .get();
+
+      const currentUserId = req.session.user.id;
+      const filteredEvents = eventsSnapshot.docs.filter(doc => {
+        const eventData = doc.data();
+
+        // If no access control is defined or targetUsers includes 'all', show to everyone
+        if (!eventData.accessType || eventData.accessType === 'all' ||
+            !eventData.targetUsers || eventData.targetUsers.includes('all')) {
+          return true;
+        }
+
+        // If specific access, check if current user is in the target list
+        if (eventData.accessType === 'specific' && eventData.targetUsers) {
+          return eventData.targetUsers.includes(currentUserId);
+        }
+
+        return false;
+      });
+
+      const events = filteredEvents.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+
       return res.render('admin/community', {
         user: req.session.user,
         users: users,
+        discussions: [],
+        events: events,
         search: search || '',
         location: location,
         currentPage: parseInt(page),
@@ -1623,10 +1684,39 @@ export const showCommunity = async (req, res) => {
       })
     );
 
+    // Get active events for the events tab - filter by user access
+    const eventsSnapshot = await eventsCollection
+      .where('status', '==', 'active')
+      .get();
+
+    const currentUserId = req.session.user.id;
+    const filteredEvents = eventsSnapshot.docs.filter(doc => {
+      const eventData = doc.data();
+
+      // If no access control is defined or targetUsers includes 'all', show to everyone
+      if (!eventData.accessType || eventData.accessType === 'all' ||
+          !eventData.targetUsers || eventData.targetUsers.includes('all')) {
+        return true;
+      }
+
+      // If specific access, check if current user is in the target list
+      if (eventData.accessType === 'specific' && eventData.targetUsers) {
+        return eventData.targetUsers.includes(currentUserId);
+      }
+
+      return false;
+    });
+
+    const events = filteredEvents.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+
     res.render('admin/community', {
       user: req.session.user,
       users: users,
       discussions: discussions,
+      events: events,
       search: search || '',
       location: location || '',
       currentPage: parseInt(page),
@@ -1641,6 +1731,8 @@ export const showCommunity = async (req, res) => {
     res.status(500).render('admin/community', {
       user: req.session.user,
       users: [],
+      discussions: [],
+      events: [],
       search: '',
       location: '',
       currentPage: 1,
@@ -1915,6 +2007,275 @@ export const viewDiscussion = async (req, res) => {
   }
 };
 
+// ===============================
+// EVENTS MANAGEMENT
+// ===============================
+
+/**
+ * GET /admin/events
+ * Shows events management page for admins
+ */
+export const showEvents = async (req, res) => {
+  try {
+    // Get all events for admin view (including archived)
+    const eventsSnapshot = await eventsCollection.get();
+
+    const events = eventsSnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
+      date: doc.data().date?.toDate ? doc.data().date.toDate() : doc.data().date,
+      createdAt: doc.data().createdAt?.toDate ? doc.data().createdAt.toDate() : doc.data().createdAt
+    }));
+
+    res.render('admin/events', {
+      title: 'Events Management',
+      currentPage: 'events',
+      user: req.session.user,
+      events: events,
+      success: req.query.success || null,
+      error: req.query.error || null
+    });
+  } catch (error) {
+    console.error('Error loading events:', error);
+    res.status(500).send('Error loading events');
+  }
+};
+
+/**
+ * POST /admin/events/create
+ * Creates a new event
+ */
+export const createEvent = async (req, res) => {
+  try {
+    const { title, description, date, time, meetingUrl, accessType, targetUsers } = req.body;
+
+    // Validation
+    if (!title || title.trim().length < 3) {
+      return res.redirect('/admin/events?error=' +
+        encodeURIComponent('Event title must be at least 3 characters long'));
+    }
+
+    if (!description || description.trim().length < 10) {
+      return res.redirect('/admin/events?error=' +
+        encodeURIComponent('Event description must be at least 10 characters long'));
+    }
+
+    if (!date) {
+      return res.redirect('/admin/events?error=' +
+        encodeURIComponent('Event date is required'));
+    }
+
+    if (!time) {
+      return res.redirect('/admin/events?error=' +
+        encodeURIComponent('Event time is required'));
+    }
+
+    // Validate URL if provided
+    if (meetingUrl && meetingUrl.trim()) {
+      const urlPattern = /^https?:\/\/.+/i;
+      if (!urlPattern.test(meetingUrl.trim())) {
+        return res.redirect('/admin/events?error=' +
+          encodeURIComponent('Meeting URL must be a valid HTTP/HTTPS URL'));
+      }
+    }
+
+    // Create event datetime
+    const eventDateTime = new Date(`${date}T${time}`);
+    if (isNaN(eventDateTime.getTime())) {
+      return res.redirect('/admin/events?error=' +
+        encodeURIComponent('Invalid date or time format'));
+    }
+
+    // Process target users
+    let processedTargetUsers = ['all']; // Default to all users
+    if (accessType === 'specific' && targetUsers && Array.isArray(targetUsers)) {
+      processedTargetUsers = targetUsers;
+    }
+
+    // Create event
+    const eventData = {
+      title: sanitizeText(title, 200),
+      description: sanitizeText(description, 2000),
+      date: eventDateTime,
+      meetingUrl: meetingUrl ? sanitizeUrl(meetingUrl) : '',
+      status: 'active',
+      accessType: accessType || 'all',
+      targetUsers: processedTargetUsers,
+      createdBy: req.session.user.id,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+
+    await eventsCollection.add(eventData);
+
+    res.redirect('/admin/events?success=' +
+      encodeURIComponent('Event created successfully!'));
+
+  } catch (error) {
+    console.error('Error creating event:', error);
+    res.redirect('/admin/events?error=' +
+      encodeURIComponent('An error occurred while creating the event'));
+  }
+};
+
+/**
+ * POST /admin/events/edit/:id
+ * Edits an existing event
+ */
+export const editEvent = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { title, description, date, time, meetingUrl } = req.body;
+
+    // Validation
+    if (!title || title.trim().length < 3) {
+      return res.redirect('/admin/events?error=' +
+        encodeURIComponent('Event title must be at least 3 characters long'));
+    }
+
+    if (!description || description.trim().length < 10) {
+      return res.redirect('/admin/events?error=' +
+        encodeURIComponent('Event description must be at least 10 characters long'));
+    }
+
+    if (!date || !time) {
+      return res.redirect('/admin/events?error=' +
+        encodeURIComponent('Event date and time are required'));
+    }
+
+    // Validate URL if provided
+    if (meetingUrl && meetingUrl.trim()) {
+      const urlPattern = /^https?:\/\/.+/i;
+      if (!urlPattern.test(meetingUrl.trim())) {
+        return res.redirect('/admin/events?error=' +
+          encodeURIComponent('Meeting URL must be a valid HTTP/HTTPS URL'));
+      }
+    }
+
+    // Create event datetime
+    const eventDateTime = new Date(`${date}T${time}`);
+    if (isNaN(eventDateTime.getTime())) {
+      return res.redirect('/admin/events?error=' +
+        encodeURIComponent('Invalid date or time format'));
+    }
+
+    // Update event
+    await eventsCollection.doc(id).update({
+      title: sanitizeText(title, 200),
+      description: sanitizeText(description, 2000),
+      date: eventDateTime,
+      meetingUrl: meetingUrl ? sanitizeUrl(meetingUrl) : '',
+      updatedAt: new Date()
+    });
+
+    res.redirect('/admin/events?success=' +
+      encodeURIComponent('Event updated successfully!'));
+
+  } catch (error) {
+    console.error('Error updating event:', error);
+    res.redirect('/admin/events?error=' +
+      encodeURIComponent('An error occurred while updating the event'));
+  }
+};
+
+/**
+ * POST /admin/events/archive/:id
+ * Archives an event (makes it invisible to community users)
+ */
+export const archiveEvent = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    await eventsCollection.doc(id).update({
+      status: 'archived',
+      archivedAt: new Date(),
+      updatedAt: new Date()
+    });
+
+    res.status(200).json({
+      success: true,
+      message: 'Event archived successfully'
+    });
+
+  } catch (error) {
+    console.error('Error archiving event:', error);
+    res.status(500).json({
+      success: false,
+      error: 'An error occurred while archiving the event'
+    });
+  }
+};
+
+/**
+ * POST /admin/events/unarchive/:id
+ * Unarchives an event (makes it visible to community users again)
+ */
+export const unarchiveEvent = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    await eventsCollection.doc(id).update({
+      status: 'active',
+      archivedAt: null,
+      updatedAt: new Date()
+    });
+
+    res.status(200).json({
+      success: true,
+      message: 'Event unarchived successfully'
+    });
+
+  } catch (error) {
+    console.error('Error unarchiving event:', error);
+    res.status(500).json({
+      success: false,
+      error: 'An error occurred while unarchiving the event'
+    });
+  }
+};
+
+/**
+ * DELETE /admin/events/delete/:id
+ * Deletes an event permanently
+ */
+export const deleteEvent = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Get event for logging
+    const eventDoc = await eventsCollection.doc(id).get();
+    if (!eventDoc.exists) {
+      return res.status(404).json({
+        success: false,
+        error: 'Event not found'
+      });
+    }
+
+    const eventData = eventDoc.data();
+
+    // Delete event
+    await eventsCollection.doc(id).delete();
+
+    console.log('✅ Event deleted successfully:', {
+      eventId: id,
+      eventTitle: eventData.title,
+      deletedBy: req.session.user.name
+    });
+
+    res.status(200).json({
+      success: true,
+      message: 'Event deleted successfully'
+    });
+
+  } catch (error) {
+    console.error('Error deleting event:', error);
+    res.status(500).json({
+      success: false,
+      error: 'An error occurred while deleting the event'
+    });
+  }
+};
+
 /**
  * POST /admin/projects/interests/approve/:id
  * Aprova interesse de usuário em projeto
@@ -2027,15 +2388,103 @@ export const deleteProjectInterest = async (req, res) => {
  */
 export const showCommunityDashboard = async (req, res) => {
   try {
+    const userId = req.session.user.id;
+
+    // Get user metrics
+    const [
+      userDiscussionsSnapshot,
+      userRepliesSnapshot,
+      userProblemsSnapshot
+    ] = await Promise.all([
+      // Count user's discussions
+      db.collection('discussions').where('author.id', '==', userId).get(),
+      // Count user's replies
+      db.collection('replies').where('author.id', '==', userId).get(),
+      // Count user's submitted problems
+      db.collection('problems').where('submittedBy', '==', userId).get()
+    ]);
+
+    // Calculate metrics
+    const userDiscussionCount = userDiscussionsSnapshot.size;
+    const userRepliesCount = userRepliesSnapshot.size;
+    const userProblemsCount = userProblemsSnapshot.size;
+
+    // Calculate member since (days)
+    let memberSinceDays = null;
+    let memberSinceText = 'Unknown';
+
+    if (req.session.user.createdAt) {
+      try {
+        const createdAt = req.session.user.createdAt.seconds ?
+          new Date(req.session.user.createdAt.seconds * 1000) :
+          new Date(req.session.user.createdAt);
+        const now = new Date();
+        const daysDiff = Math.floor((now - createdAt) / (1000 * 60 * 60 * 24));
+
+        if (daysDiff >= 0) {
+          memberSinceDays = daysDiff;
+          if (daysDiff === 0) {
+            memberSinceText = 'Today';
+          } else if (daysDiff === 1) {
+            memberSinceText = '1 day';
+          } else {
+            memberSinceText = `${daysDiff} days`;
+          }
+        }
+      } catch (error) {
+        console.error('Error calculating member since:', error);
+      }
+    }
+
+    // If we couldn't calculate, try to get from user creation in session
+    if (memberSinceDays === null && req.session.user.id) {
+      memberSinceText = 'Member';
+      memberSinceDays = '?';
+    }
+
     res.render('admin/community-dashboard', {
       title: 'Community Dashboard',
       currentPage: 'community-dashboard',
       user: req.session.user,
+      userDiscussionCount,
+      userRepliesCount,
+      userProblemsCount,
+      memberSinceDays,
+      memberSinceText,
       success: req.query.success || null,
       error: req.query.error || null
     });
   } catch (error) {
     console.error('Error loading community dashboard:', error);
     res.status(500).send('Error loading dashboard');
+  }
+};
+
+/**
+ * GET /admin/api/community-users
+ * Returns list of community users for event access selection
+ */
+export const getCommunityUsers = async (req, res) => {
+  try {
+    const usersSnapshot = await usersCollection
+      .where('role', '==', 'user')
+      .get();
+
+    const users = usersSnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+
+    res.json({
+      success: true,
+      users: users
+    });
+
+  } catch (error) {
+    console.error('Error loading community users:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error loading community users'
+    });
   }
 };
