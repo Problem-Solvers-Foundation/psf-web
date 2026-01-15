@@ -74,9 +74,28 @@ app.use(cors({
   credentials: true
 }));
 
-// Permitir receber JSON no body das requisições
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// Permitir receber JSON no body das requisições com limite e handling de charset
+app.use(express.json({
+  limit: '10mb',
+  verify: (req, res, buf, encoding) => {
+    // Verificar se o buffer contém caracteres válidos UTF-8
+    try {
+      if (encoding === 'utf8' && buf && buf.length > 0) {
+        // Tentar decodificar e detectar caracteres surrogates inválidos
+        const text = buf.toString('utf8');
+        // Remover caracteres surrogate não emparelhados
+        const sanitized = text.replace(/[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?<![\uD800-\uDBFF])[\uDC00-\uDFFF]/g, '');
+        // Atualizar o buffer com o texto sanitizado
+        if (sanitized !== text) {
+          req.rawBody = Buffer.from(sanitized, 'utf8');
+        }
+      }
+    } catch (error) {
+      console.warn('⚠️ Warning: Error validating JSON charset:', error.message);
+    }
+  }
+}));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Aplicar headers de segurança e sanitização de inputs
 app.use(securityHeaders);

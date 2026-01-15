@@ -5,6 +5,27 @@
  */
 import { db } from '../config/firebase.js';
 
+/**
+ * Sanitiza strings para remover caracteres surrogate inválidos
+ * @param {any} obj - Objeto para sanitizar
+ * @returns {any} - Objeto sanitizado
+ */
+function sanitizeUnicode(obj) {
+  if (typeof obj === 'string') {
+    // Remove caracteres surrogate não emparelhados
+    return obj.replace(/[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?<![\uD800-\uDBFF])[\uDC00-\uDFFF]/g, '');
+  } else if (Array.isArray(obj)) {
+    return obj.map(sanitizeUnicode);
+  } else if (obj && typeof obj === 'object') {
+    const sanitized = {};
+    for (const [key, value] of Object.entries(obj)) {
+      sanitized[sanitizeUnicode(key)] = sanitizeUnicode(value);
+    }
+    return sanitized;
+  }
+  return obj;
+}
+
 const projectsCollection = db.collection('projects');
 const usersCollection = db.collection('users');
 
@@ -159,13 +180,14 @@ export const getDashboardStats = async (req, res) => {
     // Verificar se o cache é válido (exceto se force refresh)
     const forceRefresh = req.query.refresh === 'true';
     if (!forceRefresh && cachedDashboardStats && cacheTime && (Date.now() - cacheTime < CACHE_DURATION)) {
+      const sanitizedCachedData = sanitizeUnicode({
+        ...cachedDashboardStats,
+        cached: true,
+        lastUpdated: new Date(cacheTime)
+      });
       return res.json({
         success: true,
-        data: {
-          ...cachedDashboardStats,
-          cached: true,
-          lastUpdated: new Date(cacheTime)
-        }
+        data: sanitizedCachedData
       });
     }
     // Buscar usuários ativos
@@ -215,13 +237,16 @@ export const getDashboardStats = async (req, res) => {
     cachedDashboardStats = statsData;
     cacheTime = Date.now();
 
+    // Sanitizar dados antes de enviar
+    const sanitizedData = sanitizeUnicode({
+      ...statsData,
+      cached: false,
+      lastUpdated: new Date()
+    });
+
     res.json({
       success: true,
-      data: {
-        ...statsData,
-        cached: false,
-        lastUpdated: new Date()
-      }
+      data: sanitizedData
     });
 
   } catch (error) {
