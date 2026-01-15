@@ -7,8 +7,10 @@ import { Router } from 'express';
 const router = Router();
 import * as adminController from '../controllers/adminController.js';
 import * as problemController from '../controllers/problemController.js';
+import * as taskController from '../controllers/taskController.js';
 import { requireAuth, redirectIfAuthenticated } from '../middleware/auth.js';
 import { requireAdminFeatures } from '../middleware/rolePermissions.js';
+import { requireCommunityAccess } from '../middleware/userStatus.js';
 import { checkLoginRateLimit } from '../middleware/loginRateLimiter.js';
 
 // ===============================
@@ -33,9 +35,9 @@ router.get('/dashboard', requireAuth, requireAdminFeatures, adminController.show
 
 /**
  * GET /admin/community-dashboard
- * Dashboard para community users
+ * Dashboard para community users (requires approved status)
  */
-router.get('/community-dashboard', requireAuth, adminController.showCommunityDashboard);
+router.get('/community-dashboard', requireCommunityAccess, adminController.showCommunityDashboard);
 
 /**
  * GET /admin/posts
@@ -92,7 +94,18 @@ router.get('/', (req, res) => {
   if (req.session && req.session.isAuthenticated) {
     // Redirecionar baseado no role do usuário
     if (req.session.user && req.session.user.role === 'user') {
-      res.redirect('/admin/community-dashboard');
+      // Community users - check approval status
+      const userStatus = req.session.user.status || 'pending';
+
+      if (userStatus === 'approved') {
+        res.redirect('/admin/community-dashboard');
+      } else if (userStatus === 'rejected') {
+        res.redirect('/signin?error=Your application has been rejected. Please contact support for assistance.');
+      } else if (req.session.user.applicationId) {
+        res.redirect('/signin?error=Your application is under review. You will be notified once a decision is made.');
+      } else {
+        res.redirect('/join');
+      }
     } else {
       res.redirect('/admin/dashboard');
     }
@@ -273,7 +286,7 @@ router.get('/problems/my', requireAuth, problemController.getMyProblems);
  * GET /admin/community-dashboard/problems
  * Página principal de problemas para community users
  */
-router.get('/community-dashboard/problems', requireAuth, problemController.getCommunityProblems);
+router.get('/community-dashboard/problems', requireCommunityAccess, problemController.getCommunityProblems);
 
 /**
  * GET /admin/problems
@@ -297,49 +310,49 @@ router.post('/problems/delete/:id', requireAuth, requireAdminFeatures, problemCo
  * GET /admin/community-dashboard/solutions
  * Lista projetos e problemas aprovados para community users
  */
-router.get('/community-dashboard/solutions', requireAuth, problemController.getCommunitySolutions);
+router.get('/community-dashboard/solutions', requireCommunityAccess, problemController.getCommunitySolutions);
 
 /**
  * GET /admin/community-dashboard/community
  * Página da comunidade para visualizar usuários e fóruns
  */
-router.get('/community-dashboard/community', requireAuth, adminController.showCommunity);
+router.get('/community-dashboard/community', requireCommunityAccess, adminController.showCommunity);
 
 /**
  * POST /admin/community-dashboard/create-discussion
  * Cria uma nova discussão nos fóruns
  */
-router.post('/community-dashboard/create-discussion', requireAuth, adminController.createDiscussion);
+router.post('/community-dashboard/create-discussion', requireCommunityAccess, adminController.createDiscussion);
 
 /**
  * POST /admin/community-dashboard/reply-discussion
  * Adiciona uma resposta a uma discussão
  */
-router.post('/community-dashboard/reply-discussion', requireAuth, adminController.replyDiscussion);
+router.post('/community-dashboard/reply-discussion', requireCommunityAccess, adminController.replyDiscussion);
 
 /**
  * GET /admin/community-dashboard/discussion/:id
  * Visualiza uma discussão específica com respostas
  */
-router.get('/community-dashboard/discussion/:id', requireAuth, adminController.viewDiscussion);
+router.get('/community-dashboard/discussion/:id', requireCommunityAccess, adminController.viewDiscussion);
 
 /**
  * DELETE /admin/community-dashboard/discussion/:id
  * Deleta uma discussão (apenas o autor pode deletar)
  */
-router.delete('/community-dashboard/discussion/:id', requireAuth, adminController.deleteDiscussion);
+router.delete('/community-dashboard/discussion/:id', requireCommunityAccess, adminController.deleteDiscussion);
 
 /**
  * POST /admin/community-dashboard/join-project
  * Manifesta interesse em participar de um projeto
  */
-router.post('/community-dashboard/join-project', requireAuth, problemController.joinProject);
+router.post('/community-dashboard/join-project', requireCommunityAccess, problemController.joinProject);
 
 /**
  * POST /admin/community-dashboard/propose-solution
  * Propõe solução para um problema aprovado
  */
-router.post('/community-dashboard/propose-solution', requireAuth, problemController.proposeSolution);
+router.post('/community-dashboard/propose-solution', requireCommunityAccess, problemController.proposeSolution);
 
 /**
  * POST /admin/projects/interests/approve/:id
@@ -416,5 +429,57 @@ router.post('/events/delete', requireAuth, requireAdminFeatures, adminController
  * Lista usuários da comunidade para seleção em eventos (admin/superuser only)
  */
 router.get('/api/community-users', requireAuth, requireAdminFeatures, adminController.getCommunityUsers);
+
+// ===============================
+// GERENCIAMENTO DE TAREFAS
+// ===============================
+
+/**
+ * GET /admin/tasks
+ * Lista tarefas para administração (admin/superuser only)
+ */
+router.get('/tasks', requireAuth, requireAdminFeatures, taskController.showTasks);
+
+/**
+ * POST /admin/tasks/create
+ * Cria nova tarefa (admin/superuser only)
+ */
+router.post('/tasks/create', requireAuth, requireAdminFeatures, taskController.createTask);
+
+/**
+ * POST /admin/tasks/edit/:id
+ * Edita tarefa existente (admin/superuser only)
+ */
+router.post('/tasks/edit/:id', requireAuth, requireAdminFeatures, taskController.updateTask);
+
+/**
+ * POST /admin/tasks/delete/:id
+ * Deleta tarefa permanentemente (admin/superuser only)
+ */
+router.post('/tasks/delete/:id', requireAuth, requireAdminFeatures, taskController.deleteTask);
+
+/**
+ * POST /admin/tasks/archive/:id
+ * Arquiva tarefa (admin/superuser only)
+ */
+router.post('/tasks/archive/:id', requireAuth, requireAdminFeatures, taskController.archiveTask);
+
+/**
+ * GET /admin/community-dashboard/tasks
+ * Lista tarefas do usuário logado (community users)
+ */
+router.get('/community-dashboard/tasks', requireCommunityAccess, taskController.getUserTasks);
+
+/**
+ * POST /admin/community-dashboard/tasks/complete/:id
+ * Marca tarefa como concluída (community users)
+ */
+router.post('/community-dashboard/tasks/complete/:id', requireCommunityAccess, taskController.completeTask);
+
+/**
+ * GET /admin/api/task-stats
+ * Retorna estatísticas de tarefas para o dashboard (admin/superuser only)
+ */
+router.get('/api/task-stats', requireAuth, requireAdminFeatures, taskController.getTaskStats);
 
 export default router;

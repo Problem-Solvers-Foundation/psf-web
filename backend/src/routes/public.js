@@ -188,15 +188,39 @@ router.get('/contact', (req, res) => {
 });
 
 /**
- * JOIN PAGE
+ * JOIN PAGE (Protected)
  * GET /join
+ * Requires authentication and pending status
  */
 router.get('/join', (req, res) => {
+  // Check if user is authenticated
+  if (!req.session.user) {
+    return res.redirect('/signup');
+  }
+
+  // Check if user already has approved status
+  if (req.session.user.status === 'approved') {
+    return res.redirect('/admin/community-dashboard');
+  }
+
+  // Check if user has rejected status
+  if (req.session.user.status === 'rejected') {
+    return res.redirect('/signin?error=Your application has been rejected. Please contact support for assistance.');
+  }
+
+  // Check if user already submitted application
+  if (req.session.user.applicationId) {
+    return res.redirect('/signin?error=Your application is under review. You will be notified once a decision is made.');
+  }
+
   res.render('public/join', {
     layout: 'layouts/public',
     title: 'Join Us - PSF',
     description: 'Become a volunteer',
-    currentPage: 'join'
+    currentPage: 'join',
+    user: req.session.user,
+    success: req.query.success || null,
+    error: req.query.error || null
   });
 });
 

@@ -26,6 +26,8 @@ const forumsCollection = db.collection('forums');
 const discussionsCollection = db.collection('discussions');
 const repliesCollection = db.collection('replies');
 const eventsCollection = db.collection('events');
+const tasksCollection = db.collection('tasks');
+const taskCompletionsCollection = db.collection('taskCompletions');
 
 // IMPORTANTE: ADMIN_EMAIL e ADMIN_PASSWORD não são mais utilizados
 // Todo o sistema de autenticação agora usa apenas bcrypt com senhas hashadas no banco de dados
@@ -127,7 +129,9 @@ export const processLogin = async (req, res) => {
       id: userDoc.id,
       email: userData.email,
       name: userData.name,
-      role: userData.role
+      role: userData.role,
+      status: userData.status || (userData.role === 'admin' ? 'approved' : 'pending'),
+      applicationId: userData.applicationId || null
     };
 
     // IMPORTANTE: Salvar sessão antes de redirecionar
@@ -137,10 +141,24 @@ export const processLogin = async (req, res) => {
         return res.render('public/signin', { error: 'Session error. Please try again.' });
       }
 
-      // Redirecionar baseado no role do usuário
+      // Redirecionar baseado no role e status do usuário
       if (userData.role === 'user') {
-        res.redirect('/admin/community-dashboard');
+        // Community users - check application status
+        const userStatus = userData.status || 'pending';
+
+        if (userStatus === 'approved') {
+          res.redirect('/admin/community-dashboard');
+        } else if (userStatus === 'rejected') {
+          res.redirect('/signin?error=Your application has been rejected. Please contact support for more information.');
+        } else if (userData.applicationId) {
+          // Has application but still pending/reviewing
+          res.redirect('/signin?error=Your application is under review. You will be notified once a decision is made.');
+        } else {
+          // No application submitted yet
+          res.redirect('/join');
+        }
       } else {
+        // Admin users
         res.redirect('/admin/dashboard');
       }
     });
@@ -240,17 +258,27 @@ export const processSignup = async (req, res) => {
       password: hashedPassword,
       role: 'user', // Community user
       isActive: true,
+      status: 'pending', // Application approval status: pending, approved, rejected
+      applicationId: null, // Will be linked when user submits application
       createdAt: new Date(),
       lastLogin: null
     };
 
-    await usersCollection.add(newUser);
+    const userDocRef = await usersCollection.add(newUser);
+    console.log('✅ User created successfully with ID:', userDocRef.id);
 
-    res.render('public/signup', {
-      error: null,
-      success: 'Account created successfully! You can now sign in.',
-      formData: null
-    });
+    // Create session for immediate redirect to join page
+    req.session.user = {
+      id: userDocRef.id,
+      name: sanitizedName,
+      email: email.toLowerCase().trim(),
+      role: 'user',
+      status: 'pending',
+      applicationId: null
+    };
+
+    // Redirect to join page for application submission
+    res.redirect('/join?success=Account created successfully. Please complete your application.');
 
   } catch (error) {
     console.error('Error during signup:', error);
@@ -295,7 +323,32 @@ export const showDashboard = async (req, res) => {
       createdAt: doc.data().createdAt?.toDate()
     }));
 
-    res.render('admin/dashboard', { posts, projects, users });
+    // Buscar estatísticas de tarefas
+    const tasksSnapshot = await tasksCollection.get();
+    const taskCompletionsSnapshot = await taskCompletionsCollection.get();
+
+    const tasks = tasksSnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
+      createdAt: doc.data().createdAt?.toDate(),
+      deadline: doc.data().deadline?.toDate()
+    }));
+
+    // Calcular estatísticas de tarefas
+    const now = new Date();
+    const activeTasks = tasks.filter(task => task.status === 'active');
+    const overdueTasks = activeTasks.filter(task => task.deadline && task.deadline < now);
+    const totalCompletions = taskCompletionsSnapshot.size;
+
+    const taskStats = {
+      total: tasks.length,
+      active: activeTasks.length,
+      archived: tasks.filter(task => task.status === 'archived').length,
+      overdue: overdueTasks.length,
+      completions: totalCompletions
+    };
+
+    res.render('admin/dashboard', { posts, projects, users, tasks: taskStats });
   } catch (error) {
     console.error('Error loading dashboard:', error);
     res.status(500).send('Error loading dashboard');
@@ -958,6 +1011,32 @@ export const updateApplication = async (req, res) => {
     }
 
     await applicationsCollection.doc(id).update(updateData);
+
+    // NOVO: Sincronizar status do usuário quando status da aplicação é alterado
+    if (status && (status === 'approved' || status === 'rejected')) {
+      try {
+        // Buscar a application para obter o userId
+        const appDoc = await applicationsCollection.doc(id).get();
+        if (appDoc.exists) {
+          const appData = appDoc.data();
+          const userId = appData.userId;
+
+          if (userId) {
+            // Atualizar status do usuário para coincidir com o status da aplicação
+            const userUpdateData = {
+              status: status,
+              applicationId: id // Vincular aplicação ao usuário
+            };
+
+            await usersCollection.doc(userId).update(userUpdateData);
+            console.log(`✅ User ${userId} status updated to: ${status}`);
+          }
+        }
+      } catch (syncError) {
+        console.error('❌ Error syncing user status:', syncError);
+        // Não falhar a operação se a sincronização falhar
+      }
+    }
 
     // Retornar JSON para AJAX ou redirecionar para formulário normal
     if (req.headers['content-type'] === 'application/json') {

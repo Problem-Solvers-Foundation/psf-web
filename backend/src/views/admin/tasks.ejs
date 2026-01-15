@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task Management - Admin Panel</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: "#117dd4"
+          }
+        }
+      }
+    };
+  </script>
+  <%- include('../partials/admin-styles') %>
+</head>
+<body class="bg-gray-50">
+  <% const currentPage = 'tasks'; %>
+
+  <%- include('../partials/admin-mobile-header') %>
+  <%- include('../partials/admin-sidebar') %>
+
+  <!-- Main Content -->
+  <div class="lg:ml-64 min-h-screen pt-14 lg:pt-0">
+    <!-- Top Bar -->
+    <header class="bg-white border-b border-gray-200 sticky top-14 lg:top-0 z-10">
+      <div class="px-4 sm:px-6 lg:px-8 py-4">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Task Management</h2>
+            <p class="text-xs sm:text-sm text-gray-600 mt-1">Create and manage tasks for community members</p>
+          </div>
+          <button onclick="showCreateTaskModal()" class="px-4 py-2 bg-primary text-white text-sm font-medium rounded-lg hover:bg-opacity-90 transition-colors flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+            </svg>
+            Create Task
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Content -->
+    <main class="p-4 sm:p-6 lg:p-8">
+      <!-- Success/Error Messages -->
+      <% if (typeof success !== 'undefined' && success) { %>
+        <div class="mb-6 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg">
+          <%= success %>
+        </div>
+      <% } %>
+
+      <% if (typeof error !== 'undefined' && error) { %>
+        <div class="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+          <%= error %>
+        </div>
+      <% } %>
+
+      <!-- Task Stats -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
+        <div class="bg-white rounded-lg shadow p-4 sm:p-6">
+          <div class="flex items-center justify-between">
+            <div class="flex-1 min-w-0">
+              <p class="text-xs sm:text-sm text-gray-600 truncate">Total Tasks</p>
+              <p class="text-2xl sm:text-3xl font-bold text-gray-900 mt-1"><%= tasks.length %></p>
+            </div>
+            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0 ml-3">
+              <svg class="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow p-4 sm:p-6">
+          <div class="flex items-center justify-between">
+            <div class="flex-1 min-w-0">
+              <p class="text-xs sm:text-sm text-gray-600 truncate">Active Tasks</p>
+              <p class="text-2xl sm:text-3xl font-bold text-gray-900 mt-1"><%= tasks.filter(t => t.status === 'active').length %></p>
+            </div>
+            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0 ml-3">
+              <svg class="w-5 h-5 sm:w-6 sm:h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow p-4 sm:p-6">
+          <div class="flex items-center justify-between">
+            <div class="flex-1 min-w-0">
+              <p class="text-xs sm:text-sm text-gray-600 truncate">Completed</p>
+              <p class="text-2xl sm:text-3xl font-bold text-gray-900 mt-1">
+                <%= tasks.reduce((sum, task) => sum + (task.completionCount || 0), 0) %>
+              </p>
+            </div>
+            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0 ml-3">
+              <svg class="w-5 h-5 sm:w-6 sm:h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow p-4 sm:p-6">
+          <div class="flex items-center justify-between">
+            <div class="flex-1 min-w-0">
+              <p class="text-xs sm:text-sm text-gray-600 truncate">Archived</p>
+              <p class="text-2xl sm:text-3xl font-bold text-gray-900 mt-1"><%= tasks.filter(t => t.status === 'archived').length %></p>
+            </div>
+            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0 ml-3">
+              <svg class="w-5 h-5 sm:w-6 sm:h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8l6 6m-6 0l6-6m2-5v18M3 12l6 6 6-6"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filter Tabs -->
+      <div class="mb-6">
+        <div class="border-b border-gray-200">
+          <nav class="-mb-px flex space-x-8">
+            <button onclick="filterTasks('all')" id="filter-all" class="filter-tab border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm">
+              All Tasks (<%= tasks.length %>)
+            </button>
+            <button onclick="filterTasks('active')" id="filter-active" class="filter-tab border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm">
+              Active (<%= tasks.filter(t => t.status === 'active').length %>)
+            </button>
+            <button onclick="filterTasks('archived')" id="filter-archived" class="filter-tab border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm">
+              Archived (<%= tasks.filter(t => t.status === 'archived').length %>)
+            </button>
+          </nav>
+        </div>
+      </div>
+
+      <!-- Tasks List -->
+      <div class="bg-white shadow rounded-lg overflow-hidden">
+        <% if (tasks.length === 0) { %>
+          <div class="text-center py-12">
+            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 48 48">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+            </svg>
+            <h3 class="mt-2 text-sm font-medium text-gray-900">No tasks found</h3>
+            <p class="mt-1 text-sm text-gray-500">Get started by creating a new task for your community members.</p>
+            <div class="mt-6">
+              <button onclick="showCreateTaskModal()" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary hover:bg-opacity-90">
+                <svg class="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                </svg>
+                Create Task
+              </button>
+            </div>
+          </div>
+        <% } else { %>
+          <ul class="divide-y divide-gray-200" id="tasks-list">
+            <% tasks.forEach(function(task) { %>
+              <li class="task-item p-4 sm:p-6 hover:bg-gray-50 transition-colors" data-status="<%= task.status %>">
+                <div class="flex items-start justify-between">
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-3 mb-2">
+                      <h3 class="text-lg font-semibold text-gray-900 truncate"><%= task.title %></h3>
+
+                      <!-- Priority Badge -->
+                      <% if (task.priority === 'urgent') { %>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">Urgent</span>
+                      <% } else if (task.priority === 'high') { %>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800">High</span>
+                      <% } else if (task.priority === 'medium') { %>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">Medium</span>
+                      <% } else { %>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">Low</span>
+                      <% } %>
+
+                      <!-- Status Badge -->
+                      <% if (task.status === 'active') { %>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Active</span>
+                      <% } else if (task.status === 'archived') { %>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">Archived</span>
+                      <% } %>
+                    </div>
+
+                    <p class="text-sm text-gray-600 mb-3"><%= task.description %></p>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs text-gray-500">
+                      <div class="flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
+                        <span>Due: <%= new Date(task.deadline.seconds ? task.deadline.seconds * 1000 : task.deadline).toLocaleDateString() %></span>
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                        </svg>
+                        <span>Assigned: <%= task.assignedCount || 0 %> members</span>
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <span>Completed: <%= task.completionCount || 0 %></span>
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
+                        </svg>
+                        <span><%= task.category || 'General' %></span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="ml-4 flex items-center gap-2">
+                    <button onclick="editTask('<%= task.id %>')" class="p-2 text-gray-400 hover:text-gray-600 transition-colors">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                      </svg>
+                    </button>
+                    <% if (task.status === 'active') { %>
+                      <button onclick="archiveTask('<%= task.id %>')" class="p-2 text-gray-400 hover:text-green-600 transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8l6 6m-6 0l6-6m2-5v18M3 12l6 6 6-6"/>
+                        </svg>
+                      </button>
+                    <% } %>
+                    <button onclick="deleteTask('<%= task.id %>')" class="p-2 text-gray-400 hover:text-red-600 transition-colors">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </li>
+            <% }); %>
+          </ul>
+        <% } %>
+      </div>
+    </main>
+  </div>
+
+  <!-- Create Task Modal -->
+  <div id="createTaskModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+    <div class="flex items-center justify-center min-h-screen p-4">
+      <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+        <div class="p-6">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-lg font-bold text-gray-900">Create New Task</h3>
+            <button onclick="hideCreateTaskModal()" class="text-gray-400 hover:text-gray-600">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+              </svg>
+            </button>
+          </div>
+
+          <form action="/admin/tasks/create" method="POST">
+            <div class="space-y-6">
+              <!-- Title -->
+              <div>
+                <label for="title" class="block text-sm font-medium text-gray-700 mb-2">
+                  Task Title <span class="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="title"
+                  name="title"
+                  required
+                  maxlength="200"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+                  placeholder="Enter task title"
+                >
+              </div>
+
+              <!-- Description -->
+              <div>
+                <label for="description" class="block text-sm font-medium text-gray-700 mb-2">
+                  Description <span class="text-red-500">*</span>
+                </label>
+                <textarea
+                  id="description"
+                  name="description"
+                  required
+                  rows="3"
+                  maxlength="1000"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+                  placeholder="Brief description of the task"
+                ></textarea>
+              </div>
+
+              <!-- Instructions -->
+              <div>
+                <label for="instructions" class="block text-sm font-medium text-gray-700 mb-2">
+                  Detailed Instructions
+                </label>
+                <textarea
+                  id="instructions"
+                  name="instructions"
+                  rows="4"
+                  maxlength="2000"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+                  placeholder="Provide detailed instructions for completing this task..."
+                ></textarea>
+              </div>
+
+              <!-- Deadline -->
+              <div>
+                <label for="deadline" class="block text-sm font-medium text-gray-700 mb-2">
+                  Deadline <span class="text-red-500">*</span>
+                </label>
+                <input
+                  type="datetime-local"
+                  id="deadline"
+                  name="deadline"
+                  required
+                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+                >
+              </div>
+
+              <!-- Priority and Category -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label for="priority" class="block text-sm font-medium text-gray-700 mb-2">
+                    Priority
+                  </label>
+                  <select
+                    id="priority"
+                    name="priority"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+                  >
+                    <option value="low">Low</option>
+                    <option value="medium" selected>Medium</option>
+                    <option value="high">High</option>
+                    <option value="urgent">Urgent</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label for="category" class="block text-sm font-medium text-gray-700 mb-2">
+                    Category
+                  </label>
+                  <select
+                    id="category"
+                    name="category"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+                  >
+                    <option value="general">General</option>
+                    <option value="community">Community</option>
+                    <option value="project">Project</option>
+                    <option value="training">Training</option>
+                    <option value="onboarding">Onboarding</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Estimated Time -->
+              <div>
+                <label for="estimatedTime" class="block text-sm font-medium text-gray-700 mb-2">
+                  Estimated Time (minutes)
+                </label>
+                <input
+                  type="number"
+                  id="estimatedTime"
+                  name="estimatedTime"
+                  min="1"
+                  max="600"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+                  placeholder="e.g., 30"
+                >
+              </div>
+
+              <!-- Assign to Users -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                  Assign to Community Members <span class="text-red-500">*</span>
+                </label>
+                <div class="max-h-40 overflow-y-auto border border-gray-300 rounded-lg p-3 space-y-2">
+                  <% if (users.length === 0) { %>
+                    <p class="text-sm text-gray-500">No community members found</p>
+                  <% } else { %>
+                    <% users.forEach(function(member) { %>
+                      <label class="flex items-center">
+                        <input
+                          type="checkbox"
+                          name="assignedTo"
+                          value="<%= member.id %>"
+                          class="rounded border-gray-300 text-primary shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+                        >
+                        <span class="ml-2 text-sm text-gray-900"><%= member.name %></span>
+                        <% if (member.email) { %>
+                          <span class="ml-2 text-xs text-gray-500">(<%= member.email %>)</span>
+                        <% } %>
+                      </label>
+                    <% }); %>
+                  <% } %>
+                </div>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center justify-end gap-3 mt-8 pt-6 border-t border-gray-200">
+              <button
+                type="button"
+                onclick="hideCreateTaskModal()"
+                class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                class="px-6 py-2 text-sm font-medium text-white bg-primary rounded-lg hover:bg-primary/90 focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors"
+              >
+                Create Task
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Task Modal -->
+  <div id="editTaskModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+    <div class="flex items-center justify-center min-h-screen p-4">
+      <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+        <div class="p-6">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-lg font-bold text-gray-900">Edit Task</h3>
+            <button onclick="hideEditTaskModal()" class="text-gray-400 hover:text-gray-600">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+              </svg>
+            </button>
+          </div>
+
+          <form id="editTaskForm" method="POST">
+            <div class="space-y-6">
+              <!-- Title -->
+              <div>
+                <label for="edit_title" class="block text-sm font-medium text-gray-700 mb-2">
+                  Task Title <span class="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="edit_title"
+                  name="title"
+                  required
+                  maxlength="200"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+                  placeholder="Enter task title"
+                >
+              </div>
+
+              <!-- Description -->
+              <div>
+                <label for="edit_description" class="block text-sm font-medium text-gray-700 mb-2">
+                  Description <span class="text-red-500">*</span>
+                </label>
+                <textarea
+                  id="edit_description"
+                  name="description"
+                  required
+                  rows="3"
+                  maxlength="1000"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+                  placeholder="Brief description of the task"
+                ></textarea>
+              </div>
+
+              <!-- Instructions -->
+              <div>
+                <label for="edit_instructions" class="block text-sm font-medium text-gray-700 mb-2">
+                  Detailed Instructions
+                </label>
+                <textarea
+                  id="edit_instructions"
+                  name="instructions"
+                  rows="4"
+                  maxlength="2000"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+                  placeholder="Provide detailed instructions for completing this task..."
+                ></textarea>
+              </div>
+
+              <!-- Deadline -->
+              <div>
+                <label for="edit_deadline" class="block text-sm font-medium text-gray-700 mb-2">
+                  Deadline <span class="text-red-500">*</span>
+                </label>
+                <input
+                  type="datetime-local"
+                  id="edit_deadline"
+                  name="deadline"
+                  required
+                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+                >
+              </div>
+
+              <!-- Priority, Category, and Status -->
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label for="edit_priority" class="block text-sm font-medium text-gray-700 mb-2">
+                    Priority
+                  </label>
+                  <select
+                    id="edit_priority"
+                    name="priority"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+                  >
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                    <option value="urgent">Urgent</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label for="edit_category" class="block text-sm font-medium text-gray-700 mb-2">
+                    Category
+                  </label>
+                  <select
+                    id="edit_category"
+                    name="category"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+                  >
+                    <option value="general">General</option>
+                    <option value="community">Community</option>
+                    <option value="project">Project</option>
+                    <option value="training">Training</option>
+                    <option value="onboarding">Onboarding</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label for="edit_status" class="block text-sm font-medium text-gray-700 mb-2">
+                    Status
+                  </label>
+                  <select
+                    id="edit_status"
+                    name="status"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+                  >
+                    <option value="active">Active</option>
+                    <option value="archived">Archived</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Estimated Time -->
+              <div>
+                <label for="edit_estimatedTime" class="block text-sm font-medium text-gray-700 mb-2">
+                  Estimated Time (minutes)
+                </label>
+                <input
+                  type="number"
+                  id="edit_estimatedTime"
+                  name="estimatedTime"
+                  min="1"
+                  max="600"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+                  placeholder="e.g., 30"
+                >
+              </div>
+
+              <!-- Assign to Users -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                  Assign to Community Members <span class="text-red-500">*</span>
+                </label>
+                <div id="edit_assignedUsers" class="max-h-40 overflow-y-auto border border-gray-300 rounded-lg p-3 space-y-2">
+                  <!-- Users will be populated by JavaScript -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center justify-end gap-3 mt-8 pt-6 border-t border-gray-200">
+              <button
+                type="button"
+                onclick="hideEditTaskModal()"
+                class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                class="px-6 py-2 text-sm font-medium text-white bg-primary rounded-lg hover:bg-primary/90 focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors"
+              >
+                Update Task
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Modal functions
+    function showCreateTaskModal() {
+      document.getElementById('createTaskModal').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function hideCreateTaskModal() {
+      document.getElementById('createTaskModal').classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+
+    function showEditTaskModal() {
+      document.getElementById('editTaskModal').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function hideEditTaskModal() {
+      document.getElementById('editTaskModal').classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+
+    // Filter functions
+    function filterTasks(status) {
+      const tasks = document.querySelectorAll('.task-item');
+      const tabs = document.querySelectorAll('.filter-tab');
+
+      // Remove active class from all tabs
+      tabs.forEach(tab => {
+        tab.classList.remove('border-primary', 'text-primary');
+        tab.classList.add('border-transparent', 'text-gray-500');
+      });
+
+      // Add active class to selected tab
+      document.getElementById('filter-' + status).classList.remove('border-transparent', 'text-gray-500');
+      document.getElementById('filter-' + status).classList.add('border-primary', 'text-primary');
+
+      // Show/hide tasks based on filter
+      tasks.forEach(task => {
+        const taskStatus = task.getAttribute('data-status');
+        if (status === 'all' || taskStatus === status) {
+          task.style.display = 'block';
+        } else {
+          task.style.display = 'none';
+        }
+      });
+    }
+
+    // Task data storage (safer approach)
+    let allTasks = [];
+    let allUsers = [];
+
+    // Load tasks data safely
+    try {
+      const tasksData = `<%- JSON.stringify(tasks.map(task => {
+        let deadlineISO = '';
+        if (task.deadline) {
+          try {
+            let date;
+            if (task.deadline.seconds) {
+              date = new Date(task.deadline.seconds * 1000);
+            } else {
+              date = new Date(task.deadline);
+            }
+            if (!isNaN(date.getTime())) {
+              deadlineISO = date.toISOString();
+            }
+          } catch (e) {}
+        }
+        return {
+          id: task.id,
+          title: task.title || '',
+          description: task.description || '',
+          instructions: task.instructions || '',
+          deadline: deadlineISO,
+          priority: task.priority || 'medium',
+          category: task.category || 'general',
+          status: task.status || 'active',
+          estimatedTime: task.estimatedTime || null,
+          assignedTo: task.assignedTo || []
+        };
+      })) %>`;
+      allTasks = JSON.parse(tasksData);
+    } catch (e) {
+      console.error('Error loading tasks:', e);
+      allTasks = [];
+    }
+
+    // Load users data safely
+    try {
+      const usersData = `<%- JSON.stringify(users.map(user => ({
+        id: user.id,
+        name: user.name || '',
+        email: user.email || ''
+      }))) %>`;
+      allUsers = JSON.parse(usersData);
+    } catch (e) {
+      console.error('Error loading users:', e);
+      allUsers = [];
+    }
+
+    // Task actions
+    function editTask(taskId) {
+      const task = allTasks.find(t => t.id === taskId);
+      if (!task) {
+        alert('Task not found!');
+        return;
+      }
+
+      // Populate form fields
+      document.getElementById('edit_title').value = task.title || '';
+      document.getElementById('edit_description').value = task.description || '';
+      document.getElementById('edit_instructions').value = task.instructions || '';
+
+      // Handle deadline - convert from ISO string
+      let deadlineValue = '';
+      if (task.deadline) {
+        const date = new Date(task.deadline);
+        // Format for datetime-local input
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        deadlineValue = `${year}-${month}-${day}T${hours}:${minutes}`;
+      }
+      document.getElementById('edit_deadline').value = deadlineValue;
+
+      document.getElementById('edit_priority').value = task.priority || 'medium';
+      document.getElementById('edit_category').value = task.category || 'general';
+      document.getElementById('edit_status').value = task.status || 'active';
+      document.getElementById('edit_estimatedTime').value = task.estimatedTime || '';
+
+      // Populate assigned users
+      const assignedUsersContainer = document.getElementById('edit_assignedUsers');
+      assignedUsersContainer.innerHTML = '';
+
+      if (allUsers.length === 0) {
+        assignedUsersContainer.innerHTML = '<p class="text-sm text-gray-500">No community members found</p>';
+      } else {
+        allUsers.forEach(user => {
+          const isAssigned = task.assignedTo && task.assignedTo.includes(user.id);
+          const userHtml = `
+            <label class="flex items-center">
+              <input
+                type="checkbox"
+                name="assignedTo"
+                value="${user.id}"
+                ${isAssigned ? 'checked' : ''}
+                class="rounded border-gray-300 text-primary shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+              >
+              <span class="ml-2 text-sm text-gray-900">${user.name}</span>
+              ${user.email ? `<span class="ml-2 text-xs text-gray-500">(${user.email})</span>` : ''}
+            </label>
+          `;
+          assignedUsersContainer.insertAdjacentHTML('beforeend', userHtml);
+        });
+      }
+
+      // Set form action
+      document.getElementById('editTaskForm').action = '/admin/tasks/edit/' + taskId;
+
+      // Show modal
+      showEditTaskModal();
+    }
+
+    function archiveTask(taskId) {
+      if (confirm('Are you sure you want to archive this task?')) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/admin/tasks/archive/' + taskId;
+        document.body.appendChild(form);
+        form.submit();
+      }
+    }
+
+    function deleteTask(taskId) {
+      if (confirm('Are you sure you want to delete this task? This action cannot be undone.')) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/admin/tasks/delete/' + taskId;
+        document.body.appendChild(form);
+        form.submit();
+      }
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+      // Set default filter to active
+      filterTasks('active');
+
+      // Set minimum datetime to now
+      const now = new Date();
+      now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+      document.getElementById('deadline').min = now.toISOString().slice(0, 16);
+    });
+  </script>
+
+  <%- include('../partials/admin-scripts') %>
+</body>
+</html>

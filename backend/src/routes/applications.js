@@ -11,12 +11,30 @@ const applicationsCollection = db.collection('applications');
 
 /**
  * POST /api/applications/submit
- * Submete uma nova candidatura
+ * Submete uma nova candidatura (requires authentication)
  */
 router.post('/submit', async (req, res) => {
   try {
+    // Check if user is authenticated
+    if (!req.session.user) {
+      return res.status(401).json({
+        success: false,
+        error: 'Authentication required'
+      });
+    }
+
+    // Check if user already has an application
+    if (req.session.user.applicationId) {
+      return res.status(400).json({
+        success: false,
+        error: 'You have already submitted an application'
+      });
+    }
+
     const applicationData = {
       ...req.body,
+      userId: req.session.user.id, // Link to authenticated user
+      userEmail: req.session.user.email,
       submittedAt: new Date(),
       status: 'pending', // pending, reviewing, approved, rejected
       reviewNotes: '',
@@ -26,7 +44,16 @@ router.post('/submit', async (req, res) => {
 
     const docRef = await applicationsCollection.add(applicationData);
 
-    console.log(`✅ New application submitted: ${docRef.id}`);
+    // Update user's applicationId
+    const usersCollection = db.collection('users');
+    await usersCollection.doc(req.session.user.id).update({
+      applicationId: docRef.id
+    });
+
+    // Update session
+    req.session.user.applicationId = docRef.id;
+
+    console.log(`✅ New application submitted: ${docRef.id} for user: ${req.session.user.email}`);
 
     res.status(201).json({
       success: true,

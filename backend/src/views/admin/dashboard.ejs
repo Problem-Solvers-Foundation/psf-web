@@ -91,18 +91,23 @@
           </div>
         </div>
 
-        <!-- Views (placeholder) -->
+        <!-- Tasks -->
         <div class="bg-white rounded-lg shadow p-4 sm:p-6">
           <div class="flex items-center justify-between">
             <div class="flex-1 min-w-0">
-              <p class="text-xs sm:text-sm text-gray-600 truncate">Total Views</p>
-              <p class="text-2xl sm:text-3xl font-bold text-gray-900 mt-1">-</p>
-              <p class="text-xs text-gray-500 mt-2">Coming soon</p>
+              <p class="text-xs sm:text-sm text-gray-600 truncate">Active Tasks</p>
+              <p class="text-2xl sm:text-3xl font-bold text-gray-900 mt-1"><%= tasks.active %></p>
+              <p class="text-xs text-orange-600 mt-2">
+                <% if (tasks.overdue > 0) { %>
+                  <%= tasks.overdue %> overdue
+                <% } else { %>
+                  All up to date
+                <% } %>
+              </p>
             </div>
-            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-yellow-100 rounded-lg flex items-center justify-center flex-shrink-0 ml-3">
-              <svg class="w-5 h-5 sm:w-6 sm:h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-orange-100 rounded-lg flex items-center justify-center flex-shrink-0 ml-3">
+              <svg class="w-5 h-5 sm:w-6 sm:h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 4h6m-6 4h6"/>
               </svg>
             </div>
           </div>
@@ -114,7 +119,7 @@
         <div class="px-4 sm:px-6 py-4 border-b border-gray-200">
           <h3 class="text-base sm:text-lg font-semibold text-gray-900">Quick Actions</h3>
         </div>
-        <div class="p-4 sm:p-6 grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4">
+        <div class="p-4 sm:p-6 grid grid-cols-1 md:grid-cols-4 gap-3 sm:gap-4">
           <a href="/admin/posts/new" class="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 border-2 border-gray-200 rounded-lg hover:border-primary hover:bg-blue-50 transition-all group">
             <div class="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors flex-shrink-0">
               <svg class="w-5 h-5 sm:w-6 sm:h-6 text-blue-600 group-hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -136,6 +141,18 @@
             <div class="flex-1 min-w-0">
               <p class="text-sm sm:text-base font-semibold text-gray-900 truncate">New Project</p>
               <p class="text-xs sm:text-sm text-gray-600 truncate">Add new project</p>
+            </div>
+          </a>
+
+          <a href="/admin/tasks" class="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 border-2 border-gray-200 rounded-lg hover:border-orange-500 hover:bg-orange-50 transition-all group">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-orange-100 rounded-lg flex items-center justify-center group-hover:bg-orange-500 group-hover:text-white transition-colors flex-shrink-0">
+              <svg class="w-5 h-5 sm:w-6 sm:h-6 text-orange-600 group-hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 4h6m-6 4h6"/>
+              </svg>
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm sm:text-base font-semibold text-gray-900 truncate">Manage Tasks</p>
+              <p class="text-xs sm:text-sm text-gray-600 truncate">Create and assign tasks</p>
             </div>
           </a>
 

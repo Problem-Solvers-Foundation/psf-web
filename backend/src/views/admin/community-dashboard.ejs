@@ -182,27 +182,39 @@
           </div>
         </div>
 
-        <!-- Recent Activity & Updates -->
+        <!-- My Tasks -->
         <div class="bg-white rounded-lg shadow p-6">
-          <h3 class="text-lg font-bold text-gray-900 mb-4">Recent Updates</h3>
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-bold text-gray-900">My Tasks</h3>
+            <div class="flex items-center gap-2">
+              <button onclick="filterTasks('all')" id="task-filter-all" class="task-filter px-3 py-1 text-xs font-medium rounded-full bg-primary text-white">
+                All
+              </button>
+              <button onclick="filterTasks('pending')" id="task-filter-pending" class="task-filter px-3 py-1 text-xs font-medium rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300">
+                Pending
+              </button>
+              <button onclick="filterTasks('completed')" id="task-filter-completed" class="task-filter px-3 py-1 text-xs font-medium rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300">
+                Completed
+              </button>
+            </div>
+          </div>
 
-          <div class="space-y-4">
-            <div class="border-l-4 border-primary pl-4">
-              <h4 class="font-semibold text-gray-900 text-sm">Welcome to PSF Community!</h4>
-              <p class="text-sm text-gray-600 mt-1">Thank you for joining our community of problem solvers. Explore the features available to you.</p>
-              <p class="text-xs text-gray-500 mt-2">Just now</p>
+          <div id="tasks-container">
+            <div id="tasks-loading" class="text-center py-8">
+              <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+              <p class="text-sm text-gray-500 mt-2">Loading tasks...</p>
             </div>
 
-            <div class="border-l-4 border-blue-300 pl-4">
-              <h4 class="font-semibold text-gray-900 text-sm">Community Features Coming Soon</h4>
-              <p class="text-sm text-gray-600 mt-1">We're working on exciting new features for community members. Stay tuned!</p>
-              <p class="text-xs text-gray-500 mt-2">Today</p>
+            <div id="tasks-empty" class="text-center py-8 hidden">
+              <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 48 48">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 4h6m-6 4h6"/>
+              </svg>
+              <h3 class="mt-2 text-sm font-medium text-gray-900">No tasks assigned</h3>
+              <p class="mt-1 text-sm text-gray-500">You don't have any tasks assigned yet. Check back later!</p>
             </div>
 
-            <div class="border-l-4 border-green-300 pl-4">
-              <h4 class="font-semibold text-gray-900 text-sm">Profile Completed</h4>
-              <p class="text-sm text-gray-600 mt-1">Your account has been set up successfully. You can update your profile anytime from the sidebar.</p>
-              <p class="text-xs text-gray-500 mt-2">Today</p>
+            <div id="tasks-list" class="space-y-3 hidden">
+              <!-- Tasks will be loaded here dynamically -->
             </div>
           </div>
         </div>
@@ -424,6 +436,236 @@
       descTextarea.addEventListener('input', updateDescCounter);
       updateDescCounter(); // Initial count
     });
+
+    // Tasks functionality
+    let allTasks = [];
+    let currentFilter = 'all';
+
+    // Load tasks on page load
+    loadTasks();
+
+    async function loadTasks() {
+      try {
+        const response = await fetch('/admin/community-dashboard/tasks');
+        const result = await response.json();
+
+        if (result.success) {
+          allTasks = result.data;
+          displayTasks();
+        } else {
+          console.error('Failed to load tasks:', result.error);
+          showError('Failed to load tasks');
+        }
+      } catch (error) {
+        console.error('Error loading tasks:', error);
+        showError('Error loading tasks');
+      }
+    }
+
+    function displayTasks() {
+      const loadingEl = document.getElementById('tasks-loading');
+      const emptyEl = document.getElementById('tasks-empty');
+      const listEl = document.getElementById('tasks-list');
+
+      loadingEl.classList.add('hidden');
+
+      if (allTasks.length === 0) {
+        emptyEl.classList.remove('hidden');
+        listEl.classList.add('hidden');
+        return;
+      }
+
+      const filteredTasks = filterTasksByType(allTasks);
+
+      if (filteredTasks.length === 0 && currentFilter !== 'all') {
+        listEl.innerHTML = `
+          <div class="text-center py-4">
+            <p class="text-sm text-gray-500">No ${currentFilter} tasks found.</p>
+          </div>
+        `;
+      } else {
+        listEl.innerHTML = filteredTasks.map(task => createTaskHTML(task)).join('');
+      }
+
+      emptyEl.classList.add('hidden');
+      listEl.classList.remove('hidden');
+    }
+
+    function filterTasksByType(tasks) {
+      if (currentFilter === 'all') return tasks;
+      if (currentFilter === 'pending') return tasks.filter(t => !t.isCompleted);
+      if (currentFilter === 'completed') return tasks.filter(t => t.isCompleted);
+      return tasks;
+    }
+
+    function createTaskHTML(task) {
+      const deadline = new Date(task.deadline);
+      const isOverdue = task.isOverdue && !task.isCompleted;
+      const priorityColors = {
+        'urgent': 'bg-red-100 text-red-800',
+        'high': 'bg-orange-100 text-orange-800',
+        'medium': 'bg-yellow-100 text-yellow-800',
+        'low': 'bg-gray-100 text-gray-800'
+      };
+
+      return `
+        <div class="task-item border border-gray-200 rounded-lg p-4 ${isOverdue ? 'border-red-300 bg-red-50' : ''}" data-task-id="${task.id}">
+          <div class="flex items-start justify-between">
+            <div class="flex items-start gap-3 flex-1">
+              <label class="flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  ${task.isCompleted ? 'checked disabled' : ''}
+                  onchange="completeTask('${task.id}')"
+                  class="rounded border-gray-300 text-primary shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50 ${task.isCompleted ? 'opacity-50' : ''}"
+                >
+              </label>
+
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-2">
+                  <h4 class="text-sm font-semibold text-gray-900 ${task.isCompleted ? 'line-through text-gray-500' : ''}">${task.title}</h4>
+                  <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${priorityColors[task.priority] || priorityColors.medium}">
+                    ${task.priority}
+                  </span>
+                  ${isOverdue ? '<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">Overdue</span>' : ''}
+                </div>
+
+                <p class="text-xs text-gray-600 mb-2 ${task.isCompleted ? 'line-through' : ''}">${task.description}</p>
+
+                <div class="flex items-center gap-4 text-xs text-gray-500">
+                  <div class="flex items-center gap-1">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    </svg>
+                    <span>${deadline.toLocaleDateString()} at ${deadline.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                  </div>
+
+                  ${task.category ? `
+                    <div class="flex items-center gap-1">
+                      <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
+                      </svg>
+                      <span>${task.category}</span>
+                    </div>
+                  ` : ''}
+
+                  ${task.estimatedTime ? `
+                    <div class="flex items-center gap-1">
+                      <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                      </svg>
+                      <span>${task.estimatedTime}min</span>
+                    </div>
+                  ` : ''}
+                </div>
+
+                ${task.isCompleted && task.completedAt ? `
+                  <div class="mt-2 text-xs text-green-600 flex items-center gap-1">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    Completed on ${new Date(task.completedAt).toLocaleDateString()}
+                  </div>
+                ` : ''}
+              </div>
+            </div>
+
+            ${!task.isCompleted && task.instructions ? `
+              <button onclick="showTaskInstructions('${task.id}')" class="p-1 text-gray-400 hover:text-primary transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+              </button>
+            ` : ''}
+          </div>
+        </div>
+      `;
+    }
+
+    function filterTasks(type) {
+      currentFilter = type;
+
+      // Update filter buttons
+      document.querySelectorAll('.task-filter').forEach(btn => {
+        btn.classList.remove('bg-primary', 'text-white');
+        btn.classList.add('bg-gray-200', 'text-gray-700');
+      });
+
+      document.getElementById('task-filter-' + type).classList.remove('bg-gray-200', 'text-gray-700');
+      document.getElementById('task-filter-' + type).classList.add('bg-primary', 'text-white');
+
+      displayTasks();
+    }
+
+    async function completeTask(taskId) {
+      try {
+        const response = await fetch(`/admin/community-dashboard/tasks/complete/${taskId}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({})
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          // Update task in local array
+          const task = allTasks.find(t => t.id === taskId);
+          if (task) {
+            task.isCompleted = true;
+            task.completedAt = new Date();
+          }
+
+          displayTasks();
+          showSuccess('Task completed successfully!');
+        } else {
+          // Uncheck the checkbox if completion failed
+          const checkbox = document.querySelector(`input[onchange="completeTask('${taskId}')"]`);
+          if (checkbox) checkbox.checked = false;
+
+          showError(result.error || 'Failed to complete task');
+        }
+      } catch (error) {
+        console.error('Error completing task:', error);
+        showError('Error completing task');
+
+        // Uncheck the checkbox
+        const checkbox = document.querySelector(`input[onchange="completeTask('${taskId}')"]`);
+        if (checkbox) checkbox.checked = false;
+      }
+    }
+
+    function showTaskInstructions(taskId) {
+      const task = allTasks.find(t => t.id === taskId);
+      if (task && task.instructions) {
+        alert(`Instructions for "${task.title}":\n\n${task.instructions}`);
+      }
+    }
+
+    function showSuccess(message) {
+      // Simple success notification - could be enhanced with a toast library
+      const notification = document.createElement('div');
+      notification.className = 'fixed top-4 right-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded z-50';
+      notification.textContent = message;
+      document.body.appendChild(notification);
+
+      setTimeout(() => {
+        notification.remove();
+      }, 3000);
+    }
+
+    function showError(message) {
+      // Simple error notification - could be enhanced with a toast library
+      const notification = document.createElement('div');
+      notification.className = 'fixed top-4 right-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded z-50';
+      notification.textContent = message;
+      document.body.appendChild(notification);
+
+      setTimeout(() => {
+        notification.remove();
+      }, 5000);
+    }
   </script>
 
   <%- include('../partials/admin-scripts') %>
