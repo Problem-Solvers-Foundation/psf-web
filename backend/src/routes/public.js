@@ -15,6 +15,11 @@ import { checkLoginRateLimit } from '../middleware/loginRateLimiter.js';
 
 const router = express.Router();
 
+router.get('/google2d78f42574d66612.html', (req, res) => {
+  res.setHeader('Content-Type', 'text/html');
+  res.send('google-site-verification: google2d78f42574d66612.html');
+});
+
 /**
  * HOME PAGE
  * GET /
