@@ -250,11 +250,21 @@ router.get('/join/options', (req, res) => {
  * GET /application-pending
  * Página de espera para usuários com candidatura em análise
  */
-router.get('/application-pending', (req, res) => {
+router.get('/application-pending', async (req, res) => {
   if (!req.session.user) return res.redirect('/signin');
-  if (req.session.user.status === 'approved') return res.redirect('/admin/community-dashboard');
+  try {
+    const userDoc = await db.collection('users').doc(req.session.user.id).get();
+    if (userDoc.exists) {
+      const freshStatus = userDoc.data().status;
+      req.session.user.status = freshStatus;
+      if (freshStatus === 'approved') {
+        return req.session.save(() => res.redirect('/admin/community-dashboard'));
+      }
+    }
+  } catch (e) {
+    console.error('Error refreshing user status:', e);
+  }
   res.render('public/application-pending', {
-    layout: 'layouts/public',
     title: 'Application Under Review - PSF',
     currentPage: '',
     user: req.session.user
