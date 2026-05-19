@@ -124,7 +124,8 @@ class FirestoreSessionStore extends session.Store {
   async set(sid, sess, cb) {
     try {
       const maxAge = sess.cookie?.maxAge || 86400000;
-      await this.col.doc(sid).set({ sess, expires: Date.now() + maxAge });
+      const data = JSON.parse(JSON.stringify(sess));
+      await this.col.doc(sid).set({ sess: data, expires: Date.now() + maxAge });
       cb(null);
     } catch (e) { cb(e); }
   }
