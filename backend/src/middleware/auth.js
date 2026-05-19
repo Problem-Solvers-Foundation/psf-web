@@ -79,15 +79,17 @@ export const requireAdminAuth = (req, res, next) => {
  */
 export const redirectIfAuthenticated = (req, res, next) => {
   if (req.session && req.session.isAuthenticated) {
-    // SEGURANÇA: Redirecionar baseado no role do usuário
-    const userRole = req.session.user?.role;
+    const user = req.session.user;
+    const userRole = user?.role;
 
-    if (userRole === 'user') {
-      return res.redirect('/admin/community-dashboard');
-    } else if (userRole === 'admin' || userRole === 'superuser') {
+    if (userRole === 'admin' || userRole === 'superuser') {
       return res.redirect('/admin/dashboard');
+    } else if (userRole === 'user') {
+      if (user.status === 'approved') {
+        return res.redirect('/admin/community-dashboard');
+      }
+      return res.redirect('/application-pending');
     } else {
-      // Role inválido - força logout por segurança
       req.session.destroy((err) => {
         if (err) console.error('Error destroying session:', err);
         return res.redirect('/signin');

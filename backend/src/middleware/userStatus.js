@@ -118,8 +118,7 @@ export const requireCommunityAccess = (req, res, next) => {
   } else if (userStatus === 'rejected') {
     res.redirect('/signin?error=Your application has been rejected. Please contact support for assistance.');
   } else if (req.session.user.applicationId) {
-    // Has application but still pending/reviewing
-    res.redirect('/signin?error=Your application is under review. You will be notified once a decision is made.');
+    res.redirect('/application-pending');
   } else {
     // No application submitted yet
     res.redirect('/join');

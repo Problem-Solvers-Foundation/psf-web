@@ -215,7 +215,7 @@ router.get('/join', (req, res) => {
 
   // Check if user already submitted application
   if (req.session.user.applicationId) {
-    return res.redirect('/signin?error=Your application is under review. You will be notified once a decision is made.');
+    return res.redirect('/application-pending');
   }
 
   res.render('public/join', {
@@ -245,6 +245,21 @@ router.get('/join/options', (req, res) => {
 // ===============================
 // AUTH ROUTES
 // ===============================
+
+/**
+ * GET /application-pending
+ * Página de espera para usuários com candidatura em análise
+ */
+router.get('/application-pending', (req, res) => {
+  if (!req.session.user) return res.redirect('/signin');
+  if (req.session.user.status === 'approved') return res.redirect('/admin/community-dashboard');
+  res.render('public/application-pending', {
+    layout: 'layouts/public',
+    title: 'Application Under Review - PSF',
+    currentPage: '',
+    user: req.session.user
+  });
+});
 
 /**
  * GET /signin

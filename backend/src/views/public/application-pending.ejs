@@ -1,0 +1,56 @@
+<div class="min-h-screen flex items-center justify-center px-4 py-16">
+  <div class="max-w-lg w-full text-center">
+
+    <!-- Icon -->
+    <div class="flex justify-center mb-6">
+      <div class="w-20 h-20 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+        <svg class="w-10 h-10 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Heading -->
+    <h1 class="text-3xl font-extrabold text-gray-900 dark:text-white mb-3">Application Under Review</h1>
+    <p class="text-gray-500 dark:text-gray-400 mb-8">
+      Thank you, <strong class="text-gray-700 dark:text-gray-200"><%= user.name %></strong>. Your application has been received and is currently being reviewed by our committee.
+    </p>
+
+    <!-- Status card -->
+    <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-6 mb-8 text-left space-y-4">
+      <p class="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">What happens next</p>
+      <ul class="space-y-3 text-sm text-gray-600 dark:text-gray-400">
+        <li class="flex items-start gap-3">
+          <span class="mt-0.5 w-5 h-5 rounded-full bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center flex-shrink-0 text-blue-600 dark:text-blue-400 font-bold text-xs">1</span>
+          Committee reviews all applications and selects finalists
+        </li>
+        <li class="flex items-start gap-3">
+          <span class="mt-0.5 w-5 h-5 rounded-full bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center flex-shrink-0 text-blue-600 dark:text-blue-400 font-bold text-xs">2</span>
+          Selected finalists are invited for a 60-minute interview
+        </li>
+        <li class="flex items-start gap-3">
+          <span class="mt-0.5 w-5 h-5 rounded-full bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center flex-shrink-0 text-blue-600 dark:text-blue-400 font-bold text-xs">3</span>
+          Top candidates participate in a 2-day online hackathon
+        </li>
+        <li class="flex items-start gap-3">
+          <span class="mt-0.5 w-5 h-5 rounded-full bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center flex-shrink-0 text-blue-600 dark:text-blue-400 font-bold text-xs">4</span>
+          Final results are announced and selected candidates are onboarded
+        </li>
+      </ul>
+      <p class="text-xs text-gray-400 dark:text-gray-500 pt-2 border-t border-gray-100 dark:border-gray-700">
+        You will receive an email at <strong><%= user.email %></strong> when a decision is made. Check your spam folder if you don't see it.
+      </p>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex flex-col sm:flex-row gap-3 justify-center">
+      <a href="/" class="inline-block bg-primary text-white rounded-lg px-6 py-3 font-semibold hover:bg-opacity-90 transition-all">
+        Return to Home
+      </a>
+      <a href="/api/auth/logout" class="inline-block bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg px-6 py-3 font-semibold hover:bg-gray-200 dark:hover:bg-gray-600 transition-all">
+        Sign Out
+      </a>
+    </div>
+
+  </div>
+</div>
