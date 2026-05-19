@@ -10,11 +10,7 @@ import session from 'express-session';
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-import { createRequire } from 'module';
 import { db } from './config/firebase.js';
-
-const require = createRequire(import.meta.url);
-const FirestoreStore = require('connect-session-firestore')(session);
 
 // Carregar variáveis de ambiente
 dotenv.config();
@@ -108,8 +104,40 @@ app.use(sanitizeInputs);
 
 const isProduction = process.env.VERCEL === '1' || process.env.NODE_ENV === 'production';
 
+class FirestoreSessionStore extends session.Store {
+  constructor() {
+    super();
+    this.col = db.collection('sessions');
+  }
+  async get(sid, cb) {
+    try {
+      const doc = await this.col.doc(sid).get();
+      if (!doc.exists) return cb(null, null);
+      const { sess, expires } = doc.data();
+      if (expires && expires < Date.now()) {
+        await this.col.doc(sid).delete();
+        return cb(null, null);
+      }
+      cb(null, sess);
+    } catch (e) { cb(e); }
+  }
+  async set(sid, sess, cb) {
+    try {
+      const maxAge = sess.cookie?.maxAge || 86400000;
+      await this.col.doc(sid).set({ sess, expires: Date.now() + maxAge });
+      cb(null);
+    } catch (e) { cb(e); }
+  }
+  async destroy(sid, cb) {
+    try {
+      await this.col.doc(sid).delete();
+      cb(null);
+    } catch (e) { cb(e); }
+  }
+}
+
 app.use(session({
-  store: new FirestoreStore({ database: db, sessions: 'sessions' }),
+  store: new FirestoreSessionStore(),
   secret: process.env.SESSION_SECRET || 'psf-blog-secret-key-change-in-production',
   resave: false,
   saveUninitialized: false,
