@@ -109,7 +109,7 @@ app.use(sanitizeInputs);
 const isProduction = process.env.VERCEL === '1' || process.env.NODE_ENV === 'production';
 
 app.use(session({
-  store: new FirestoreStore({ dataset: db, kind: 'sessions' }),
+  store: new FirestoreStore({ database: db, sessions: 'sessions' }),
   secret: process.env.SESSION_SECRET || 'psf-blog-secret-key-change-in-production',
   resave: false,
   saveUninitialized: false,
