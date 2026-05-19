@@ -10,6 +10,11 @@ import session from 'express-session';
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import { createRequire } from 'module';
+import { db } from './config/firebase.js';
+
+const require = createRequire(import.meta.url);
+const FirestoreStore = require('connect-session-firestore')(session);
 
 // Carregar variáveis de ambiente
 dotenv.config();
@@ -101,17 +106,19 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(securityHeaders);
 app.use(sanitizeInputs);
 
-// Configurar sessões (para autenticação admin)
+const isProduction = process.env.VERCEL === '1' || process.env.NODE_ENV === 'production';
+
 app.use(session({
+  store: new FirestoreStore({ dataset: db, kind: 'sessions' }),
   secret: process.env.SESSION_SECRET || 'psf-blog-secret-key-change-in-production',
   resave: false,
   saveUninitialized: false,
-  rolling: true, // Reset timeout on activity
+  rolling: true,
   cookie: {
-    maxAge: 24 * 60 * 60 * 1000, // 24 horas (reduzido de 7 dias para melhor controle)
+    maxAge: 24 * 60 * 60 * 1000,
     httpOnly: true,
-    secure: false, // Forçar false em desenvolvimento para evitar problemas
-    sameSite: 'lax' // Usar 'lax' para permitir cookies em redirects no mesmo site
+    secure: isProduction,
+    sameSite: isProduction ? 'none' : 'lax'
   }
 }));
 
