@@ -47,17 +47,12 @@
         <span class="font-medium">Community</span>
       </a>
 
-      <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800 transition-colors text-gray-300">
+      <a href="/admin/community-dashboard/data-aggregator" class="flex items-center gap-3 px-4 py-3 rounded-lg <%= (typeof currentPage !== 'undefined' && currentPage === 'data-aggregator') ? 'bg-gray-800 text-white' : 'hover:bg-gray-800 transition-colors text-gray-300' %>">
         <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
         </svg>
         <span class="font-medium">Data Aggregator</span>
       </a>
-
-      <!-- Coming Soon Message -->
-      <div class="px-4 pt-2">
-        <p class="text-xs text-gray-500 text-center italic">Coming Soon</p>
-      </div>
     </div>
 
     <!-- Account Section -->

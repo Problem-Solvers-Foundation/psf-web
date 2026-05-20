@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Data Aggregator - PSF</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { theme: { extend: { colors: { primary: "#117dd4" } } } };
+  </script>
+  <%- include('../partials/admin-styles') %>
+  <style>
+    @keyframes pulse-dot { 0%,100%{opacity:1} 50%{opacity:.4} }
+    .status-dot { width:8px;height:8px;border-radius:50%;background:#22c55e;animation:pulse-dot 2s ease-in-out infinite;box-shadow:0 0 6px #22c55e; }
+    .alert-dot  { width:8px;height:8px;border-radius:50%;background:#ef4444;animation:pulse-dot 1s ease-in-out infinite;box-shadow:0 0 6px #ef4444; }
+    .log-panel  { background:#111827;border-radius:10px;overflow:hidden;font-family:'Courier New',monospace; }
+    .log-line   { display:flex;gap:12px;font-size:.72rem;line-height:1.8; }
+    .log-ts  { color:#6b7280;flex-shrink:0; }
+    .log-lvl { flex-shrink:0;width:56px;font-weight:700; }
+    .log-lvl.info    { color:#60a5fa; }
+    .log-lvl.success { color:#4ade80; }
+    .log-lvl.warn    { color:#fbbf24; }
+    .log-lvl.error   { color:#f87171; }
+    .log-msg     { color:#9ca3af; }
+    .log-msg em  { color:#e5e7eb;font-style:normal; }
+    .score-badge { font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:6px;font-family:'Courier New',monospace;flex-shrink:0; }
+    .bar-fill    { height:8px;border-radius:4px;transition:width 1.2s ease-out; }
+    .multi-source-badge { background:linear-gradient(135deg,#7c3aed,#2563eb);color:white;font-size:.65rem;font-weight:700;padding:2px 8px;border-radius:9999px;text-transform:uppercase;letter-spacing:.05em; }
+    .causal-node { background:white;border:2px solid #e5e7eb;border-radius:10px;padding:10px 14px;font-size:.75rem;font-weight:600;color:#374151;text-align:center; }
+    .causal-node.root { border-color:#ef4444;background:#fef2f2;color:#991b1b; }
+    .causal-node.down { border-color:#f59e0b;background:#fffbeb;color:#92400e; }
+    .cluster-header { padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;background:#f9fafb; }
+    .cluster-header svg { transition:transform .2s; }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <% const currentPage = 'data-aggregator'; %>
+  <%- include('../partials/admin-mobile-header') %>
+  <%- include('../partials/community-sidebar') %>
+
+  <div class="lg:ml-64 min-h-screen pt-14 lg:pt-0">
+
+    <!-- Top Bar -->
+    <header class="bg-white border-b border-gray-200 sticky top-14 lg:top-0 z-10">
+      <div class="px-4 sm:px-6 lg:px-8 py-4">
+        <div class="flex items-center justify-between flex-wrap gap-3">
+          <div>
+            <h2 class="text-2xl font-bold text-gray-900">Data Aggregator</h2>
+            <p class="text-sm text-gray-500 mt-0.5">Problem Intelligence Pipeline</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="flex items-center gap-2 px-3 py-1.5 bg-green-50 border border-green-200 rounded-full">
+              <div class="status-dot"></div>
+              <span class="text-xs font-medium text-green-700">Pipeline Ready</span>
+            </div>
+            <button onclick="simulateRun()" id="btn-run"
+              class="flex items-center gap-2 px-4 py-2 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition-colors shadow-sm">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              Run Pipeline
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="p-4 sm:p-6 lg:p-8 space-y-6">
+
+      <!-- MOCK NOTICE -->
+      <div class="flex items-center gap-3 px-4 py-3 bg-amber-50 border border-amber-200 rounded-xl text-amber-800 text-xs">
+        <svg class="w-4 h-4 flex-shrink-0 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+        </svg>
+        <span><strong>Demo data</strong> — All numbers, problems, and insights shown on this page are mocked. The pipeline backend is not yet connected.</span>
+      </div>
+
+      <!-- STATS (6 cards) -->
+      <div class="grid grid-cols-2 lg:grid-cols-6 gap-4">
+        <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-5">
+          <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Collected</p>
+          <p class="text-3xl font-bold text-primary">247</p>
+          <p class="text-xs text-green-600 mt-1">↑ +38 last run</p>
+        </div>
+        <div class="bg-white rounded-xl border border-red-100 shadow-sm p-5">
+          <p class="text-xs font-semibold text-red-500 uppercase tracking-wide mb-1">No Solution</p>
+          <p class="text-3xl font-bold text-red-600">183</p>
+          <p class="text-xs text-red-400 mt-1">74% of total</p>
+        </div>
+        <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-5">
+          <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Resolution Rate</p>
+          <p class="text-3xl font-bold text-emerald-600">26%</p>
+          <p class="text-xs text-emerald-600 mt-1">↑ +2% this month</p>
+        </div>
+        <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-5">
+          <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Deduped</p>
+          <p class="text-3xl font-bold text-gray-800">91</p>
+          <p class="text-xs text-gray-400 mt-1">36.7% dedup rate</p>
+        </div>
+        <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-5">
+          <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Avg Score</p>
+          <p class="text-3xl font-bold text-gray-800">0.68</p>
+          <p class="text-xs text-green-600 mt-1">↑ +0.04 vs prev</p>
+        </div>
+        <div class="bg-white rounded-xl border border-amber-100 shadow-sm p-5">
+          <p class="text-xs font-semibold text-amber-600 uppercase tracking-wide mb-1">Pending Review</p>
+          <p class="text-3xl font-bold text-amber-500">8</p>
+          <p class="text-xs text-amber-500 mt-1">Awaiting admin</p>
+        </div>
+      </div>
+
+      <!-- AI DIGEST + EMERGING ALERT -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div class="lg:col-span-2 bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-200 rounded-xl p-5">
+          <div class="flex items-center gap-2 mb-3">
+            <p class="text-xs font-bold text-blue-800 uppercase tracking-wide">AI Weekly Digest</p>
+            <span class="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full font-medium ml-auto">Groq · Llama 3</span>
+          </div>
+          <p class="text-sm text-blue-900 leading-relaxed">
+            This week the pipeline collected <strong>247 problems</strong> across 4 sources. Dominant themes were <strong>antimicrobial resistance in Sub-Saharan Africa</strong> and <strong>freshwater scarcity in South Asia</strong>, both appearing simultaneously in arXiv, RSS, and World Bank — a strong signal of cross-disciplinary urgency. <strong>183 problems (74%) have no proposed solution</strong> in PSF, with Healthcare and Environment showing the largest gaps. A causal chain was detected: water scarcity → sanitation failure → child mortality spikes across 6 countries, suggesting one infrastructure solution could cascade into 3 separate problem resolutions.
+          </p>
+          <p class="text-xs text-blue-400 mt-3">Generated May 19, 2026 · 09:41 UTC</p>
+        </div>
+
+        <div class="bg-white rounded-xl border-2 border-red-200 p-5">
+          <div class="flex items-center gap-2 mb-3">
+            <div class="alert-dot"></div>
+            <p class="text-xs font-bold text-red-700 uppercase tracking-wide">Emerging Alert</p>
+          </div>
+          <p class="text-sm font-semibold text-gray-900 leading-snug mb-2">Collapse of freshwater access in Pakistan's Indus River basin</p>
+          <p class="text-xs text-gray-500 mb-3">Detected in <strong>6 independent sources</strong> in the last 48 hours.</p>
+          <div class="flex flex-wrap gap-1.5 mb-4">
+            <span class="text-xs px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 font-medium">Environment</span>
+            <span class="text-xs px-2 py-0.5 rounded-full bg-red-50 text-red-600 font-medium">High</span>
+            <span class="multi-source-badge">6 sources</span>
+          </div>
+          <a href="/admin/community-dashboard/problems" class="block w-full text-center bg-red-600 hover:bg-red-700 text-white text-xs font-semibold rounded-lg py-2 transition-colors">
+            Act Now →
+          </a>
+        </div>
+      </div>
+
+      <!-- GAP ANALYSIS -->
+      <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+        <div class="flex items-center justify-between mb-5">
+          <div>
+            <h3 class="text-sm font-bold text-gray-900">Gap Analysis — Problems vs. Solutions</h3>
+            <p class="text-xs text-gray-500 mt-0.5">The space between bars is where volunteers are needed most</p>
+          </div>
+          <div class="flex items-center gap-4 text-xs text-gray-500">
+            <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded bg-primary inline-block"></span>Problems</span>
+            <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded bg-emerald-500 inline-block"></span>Solutions</span>
+          </div>
+        </div>
+        <div class="space-y-4">
+          <div>
+            <div class="flex justify-between text-xs text-gray-600 mb-1.5"><span class="font-medium">Healthcare</span><span class="text-gray-400">62 problems · 8 solutions</span></div>
+            <div class="space-y-1.5">
+              <div class="bg-gray-100 rounded-full overflow-hidden" style="height:8px"><div class="bar-fill bg-primary" style="width:0%" data-w="100%"></div></div>
+              <div class="bg-gray-100 rounded-full overflow-hidden" style="height:8px"><div class="bar-fill bg-emerald-500" style="width:0%" data-w="13%"></div></div>
+            </div>
+          </div>
+          <div>
+            <div class="flex justify-between text-xs text-gray-600 mb-1.5"><span class="font-medium">Environment</span><span class="text-gray-400">48 problems · 11 solutions</span></div>
+            <div class="space-y-1.5">
+              <div class="bg-gray-100 rounded-full overflow-hidden" style="height:8px"><div class="bar-fill bg-primary" style="width:0%" data-w="77%"></div></div>
+              <div class="bg-gray-100 rounded-full overflow-hidden" style="height:8px"><div class="bar-fill bg-emerald-500" style="width:0%" data-w="18%"></div></div>
+            </div>
+          </div>
+          <div>
+            <div class="flex justify-between text-xs text-gray-600 mb-1.5"><span class="font-medium">Education</span><span class="text-gray-400">38 problems · 19 solutions</span></div>
+            <div class="space-y-1.5">
+              <div class="bg-gray-100 rounded-full overflow-hidden" style="height:8px"><div class="bar-fill bg-primary" style="width:0%" data-w="61%"></div></div>
+              <div class="bg-gray-100 rounded-full overflow-hidden" style="height:8px"><div class="bar-fill bg-emerald-500" style="width:0%" data-w="31%"></div></div>
+            </div>
+          </div>
+          <div>
+            <div class="flex justify-between text-xs text-gray-600 mb-1.5"><span class="font-medium">Economics</span><span class="text-gray-400">31 problems · 6 solutions</span></div>
+            <div class="space-y-1.5">
+              <div class="bg-gray-100 rounded-full overflow-hidden" style="height:8px"><div class="bar-fill bg-primary" style="width:0%" data-w="50%"></div></div>
+              <div class="bg-gray-100 rounded-full overflow-hidden" style="height:8px"><div class="bar-fill bg-emerald-500" style="width:0%" data-w="10%"></div></div>
+            </div>
+          </div>
+          <div>
+            <div class="flex justify-between text-xs text-gray-600 mb-1.5"><span class="font-medium">Technology</span><span class="text-gray-400">29 problems · 22 solutions</span></div>
+            <div class="space-y-1.5">
+              <div class="bg-gray-100 rounded-full overflow-hidden" style="height:8px"><div class="bar-fill bg-primary" style="width:0%" data-w="47%"></div></div>
+              <div class="bg-gray-100 rounded-full overflow-hidden" style="height:8px"><div class="bar-fill bg-emerald-500" style="width:0%" data-w="35%"></div></div>
+            </div>
+          </div>
+          <div>
+            <div class="flex justify-between text-xs text-gray-600 mb-1.5"><span class="font-medium">Social Issues</span><span class="text-gray-400">24 problems · 14 solutions</span></div>
+            <div class="space-y-1.5">
+              <div class="bg-gray-100 rounded-full overflow-hidden" style="height:8px"><div class="bar-fill bg-primary" style="width:0%" data-w="39%"></div></div>
+              <div class="bg-gray-100 rounded-full overflow-hidden" style="height:8px"><div class="bar-fill bg-emerald-500" style="width:0%" data-w="23%"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CAUSAL CHAIN + CLUSTERS -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+
+        <!-- Causal Chain -->
+        <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+          <div class="flex items-center gap-2 mb-1">
+            <h3 class="text-sm font-bold text-gray-900">Causal Chain Detected</h3>
+            <span class="text-xs bg-violet-100 text-violet-700 px-2 py-0.5 rounded-full font-medium">AI Insight</span>
+          </div>
+          <p class="text-xs text-gray-500 mb-4">Solving the root cause resolves downstream problems automatically.</p>
+          <div class="flex flex-col items-center gap-2">
+            <div class="causal-node root w-full">Water scarcity — Indus River basin<span class="block text-red-400 font-normal text-xs mt-0.5">Root cause</span></div>
+            <div class="text-gray-400 text-lg leading-none">↓</div>
+            <div class="causal-node down w-full">Sanitation infrastructure collapse<span class="block text-amber-500 font-normal text-xs mt-0.5">Direct effect</span></div>
+            <div class="text-gray-400 text-lg leading-none">↓</div>
+            <div class="grid grid-cols-2 gap-2 w-full">
+              <div class="causal-node down text-xs">Waterborne disease outbreaks</div>
+              <div class="causal-node down text-xs">Child school absenteeism</div>
+            </div>
+            <div class="text-gray-400 text-lg leading-none">↓</div>
+            <div class="causal-node down w-full">Child mortality across 6 countries<span class="block text-amber-500 font-normal text-xs mt-0.5">3 downstream effects resolved if root solved</span></div>
+          </div>
+        </div>
+
+        <!-- Semantic Clusters -->
+        <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+          <div class="flex items-center gap-2 mb-1">
+            <h3 class="text-sm font-bold text-gray-900">Semantic Clusters</h3>
+            <span class="text-xs bg-violet-100 text-violet-700 px-2 py-0.5 rounded-full font-medium">AI Grouped</span>
+          </div>
+          <p class="text-xs text-gray-500 mb-4">Problems grouped by meaning, not just keyword.</p>
+          <div class="space-y-2 border border-gray-200 rounded-xl overflow-hidden">
+
+            <div>
+              <div class="cluster-header" onclick="toggleCluster(this)">
+                <div class="flex items-center gap-2">
+                  <div>
+                    <p class="text-xs font-semibold text-gray-800">Antimicrobial Resistance</p>
+                    <p class="text-xs text-gray-400">8 problems · 0 solutions</p>
+                  </div>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded-full font-medium">High gap</span>
+                  <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </div>
+              </div>
+              <div class="hidden px-4 pb-3 border-t border-gray-100">
+                <p class="text-xs text-gray-500 py-2">Drug-resistant infections, antibiotic overuse, treatment resistance — from arXiv, RSS, and World Bank.</p>
+                <a href="/admin/community-dashboard/problems" class="text-xs font-semibold text-primary hover:underline">Propose a solution for this cluster →</a>
+              </div>
+            </div>
+
+            <div class="border-t border-gray-100">
+              <div class="cluster-header" onclick="toggleCluster(this)">
+                <div class="flex items-center gap-2">
+                  <div>
+                    <p class="text-xs font-semibold text-gray-800">Freshwater Access</p>
+                    <p class="text-xs text-gray-400">11 problems · 2 solutions</p>
+                  </div>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="text-xs bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full font-medium">Medium gap</span>
+                  <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </div>
+              </div>
+              <div class="hidden px-4 pb-3 border-t border-gray-100">
+                <p class="text-xs text-gray-500 py-2">Contamination, scarcity, and infrastructure — 6 countries, 4 sources.</p>
+                <a href="/admin/community-dashboard/problems" class="text-xs font-semibold text-primary hover:underline">Propose a solution for this cluster →</a>
+              </div>
+            </div>
+
+            <div class="border-t border-gray-100">
+              <div class="cluster-header" onclick="toggleCluster(this)">
+                <div class="flex items-center gap-2">
+                  <div>
+                    <p class="text-xs font-semibold text-gray-800">Digital Exclusion</p>
+                    <p class="text-xs text-gray-400">6 problems · 4 solutions</p>
+                  </div>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-medium">Low gap</span>
+                  <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </div>
+              </div>
+              <div class="hidden px-4 pb-3 border-t border-gray-100">
+                <p class="text-xs text-gray-500 py-2">Rural connectivity, digital literacy, device access — mostly World Bank data.</p>
+                <a href="/admin/community-dashboard/problems" class="text-xs font-semibold text-primary hover:underline">View solutions →</a>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- ACT NOW -->
+      <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h3 class="text-sm font-bold text-gray-900">Act Now — Unaddressed Problems</h3>
+            <p class="text-xs text-gray-500 mt-0.5">High-impact, no volunteer working on them yet</p>
+          </div>
+          <span class="text-xs bg-red-100 text-red-700 px-3 py-1 rounded-full font-semibold">183 unaddressed</span>
+        </div>
+        <div class="space-y-3">
+          <div class="flex items-center gap-4 p-3 bg-red-50 border border-red-100 rounded-lg">
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-semibold text-gray-900 truncate">Antimicrobial resistance in Sub-Saharan Africa</p>
+              <div class="flex flex-wrap items-center gap-2 mt-1">
+                <span class="text-xs text-gray-500">Score: <strong class="font-mono text-red-600">0.84</strong></span>
+                <span class="text-xs text-gray-300">·</span>
+                <span class="text-xs text-gray-500">Healthcare · High · arXiv</span>
+                <span class="text-xs font-semibold text-red-600">· 0 solutions</span>
+              </div>
+            </div>
+            <a href="/admin/community-dashboard/problems" class="flex-shrink-0 text-xs font-bold text-white bg-primary hover:bg-blue-700 px-3 py-1.5 rounded-lg transition-colors">Propose →</a>
+          </div>
+          <div class="flex items-center gap-4 p-3 bg-red-50 border border-red-100 rounded-lg">
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-semibold text-gray-900 truncate">Maternal mortality crisis in conflict-affected regions</p>
+              <div class="flex flex-wrap items-center gap-2 mt-1">
+                <span class="text-xs text-gray-500">Score: <strong class="font-mono text-red-600">0.82</strong></span>
+                <span class="text-xs text-gray-300">·</span>
+                <span class="text-xs text-gray-500">Healthcare · High · World Bank</span>
+                <span class="text-xs font-semibold text-red-600">· 0 solutions</span>
+              </div>
+            </div>
+            <a href="/admin/community-dashboard/problems" class="flex-shrink-0 text-xs font-bold text-white bg-primary hover:bg-blue-700 px-3 py-1.5 rounded-lg transition-colors">Propose →</a>
+          </div>
+          <div class="flex items-center gap-4 p-3 bg-amber-50 border border-amber-100 rounded-lg">
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-semibold text-gray-900 truncate">Informal worker exclusion from social protection systems</p>
+              <div class="flex flex-wrap items-center gap-2 mt-1">
+                <span class="text-xs text-gray-500">Score: <strong class="font-mono text-amber-600">0.76</strong></span>
+                <span class="text-xs text-gray-300">·</span>
+                <span class="text-xs text-gray-500">Economics · High · Reddit</span>
+                <span class="text-xs font-semibold text-red-600">· 0 solutions</span>
+              </div>
+            </div>
+            <a href="/admin/community-dashboard/problems" class="flex-shrink-0 text-xs font-bold text-white bg-primary hover:bg-blue-700 px-3 py-1.5 rounded-lg transition-colors">Propose →</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- PIPELINE (funnel) -->
+      <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+        <h3 class="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-5">Pipeline — Last Run</h3>
+        <div class="grid grid-cols-5 gap-2" id="pipeline-funnel">
+
+          <div class="flex flex-col items-center gap-2 stage-funnel" id="stage-0">
+            <div class="w-full rounded-xl border-2 border-primary bg-blue-50 flex flex-col items-center justify-center py-5 px-2 transition-all">
+              <span class="text-2xl font-bold text-primary font-mono" id="p-n0">138</span>
+              <span class="text-xs text-primary font-semibold mt-0.5">signals</span>
+            </div>
+            <span class="text-xs font-semibold text-gray-700 text-center">Collected</span>
+            <span class="text-xs text-gray-400 text-center leading-tight">Raw input from all sources</span>
+          </div>
+
+          <div class="flex items-start justify-center pt-6 text-gray-300 text-xl font-light">→</div>
+
+          <div class="flex flex-col items-center gap-2 stage-funnel" id="stage-1">
+            <div class="w-full rounded-xl border-2 border-gray-200 bg-gray-50 flex flex-col items-center justify-center py-5 px-2 transition-all">
+              <span class="text-2xl font-bold text-gray-700 font-mono" id="p-n1">47</span>
+              <span class="text-xs text-gray-500 font-semibold mt-0.5">unique</span>
+            </div>
+            <span class="text-xs font-semibold text-gray-700 text-center">Filtered</span>
+            <span class="text-xs text-gray-400 text-center leading-tight">Duplicates removed</span>
+          </div>
+
+          <div class="flex items-start justify-center pt-6 text-gray-300 text-xl font-light">→</div>
+
+          <div class="flex flex-col items-center gap-2 stage-funnel" id="stage-2">
+            <div class="w-full rounded-xl border-2 border-gray-200 bg-gray-50 flex flex-col items-center justify-center py-5 px-2 transition-all">
+              <span class="text-2xl font-bold text-gray-700 font-mono" id="p-n2">38</span>
+              <span class="text-xs text-gray-500 font-semibold mt-0.5">classified</span>
+            </div>
+            <span class="text-xs font-semibold text-gray-700 text-center">Analyzed</span>
+            <span class="text-xs text-gray-400 text-center leading-tight">Domain, urgency, clusters</span>
+          </div>
+
+        </div>
+
+        <!-- Second row -->
+        <div class="grid grid-cols-5 gap-2 mt-3">
+
+          <div class="col-start-3 flex flex-col items-center gap-2 stage-funnel" id="stage-3">
+            <div class="w-full rounded-xl border-2 border-gray-200 bg-gray-50 flex flex-col items-center justify-center py-5 px-2 transition-all">
+              <span class="text-2xl font-bold text-gray-700 font-mono" id="p-n3">38</span>
+              <span class="text-xs text-gray-500 font-semibold mt-0.5">ranked</span>
+            </div>
+            <span class="text-xs font-semibold text-gray-700 text-center">Prioritized</span>
+            <span class="text-xs text-gray-400 text-center leading-tight">Scored by impact</span>
+          </div>
+
+          <div class="flex items-start justify-center pt-6 text-gray-300 text-xl font-light">→</div>
+
+          <div class="flex flex-col items-center gap-2 stage-funnel" id="stage-4">
+            <div class="w-full rounded-xl border-2 border-gray-200 bg-gray-50 flex flex-col items-center justify-center py-5 px-2 transition-all">
+              <span class="text-2xl font-bold text-amber-500 font-mono" id="p-n4">38</span>
+              <span class="text-xs text-amber-500 font-semibold mt-0.5">pending</span>
+            </div>
+            <span class="text-xs font-semibold text-gray-700 text-center">Published</span>
+            <span class="text-xs text-gray-400 text-center leading-tight">Awaiting admin review</span>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ALL PROBLEMS -->
+      <div>
+        <div class="flex items-center justify-between flex-wrap gap-3 mb-3">
+          <h3 class="text-sm font-semibold text-gray-700 uppercase tracking-wide">All Collected Problems</h3>
+          <div class="flex flex-wrap items-center gap-3">
+            <select id="f-domain" onchange="filterCards()" class="text-sm border border-gray-200 rounded-lg px-3 py-1.5 bg-white text-gray-700 focus:ring-2 focus:ring-primary outline-none">
+              <option>All</option><option>Technology</option><option>Healthcare</option>
+              <option>Education</option><option>Environment</option><option>Social Issues</option>
+              <option>Economics</option><option>Other</option>
+            </select>
+            <select id="f-urgency" onchange="filterCards()" class="text-sm border border-gray-200 rounded-lg px-3 py-1.5 bg-white text-gray-700 focus:ring-2 focus:ring-primary outline-none">
+              <option>All</option><option>High</option><option>Medium</option><option>Low</option>
+            </select>
+            <select id="f-source" onchange="filterCards()" class="text-sm border border-gray-200 rounded-lg px-3 py-1.5 bg-white text-gray-700 focus:ring-2 focus:ring-primary outline-none">
+              <option>All</option><option>RSS</option><option>Reddit</option><option>arXiv</option><option>World Bank</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4" id="problems-grid">
+
+          <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-5 hover:border-primary hover:shadow-md transition-all flex flex-col gap-3" data-domain="Healthcare" data-urgency="High" data-source="arXiv">
+            <div class="flex items-start justify-between gap-2">
+              <p class="font-semibold text-gray-900 text-sm leading-snug">Antimicrobial resistance in Sub-Saharan Africa healthcare systems</p>
+              <span class="score-badge bg-green-50 text-green-700 border border-green-200">0.84</span>
+            </div>
+            <p class="text-xs text-gray-500 leading-relaxed">Drug-resistant infections rising 3× faster in low-income African nations than global average, with no affordable treatment pipeline.</p>
+            <div class="flex flex-wrap gap-1.5">
+              <span class="text-xs px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 font-medium">Healthcare</span>
+              <span class="text-xs px-2 py-0.5 rounded-full bg-red-50 text-red-600 font-medium">High</span>
+              <span class="text-xs px-2 py-0.5 rounded-full bg-purple-50 text-purple-700 font-medium">arXiv</span>
+              <span class="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">Sub-Saharan Africa</span>
+            </div>
+            <div class="flex items-center justify-between pt-1">
+              <span class="text-xs text-red-500 font-semibold">0 solutions</span>
+              <a href="/admin/community-dashboard/problems" class="text-xs font-semibold text-primary hover:text-blue-700">Review →</a>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-5 hover:border-primary hover:shadow-md transition-all flex flex-col gap-3" data-domain="Environment" data-urgency="High" data-source="RSS">
+            <div class="flex items-start justify-between gap-2">
+              <p class="font-semibold text-gray-900 text-sm leading-snug">Microplastic contamination in global freshwater sources</p>
+              <span class="score-badge bg-green-50 text-green-700 border border-green-200">0.79</span>
+            </div>
+            <p class="text-xs text-gray-500 leading-relaxed">Over 83% of tap water samples globally contain microplastic particles; effective large-scale filtration remains technically unsolved.</p>
+            <div class="flex flex-wrap gap-1.5">
+              <span class="text-xs px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 font-medium">Environment</span>
+              <span class="text-xs px-2 py-0.5 rounded-full bg-red-50 text-red-600 font-medium">High</span>
+              <span class="text-xs px-2 py-0.5 rounded-full bg-purple-50 text-purple-700 font-medium">RSS</span>
+              <span class="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">Global</span>
+            </div>
+            <div class="flex items-center justify-between pt-1">
+              <span class="text-xs text-amber-500 font-semibold">2 solutions</span>
+              <a href="/admin/community-dashboard/problems" class="text-xs font-semibold text-primary hover:text-blue-700">Review →</a>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-5 hover:border-primary hover:shadow-md transition-all flex flex-col gap-3" data-domain="Education" data-urgency="Medium" data-source="World Bank">
+            <div class="flex items-start justify-between gap-2">
+              <p class="font-semibold text-gray-900 text-sm leading-snug">Digital literacy gap in rural Southeast Asia</p>
+              <span class="score-badge bg-amber-50 text-amber-700 border border-amber-200">0.61</span>
+            </div>
+            <p class="text-xs text-gray-500 leading-relaxed">68M rural residents in Cambodia, Myanmar, and Laos lack basic digital skills, limiting economic mobility as labor markets shift online.</p>
+            <div class="flex flex-wrap gap-1.5">
+              <span class="text-xs px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 font-medium">Education</span>
+              <span class="text-xs px-2 py-0.5 rounded-full bg-amber-50 text-amber-600 font-medium">Medium</span>
+              <span class="text-xs px-2 py-0.5 rounded-full bg-purple-50 text-purple-700 font-medium">World Bank</span>
+              <span class="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">Southeast Asia</span>
+            </div>
+            <div class="flex items-center justify-between pt-1">
+              <span class="text-xs text-emerald-600 font-semibold">4 solutions</span>
+              <a href="/admin/community-dashboard/problems" class="text-xs font-semibold text-primary hover:text-blue-700">Review →</a>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-5 hover:border-primary hover:shadow-md transition-all flex flex-col gap-3" data-domain="Economics" data-urgency="High" data-source="Reddit">
+            <div class="flex items-start justify-between gap-2">
+              <p class="font-semibold text-gray-900 text-sm leading-snug">Informal worker exclusion from social protection systems</p>
+              <span class="score-badge bg-green-50 text-green-700 border border-green-200">0.76</span>
+            </div>
+            <p class="text-xs text-gray-500 leading-relaxed">2 billion informal workers have no access to health insurance, pension, or unemployment benefits, leaving them exposed to economic shocks.</p>
+            <div class="flex flex-wrap gap-1.5">
+              <span class="text-xs px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 font-medium">Economics</span>
+              <span class="text-xs px-2 py-0.5 rounded-full bg-red-50 text-red-600 font-medium">High</span>
+              <span class="text-xs px-2 py-0.5 rounded-full bg-purple-50 text-purple-700 font-medium">Reddit</span>
+              <span class="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">Global</span>
+            </div>
+            <div class="flex items-center justify-between pt-1">
+              <span class="text-xs text-red-500 font-semibold">0 solutions</span>
+              <a href="/admin/community-dashboard/problems" class="text-xs font-semibold text-primary hover:text-blue-700">Review →</a>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-5 hover:border-primary hover:shadow-md transition-all flex flex-col gap-3" data-domain="Technology" data-urgency="Medium" data-source="arXiv">
+            <div class="flex items-start justify-between gap-2">
+              <p class="font-semibold text-gray-900 text-sm leading-snug">AI model bias in diagnosis for non-Western populations</p>
+              <span class="score-badge bg-amber-50 text-amber-700 border border-amber-200">0.67</span>
+            </div>
+            <p class="text-xs text-gray-500 leading-relaxed">Clinical AI models trained on Western datasets show 18–34% lower accuracy when applied to African, South Asian, and Latin American patients.</p>
+            <div class="flex flex-wrap gap-1.5">
+              <span class="text-xs px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 font-medium">Technology</span>
+              <span class="text-xs px-2 py-0.5 rounded-full bg-amber-50 text-amber-600 font-medium">Medium</span>
+              <span class="text-xs px-2 py-0.5 rounded-full bg-purple-50 text-purple-700 font-medium">arXiv</span>
+              <span class="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">Global South</span>
+            </div>
+            <div class="flex items-center justify-between pt-1">
+              <span class="text-xs text-amber-500 font-semibold">1 solution</span>
+              <a href="/admin/community-dashboard/problems" class="text-xs font-semibold text-primary hover:text-blue-700">Review →</a>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-5 hover:border-primary hover:shadow-md transition-all flex flex-col gap-3" data-domain="Healthcare" data-urgency="High" data-source="World Bank">
+            <div class="flex items-start justify-between gap-2">
+              <p class="font-semibold text-gray-900 text-sm leading-snug">Maternal mortality crisis in conflict-affected regions</p>
+              <span class="score-badge bg-green-50 text-green-700 border border-green-200">0.82</span>
+            </div>
+            <p class="text-xs text-gray-500 leading-relaxed">Maternal death rates in active conflict zones are 14× higher than stable regions, driven by destroyed health infrastructure.</p>
+            <div class="flex flex-wrap gap-1.5">
+              <span class="text-xs px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 font-medium">Healthcare</span>
+              <span class="text-xs px-2 py-0.5 rounded-full bg-red-50 text-red-600 font-medium">High</span>
+              <span class="text-xs px-2 py-0.5 rounded-full bg-purple-50 text-purple-700 font-medium">World Bank</span>
+              <span class="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">MENA / Sahel</span>
+            </div>
+            <div class="flex items-center justify-between pt-1">
+              <span class="text-xs text-red-500 font-semibold">0 solutions</span>
+              <a href="/admin/community-dashboard/problems" class="text-xs font-semibold text-primary hover:text-blue-700">Review →</a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- LOG PANEL -->
+      <div>
+        <h3 class="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-3">Pipeline Log</h3>
+        <div class="log-panel">
+          <div class="flex items-center justify-between px-4 py-3 border-b border-gray-800">
+            <span class="text-xs text-gray-400 font-mono">pipeline.log — last run 14 min ago</span>
+            <div class="flex gap-1.5">
+              <div class="w-3 h-3 rounded-full bg-red-500"></div>
+              <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+              <div class="w-3 h-3 rounded-full bg-green-500"></div>
+            </div>
+          </div>
+          <div class="p-4 max-h-52 overflow-y-auto space-y-0.5" id="log-body">
+            <div class="log-line"><span class="log-ts">09:41:02</span><span class="log-lvl info">INFO   </span><span class="log-msg">Firebase connected to <em>problem-solver-foundation</em></span></div>
+            <div class="log-line"><span class="log-ts">09:41:03</span><span class="log-lvl info">INFO   </span><span class="log-msg">Dedup cache loaded — <em>1,842 hashes</em></span></div>
+            <div class="log-line"><span class="log-ts">09:41:05</span><span class="log-lvl success">SUCCESS</span><span class="log-msg">RSS collector: <em>52 items</em> from GDELT, BBC, Reuters, UN</span></div>
+            <div class="log-line"><span class="log-ts">09:41:08</span><span class="log-lvl success">SUCCESS</span><span class="log-msg">arXiv collector: <em>28 papers</em> matched query filter</span></div>
+            <div class="log-line"><span class="log-ts">09:41:10</span><span class="log-lvl success">SUCCESS</span><span class="log-msg">World Bank: <em>34 indicators</em> across 18 countries</span></div>
+            <div class="log-line"><span class="log-ts">09:41:14</span><span class="log-lvl warn">WARN   </span><span class="log-msg">Reddit: rate limit — <em>r/collapse</em> throttled, waiting 2s</span></div>
+            <div class="log-line"><span class="log-ts">09:41:17</span><span class="log-lvl success">SUCCESS</span><span class="log-msg">Reddit: <em>24 posts</em> from 3 subreddits (score ≥ 10)</span></div>
+            <div class="log-line"><span class="log-ts">09:41:17</span><span class="log-lvl info">INFO   </span><span class="log-msg">Dedup: <em>91 duplicates</em> skipped → <em>47 new items</em></span></div>
+            <div class="log-line"><span class="log-ts">09:41:19</span><span class="log-lvl info">INFO   </span><span class="log-msg">Groq: classifying <em>5 batches × 10 items</em> (llama3-8b-8192)</span></div>
+            <div class="log-line"><span class="log-ts">09:41:22</span><span class="log-lvl info">INFO   </span><span class="log-msg">Groq: semantic clustering — <em>3 clusters</em> detected</span></div>
+            <div class="log-line"><span class="log-ts">09:41:25</span><span class="log-lvl info">INFO   </span><span class="log-msg">Groq: causal chain — <em>water scarcity → 3 downstream effects</em></span></div>
+            <div class="log-line"><span class="log-ts">09:41:28</span><span class="log-lvl warn">WARN   </span><span class="log-msg"><em>9 items</em> non-actionable — discarded</span></div>
+            <div class="log-line"><span class="log-ts">09:41:29</span><span class="log-lvl info">INFO   </span><span class="log-msg">Scorer: ranked <em>38 problems</em> by impact score</span></div>
+            <div class="log-line"><span class="log-ts">09:41:31</span><span class="log-lvl success">SUCCESS</span><span class="log-msg">Firestore: <em>38 problems</em> written — status=pending</span></div>
+            <div class="log-line"><span class="log-ts">09:41:32</span><span class="log-lvl success">SUCCESS</span><span class="log-msg">AI Digest generated — <em>284 tokens</em> used</span></div>
+            <div class="log-line"><span class="log-ts">09:41:32</span><span class="log-lvl success">SUCCESS</span><span class="log-msg">Done — <em>38 new problems</em>, 91 duplicates skipped. Avg score: 0.68</span></div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script>
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        document.querySelectorAll('.bar-fill[data-w]').forEach(bar => {
+          bar.style.width = bar.dataset.w;
+        });
+      }, 400);
+    });
+
+    function toggleCluster(header) {
+      const body = header.nextElementSibling;
+      const arrow = header.querySelector('svg');
+      body.classList.toggle('hidden');
+      arrow.style.transform = body.classList.contains('hidden') ? '' : 'rotate(180deg)';
+    }
+
+    function filterCards() {
+      const domain  = document.getElementById('f-domain').value;
+      const urgency = document.getElementById('f-urgency').value;
+      const source  = document.getElementById('f-source').value;
+      document.querySelectorAll('#problems-grid > div').forEach(card => {
+        const match = (domain  === 'All' || card.dataset.domain  === domain) &&
+                      (urgency === 'All' || card.dataset.urgency === urgency) &&
+                      (source  === 'All' || card.dataset.source  === source);
+        card.style.display = match ? '' : 'none';
+      });
+    }
+
+    function simulateRun() {
+      const btn = document.getElementById('btn-run');
+      btn.disabled = true;
+      btn.innerHTML = '<svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg> Running...';
+
+      // Reset funnel cards
+      const nums = [['p-n0','—'],['p-n1','—'],['p-n2','—'],['p-n3','—'],['p-n4','—']];
+      nums.forEach(([id]) => { const el = document.getElementById(id); if(el) { el.textContent = '…'; } });
+      document.querySelectorAll('.stage-funnel > div').forEach(card => {
+        card.classList.remove('border-primary','bg-blue-50','border-emerald-500','bg-emerald-50');
+        card.classList.add('border-gray-200','bg-gray-50');
+      });
+
+      const log = document.getElementById('log-body');
+      const ts = () => new Date().toLocaleTimeString('en-US', {hour12:false});
+      const addLog = (level, msg, delay) => setTimeout(() => {
+        const d = document.createElement('div'); d.className = 'log-line';
+        d.innerHTML = `<span class="log-ts">${ts()}</span><span class="log-lvl ${level}">${level.padEnd(7)}</span><span class="log-msg">${msg}</span>`;
+        log.appendChild(d); log.scrollTop = log.scrollHeight;
+      }, delay);
+
+      const activate = (stageId, n, label, delay) => setTimeout(() => {
+        const card = document.querySelector(`#${stageId} > div`);
+        if (card) { card.classList.remove('border-gray-200','bg-gray-50'); card.classList.add('border-primary','bg-blue-50'); }
+        const numEl = document.getElementById('p-n'+stageId.slice(-1));
+        if (numEl) { numEl.textContent = n; numEl.nextElementSibling.textContent = label; }
+      }, delay);
+
+      const done = (stageId, delay) => setTimeout(() => {
+        const card = document.querySelector(`#${stageId} > div`);
+        if (card) { card.classList.remove('border-primary','bg-blue-50'); card.classList.add('border-emerald-500','bg-emerald-50'); }
+      }, delay);
+
+      let t = 0;
+      addLog('info',    'Pipeline started...', t += 200);
+      activate('stage-0', '…', 'signals', t);
+      addLog('success', '<em>138 signals</em> collected from all sources', t += 1400);
+      activate('stage-0', '138', 'signals', t); done('stage-0', t += 100);
+      addLog('info',    'Removing duplicates...', t += 300);
+      activate('stage-1', '…', 'unique', t);
+      addLog('success', '<em>91 duplicates</em> removed → <em>47 unique items</em>', t += 900);
+      activate('stage-1', '47', 'unique', t); done('stage-1', t += 100);
+      addLog('info',    'Analyzing: domain, urgency, semantic clusters...', t += 300);
+      activate('stage-2', '…', 'classified', t);
+      addLog('info',    'Semantic clustering — <em>3 groups</em> detected', t += 1000);
+      addLog('info',    'Causal chain — <em>water scarcity → 3 downstream effects</em>', t += 600);
+      activate('stage-2', '38', 'classified', t); done('stage-2', t += 100);
+      addLog('info',    'Scoring by impact...', t += 300);
+      activate('stage-3', '…', 'ranked', t);
+      addLog('success', '<em>38 problems</em> ranked by impact score', t += 800);
+      activate('stage-3', '38', 'ranked', t); done('stage-3', t += 100);
+      addLog('info',    'Publishing to review queue...', t += 200);
+      activate('stage-4', '…', 'pending', t);
+      addLog('success', '<em>38 problems</em> published — awaiting admin review', t += 700);
+      addLog('success', 'AI Digest generated — <em>3 clusters, 1 causal chain</em>', t += 300);
+      activate('stage-4', '38', 'pending', t); done('stage-4', t += 100);
+      addLog('success', 'Done — avg score: 0.68', t += 200);
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.innerHTML = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> Run Pipeline';
+      }, t + 400);
+    }
+  </script>
+</body>
+</html>

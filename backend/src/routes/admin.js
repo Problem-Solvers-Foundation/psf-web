@@ -319,6 +319,18 @@ router.get('/community-dashboard/solutions', requireCommunityAccess, problemCont
 router.get('/community-dashboard/community', requireCommunityAccess, adminController.showCommunity);
 
 /**
+ * GET /admin/community-dashboard/data-aggregator
+ * Data Aggregator dashboard
+ */
+router.get('/community-dashboard/data-aggregator', requireCommunityAccess, (req, res) => {
+  res.render('admin/data-aggregator', {
+    title: 'Data Aggregator - PSF',
+    currentPage: 'data-aggregator',
+    user: req.session.user
+  });
+});
+
+/**
  * POST /admin/community-dashboard/create-discussion
  * Cria uma nova discussão nos fóruns
  */
