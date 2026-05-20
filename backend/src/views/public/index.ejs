@@ -220,6 +220,59 @@
           </div>
         </section>
 
+        <!-- COMMUNITY SIGNUP -->
+        <section id="join-community" class="py-16 sm:py-24 bg-primary">
+          <div class="container mx-auto px-4 max-w-2xl">
+            <div class="text-center mb-10">
+              <p class="text-sm font-semibold uppercase tracking-widest text-white/70 mb-3">Join the movement</p>
+              <h2 class="text-3xl md:text-4xl font-black tracking-tight text-white mb-4">Be part of the solution</h2>
+              <p class="text-white/80 text-lg">Connect with problem-solvers around the world. Enter your details and we'll add you to our community.</p>
+            </div>
+
+            <% if (locals.communitySuccess) { %>
+              <div class="bg-white/10 border border-white/30 rounded-xl p-6 text-center text-white">
+                <p class="font-bold text-lg mb-1">You're in!</p>
+                <p class="text-white/80 text-sm">Redirecting you to our Telegram community...</p>
+              </div>
+            <% } else { %>
+              <% if (locals.communityError) { %>
+                <div class="mb-4 bg-red-500/20 border border-red-300/30 rounded-lg px-4 py-3 text-white text-sm text-center">
+                  <%= locals.communityError %>
+                </div>
+              <% } %>
+              <form action="/community/join" method="POST" class="space-y-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-sm font-medium text-white/80 mb-1">Full name</label>
+                    <input type="text" name="name" required placeholder="Your name"
+                      class="w-full rounded-lg px-4 py-3 bg-white/10 border border-white/20 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-white/50 text-sm"/>
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-white/80 mb-1">Email</label>
+                    <input type="email" name="email" required placeholder="your@email.com"
+                      class="w-full rounded-lg px-4 py-3 bg-white/10 border border-white/20 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-white/50 text-sm"/>
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-white/80 mb-1">Where are you from?</label>
+                    <input type="text" name="location" required placeholder="City, Country"
+                      class="w-full rounded-lg px-4 py-3 bg-white/10 border border-white/20 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-white/50 text-sm"/>
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-white/80 mb-1">Phone number</label>
+                    <input type="tel" name="phone" required placeholder="+1 555 000 0000"
+                      class="w-full rounded-lg px-4 py-3 bg-white/10 border border-white/20 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-white/50 text-sm"/>
+                  </div>
+                </div>
+                <button type="submit"
+                  class="w-full bg-white text-primary font-bold rounded-lg py-3 text-sm hover:bg-white/90 transition-colors mt-2">
+                  Join the Community
+                </button>
+                <p class="text-xs text-white/50 text-center">You'll be redirected to our Telegram group after submitting.</p>
+              </form>
+            <% } %>
+          </div>
+        </section>
+
         <section class="py-16 sm:py-24">
           <div class="container mx-auto px-4">
             <div class="text-center mb-12">

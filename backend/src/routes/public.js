@@ -70,7 +70,9 @@ router.get('/', async (req, res) => {
       description: 'Impact 1 billion people by 2035',
       currentPage: 'home',
       stats: stats,
-      voicesPosts: voicesPosts
+      voicesPosts: voicesPosts,
+      communityError: req.query.communityError || null,
+      communitySuccess: req.query.communitySuccess || null,
     });
 
   } catch (error) {
@@ -245,6 +247,33 @@ router.get('/join/options', (req, res) => {
 // ===============================
 // AUTH ROUTES
 // ===============================
+
+/**
+ * POST /community/join
+ * Salva dados no Firestore e redireciona para o Telegram
+ */
+router.post('/community/join', async (req, res) => {
+  const { name, email, location, phone } = req.body;
+
+  if (!name || !email || !location || !phone) {
+    return res.redirect('/?communityError=Please+fill+in+all+fields#join-community');
+  }
+
+  try {
+    await db.collection('community_signups').add({
+      name:     name.trim(),
+      email:    email.trim().toLowerCase(),
+      location: location.trim(),
+      phone:    phone.trim(),
+      joinedAt: new Date(),
+      source:   'home-page',
+    });
+  } catch (err) {
+    console.error('Error saving community signup:', err);
+  }
+
+  return res.redirect('https://t.me/+JpMj8PBVYbNmY2Y5');
+});
 
 /**
  * GET /application-pending
