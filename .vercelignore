@@ -4,6 +4,7 @@ node_modules
 *.log
 migration-plan.md
 README.md
+CLAUDE.md
 .vscode
 backend/serviceAccountKey.json
 backend/.env
