@@ -21,6 +21,80 @@ router.get('/google2d78f42574d66612.html', (req, res) => {
 });
 
 /**
+ * GET /robots.txt
+ */
+router.get('/robots.txt', (req, res) => {
+  res.setHeader('Content-Type', 'text/plain');
+  res.send([
+    'User-agent: *',
+    'Allow: /',
+    'Disallow: /admin/',
+    'Disallow: /signin',
+    'Disallow: /signup',
+    'Disallow: /join',
+    'Disallow: /application-pending',
+    '',
+    'Sitemap: https://problemsolverfoundation.vercel.app/sitemap.xml',
+  ].join('\n'));
+});
+
+/**
+ * GET /sitemap.xml
+ * Sitemap dinâmico — inclui páginas estáticas + todos os problemas aprovados
+ */
+router.get('/sitemap.xml', async (req, res) => {
+  const base = 'https://problemsolverfoundation.vercel.app';
+  const today = new Date().toISOString().split('T')[0];
+
+  const staticPages = [
+    { url: '/',         priority: '1.0', changefreq: 'weekly'  },
+    { url: '/about',    priority: '0.8', changefreq: 'monthly' },
+    { url: '/solutions',priority: '0.8', changefreq: 'weekly'  },
+    { url: '/impact',   priority: '0.8', changefreq: 'weekly'  },
+    { url: '/contact',  priority: '0.6', changefreq: 'monthly' },
+    { url: '/problems', priority: '0.9', changefreq: 'daily'   },
+  ];
+
+  let problemUrls = [];
+  try {
+    const snap = await db.collection('problems')
+      .where('status', '==', 'approved')
+      .get();
+    problemUrls = snap.docs.map(doc => {
+      const d = doc.data();
+      const lastmod = d.updatedAt?.toDate?.() ?? d.createdAt?.toDate?.();
+      return {
+        url: `/problems/${doc.id}`,
+        priority: '0.7',
+        changefreq: 'monthly',
+        lastmod: lastmod ? lastmod.toISOString().split('T')[0] : today,
+      };
+    });
+  } catch (e) {
+    console.error('Sitemap: error fetching problems', e);
+  }
+
+  const allPages = [...staticPages, ...problemUrls];
+
+  const urls = allPages.map(p => `
+  <url>
+    <loc>${base}${p.url}</loc>
+    <lastmod>${p.lastmod || today}</lastmod>
+    <changefreq>${p.changefreq}</changefreq>
+    <priority>${p.priority}</priority>
+  </url>`).join('');
+
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls}
+</urlset>`;
+
+  res.setHeader('Content-Type', 'application/xml');
+  res.setHeader('Cache-Control', 'public, max-age=3600');
+  res.send(xml);
+});
+
+/**
  * HOME PAGE
  * GET /
  */
