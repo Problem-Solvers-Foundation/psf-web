@@ -101,22 +101,7 @@ export const renderBlogPost = async (req, res) => {
 
     // Verificar se post existe
     if (snapshot.empty) {
-      return res.status(404).send(`
-        <html>
-          <head>
-            <title>Post Not Found</title>
-            <style>
-              body { font-family: Arial; padding: 50px; text-align: center; }
-              h1 { color: #dc3545; }
-            </style>
-          </head>
-          <body>
-            <h1>404 - Post Not Found</h1>
-            <p>The blog post you're looking for doesn't exist.</p>
-            <a href="/blog">← Back to blog</a>
-          </body>
-        </html>
-      `);
+      return res.status(404).render('errors/404');
     }
 
     const doc = snapshot.docs[0];
