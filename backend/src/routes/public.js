@@ -124,16 +124,17 @@ router.get('/', async (req, res) => {
     // Buscar os 3 posts publicados mais recentes para "Voices from Our Community"
     const postsSnapshot = await db.collection('posts')
       .where('isPublished', '==', true)
-      .orderBy('createdAt', 'desc')
-      .limit(3)
       .get();
 
-    const voicesPosts = postsSnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data(),
-      createdAt: doc.data().createdAt?.toDate(),
-      updatedAt: doc.data().updatedAt?.toDate()
-    }));
+    const voicesPosts = postsSnapshot.docs
+      .map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+        createdAt: doc.data().createdAt?.toDate(),
+        updatedAt: doc.data().updatedAt?.toDate()
+      }))
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+      .slice(0, 3);
 
     // Renderizar página
     res.render('public/index', {
