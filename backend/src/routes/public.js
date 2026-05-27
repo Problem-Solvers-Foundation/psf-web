@@ -121,21 +121,19 @@ router.get('/', async (req, res) => {
       totalVolunteersFormatted: formatNumber(totalVolunteers)
     };
 
-    // Buscar posts com categoria "Resonance" para "Voices from Our Community"
-    const resonanceSnapshot = await db.collection('posts')
-      .where('category', '==', 'Resonance')
+    // Buscar os 3 posts publicados mais recentes para "Voices from Our Community"
+    const postsSnapshot = await db.collection('posts')
       .where('isPublished', '==', true)
+      .orderBy('createdAt', 'desc')
+      .limit(3)
       .get();
 
-    const voicesPosts = resonanceSnapshot.docs
-      .map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-        createdAt: doc.data().createdAt?.toDate(),
-        updatedAt: doc.data().updatedAt?.toDate()
-      }))
-      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-      .slice(0, 3); // Limitar a 3 posts mais recentes
+    const voicesPosts = postsSnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
+      createdAt: doc.data().createdAt?.toDate(),
+      updatedAt: doc.data().updatedAt?.toDate()
+    }));
 
     // Renderizar página
     res.render('public/index', {
