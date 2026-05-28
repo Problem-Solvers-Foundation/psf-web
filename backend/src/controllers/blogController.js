@@ -22,45 +22,35 @@ export const renderBlogList = async (req, res) => {
   try {
     const { category, tag } = req.query;
 
-    // Construir query
-    let query = postsCollection.where('isPublished', '==', true);
+    // Buscar todos os posts publicados
+    const snapshot = await postsCollection.where('isPublished', '==', true).get();
 
-    // Filtrar por categoria se fornecida
-    if (category) {
-      query = query.where('category', '==', category);
-    }
+    let allPosts = snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
+      createdAt: doc.data().createdAt?.toDate(),
+      updatedAt: doc.data().updatedAt?.toDate()
+    }));
 
-    // Buscar posts
-    const snapshot = await query.get();
+    // Extrair categorias únicas para os filtros
+    const categories = [...new Set(allPosts.map(p => p.category).filter(Boolean))].sort();
 
-    // Formatar posts
-    let posts = snapshot.docs
-      .map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-        createdAt: doc.data().createdAt?.toDate(),
-        updatedAt: doc.data().updatedAt?.toDate()
-      }));
+    // Filtrar por categoria
+    let posts = category ? allPosts.filter(p => p.category === category) : allPosts;
 
-    // Filtrar por tag (client-side, já que Firestore não suporta array-contains + outras queries)
-    if (tag && posts.length > 0) {
-      posts = posts.filter(post =>
-        post.tags && post.tags.includes(tag)
-      );
+    // Filtrar por tag
+    if (tag) {
+      posts = posts.filter(p => p.tags && p.tags.includes(tag));
     }
 
     // Ordenar por data (mais recente primeiro)
-    posts.sort((a, b) => {
-      const dateA = new Date(a.createdAt || 0);
-      const dateB = new Date(b.createdAt || 0);
-      return dateB - dateA;
-    });
+    posts.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
 
     // Renderizar template EJS com layout
     res.render('layouts/main', {
       title: 'Blog - Problem Solver Foundation',
       description: 'Insights, stories, and updates from the Problem Solver Foundation',
-      body: await renderTemplate('blog/list', { posts })
+      body: await renderTemplate('blog/list', { posts, categories, currentCategory: category || null, currentTag: tag || null })
     });
 
   } catch (error) {
@@ -118,11 +108,44 @@ export const renderBlogPost = async (req, res) => {
       post.readingTime = Math.ceil(wordCount / 200);
     }
 
+    // Buscar posts relacionados
+    let relatedPosts = [];
+    try {
+      if (post.category) {
+        const relatedSnap = await postsCollection
+          .where('isPublished', '==', true)
+          .where('category', '==', post.category)
+          .get();
+        relatedPosts = relatedSnap.docs
+          .filter(d => d.id !== doc.id)
+          .map(d => ({ id: d.id, ...d.data(), createdAt: d.data().createdAt?.toDate() }))
+          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+          .slice(0, 3);
+      }
+      if (relatedPosts.length < 3) {
+        const otherSnap = await postsCollection.where('isPublished', '==', true).get();
+        const existingIds = new Set([doc.id, ...relatedPosts.map(p => p.id)]);
+        const others = otherSnap.docs
+          .filter(d => !existingIds.has(d.id))
+          .map(d => ({ id: d.id, ...d.data(), createdAt: d.data().createdAt?.toDate() }))
+          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+          .slice(0, 3 - relatedPosts.length);
+        relatedPosts = [...relatedPosts, ...others];
+      }
+    } catch (e) {
+      console.error('Error fetching related posts:', e);
+    }
+
+    const pageUrl = `${req.protocol}://${req.get('host')}${req.originalUrl}`;
+
     // Renderizar template
     res.render('layouts/main', {
       title: `${post.title} - Blog PSF`,
       description: post.excerpt || post.title,
-      body: await renderTemplate('blog/post', { post })
+      ogImage: post.imageUrl || null,
+      ogUrl: pageUrl,
+      ogType: 'article',
+      body: await renderTemplate('blog/post', { post, relatedPosts })
     });
 
   } catch (error) {

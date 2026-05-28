@@ -8,10 +8,19 @@
   <title><%= title || 'Problem Solver Foundation - Blog' %></title>
   <meta name="description" content="<%= description || 'Blog da Problem Solver Foundation com artigos sobre impacto social, tecnologia e inovação.' %>">
 
-  <!-- Open Graph (redes sociais) -->
+  <!-- Open Graph -->
   <meta property="og:title" content="<%= title || 'Problem Solver Foundation - Blog' %>">
   <meta property="og:description" content="<%= description || 'Blog da PSF' %>">
-  <meta property="og:type" content="website">
+  <meta property="og:type" content="<%= locals.ogType || 'website' %>">
+  <% if (locals.ogUrl) { %><meta property="og:url" content="<%= ogUrl %>"><% } %>
+  <% if (locals.ogImage) { %><meta property="og:image" content="<%= ogImage %>"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><% } %>
+  <meta property="og:site_name" content="Problem Solver Foundation">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="<%= locals.ogImage ? 'summary_large_image' : 'summary' %>">
+  <meta name="twitter:title" content="<%= title || 'Problem Solver Foundation - Blog' %>">
+  <meta name="twitter:description" content="<%= description || 'Blog da PSF' %>">
+  <% if (locals.ogImage) { %><meta name="twitter:image" content="<%= ogImage %>"><% } %>
 
   <!-- Favicon - Multiple formats for browser compatibility -->
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
@@ -55,60 +64,121 @@
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?display=swap&family=Inter:wght@400;500;700;900&family=Noto+Sans:wght@400;500;700;900" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?display=swap&family=Inter:wght@400;500;700;900&family=Lora:ital,wght@0,400;0,600;1,400&family=Noto+Sans:wght@400;500;700;900" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
 
-  <!-- Tailwind Typography para conteúdo de posts -->
+  <!-- Estilos para conteúdo de posts -->
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap');
-
-    /* Estilo para conteúdo de posts */
+    /* Tipografia editorial para corpo do post */
     .prose {
-      max-width: 65ch;
+      max-width: 68ch;
+      font-family: 'Lora', Georgia, serif;
+      font-size: 1.15rem;
+      line-height: 1.7;
+      color: #1a2733;
+    }
+    .dark .prose {
+      color: #dde8f0;
     }
     .prose p {
-      margin-bottom: 1.25em;
-      line-height: 1.75;
+      margin-bottom: 0.85em;
     }
     .prose h2 {
-      font-size: 1.5em;
+      font-family: 'Inter', sans-serif;
+      font-size: 1.4em;
       font-weight: 700;
-      margin-top: 2em;
-      margin-bottom: 1em;
+      margin-top: 1.6em;
+      margin-bottom: 0.5em;
+      color: #0f1e2b;
+      letter-spacing: -0.01em;
+    }
+    .dark .prose h2 {
+      color: #f0f6fc;
     }
     .prose h3 {
-      font-size: 1.25em;
+      font-family: 'Inter', sans-serif;
+      font-size: 1.15em;
       font-weight: 600;
-      margin-top: 1.6em;
-      margin-bottom: 0.6em;
+      margin-top: 1.3em;
+      margin-bottom: 0.4em;
+      color: #0f1e2b;
+    }
+    .dark .prose h3 {
+      color: #f0f6fc;
     }
     .prose ul, .prose ol {
-      margin-top: 1.25em;
-      margin-bottom: 1.25em;
-      padding-left: 1.625em;
+      margin-top: 0.75em;
+      margin-bottom: 0.75em;
+      padding-left: 1.5em;
     }
     .prose li {
-      margin-top: 0.5em;
-      margin-bottom: 0.5em;
+      margin-top: 0.3em;
+      margin-bottom: 0.3em;
     }
     .prose a {
       color: #117dd4;
       text-decoration: underline;
+      text-underline-offset: 2px;
     }
     .prose a:hover {
-      opacity: 0.8;
+      color: #0d63aa;
     }
     .prose strong {
       font-weight: 600;
     }
+    .prose em {
+      font-style: italic;
+    }
+    .prose blockquote {
+      border-left: 3px solid #117dd4;
+      background: #f0f7ff;
+      padding: 1.1em 1.5em;
+      border-radius: 0 0.5rem 0.5rem 0;
+      font-style: italic;
+      color: #1e3a5f;
+      margin: 2em 0;
+    }
+    .dark .prose blockquote {
+      background: #0d1e2e;
+      color: #a8c8e8;
+    }
     .prose code {
+      font-family: 'Courier New', monospace;
       background-color: #f3f4f6;
-      padding: 0.2em 0.4em;
+      padding: 0.2em 0.45em;
       border-radius: 0.25rem;
-      font-size: 0.875em;
+      font-size: 0.85em;
     }
     .dark .prose code {
-      background-color: #374151;
+      background-color: #1e2d3d;
+      color: #93c5fd;
+    }
+    .prose pre {
+      background: #0f172a;
+      color: #e2e8f0;
+      padding: 1.25em 1.5em;
+      border-radius: 0.5rem;
+      overflow-x: auto;
+      margin: 1.75em 0;
+      font-size: 0.875em;
+      line-height: 1.7;
+    }
+    .prose pre code {
+      background: none;
+      padding: 0;
+      color: inherit;
+      font-size: inherit;
+    }
+    /* Drop cap no primeiro parágrafo do conteúdo */
+    .prose > p:first-of-type::first-letter {
+      float: left;
+      font-size: 3.6em;
+      line-height: 0.82;
+      margin-right: 0.09em;
+      margin-top: 0.06em;
+      font-weight: 700;
+      color: #117dd4;
+      font-family: 'Lora', Georgia, serif;
     }
   </style>
 </head>
