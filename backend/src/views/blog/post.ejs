@@ -19,8 +19,6 @@
   .dark #sticky-progress-text { color: #4c779a; }
 </style>
 
-<!-- Reading progress bar (full viewport, behind sticky header) -->
-<div id="reading-progress" style="position:fixed;top:0;left:0;height:3px;background:#117dd4;width:0%;z-index:9999;transition:width 0.08s linear;"></div>
 
 <article class="mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:px-8">
 
@@ -250,7 +248,6 @@
 </button>
 
 <script>
-  const progressBar = document.getElementById('reading-progress');
   const backToTop = document.getElementById('back-to-top');
   const stickyHeader = document.getElementById('sticky-header');
   const stickyProgressBar = document.getElementById('sticky-progress-bar');
@@ -260,17 +257,12 @@
   window.addEventListener('scroll', () => {
     const total = document.body.scrollHeight - window.innerHeight;
     const pct = total > 0 ? Math.round(window.scrollY / total * 100) : 0;
-    const width = pct + '%';
 
-    // Progress bars
-    progressBar.style.width = width;
-    stickyProgressBar.style.width = width;
+    stickyProgressBar.style.width = pct + '%';
     stickyProgressText.textContent = pct + '%';
 
-    // Back to top
     backToTop.style.display = window.scrollY > 400 ? 'flex' : 'none';
 
-    // Sticky header — aparece após rolar além do header do artigo
     const threshold = articleHeader ? articleHeader.getBoundingClientRect().bottom + window.scrollY : 300;
     stickyHeader.style.transform = window.scrollY > threshold ? 'translateY(0)' : 'translateY(-100%)';
   });
