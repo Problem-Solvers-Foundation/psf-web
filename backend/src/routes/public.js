@@ -53,6 +53,7 @@ router.get('/sitemap.xml', async (req, res) => {
     { url: '/impact',   priority: '0.8', changefreq: 'weekly'  },
     { url: '/contact',  priority: '0.6', changefreq: 'monthly' },
     { url: '/problems', priority: '0.9', changefreq: 'daily'   },
+    { url: '/blog',     priority: '0.9', changefreq: 'daily'   },
   ];
 
   let problemUrls = [];
@@ -74,7 +75,28 @@ router.get('/sitemap.xml', async (req, res) => {
     console.error('Sitemap: error fetching problems', e);
   }
 
-  const allPages = [...staticPages, ...problemUrls];
+  let blogUrls = [];
+  try {
+    const snap = await db.collection('posts')
+      .where('isPublished', '==', true)
+      .get();
+    blogUrls = snap.docs
+      .filter(doc => doc.data().slug)
+      .map(doc => {
+        const d = doc.data();
+        const lastmod = d.updatedAt?.toDate?.() ?? d.createdAt?.toDate?.();
+        return {
+          url: `/blog/${encodeURIComponent(d.slug)}`,
+          priority: '0.8',
+          changefreq: 'monthly',
+          lastmod: lastmod ? lastmod.toISOString().split('T')[0] : today,
+        };
+      });
+  } catch (e) {
+    console.error('Sitemap: error fetching blog posts', e);
+  }
+
+  const allPages = [...staticPages, ...problemUrls, ...blogUrls];
 
   const urls = allPages.map(p => `
   <url>
